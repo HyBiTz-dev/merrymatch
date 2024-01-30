@@ -74,6 +74,42 @@ export default {
         bg: "#160404",
         main: "#FCFCFE",
       },
+      fontSize: {
+        headline1: [
+          "3.75rem",
+          { lineHeight: "115%", letterSpacing: "-0.075rem", fontWeight: "900" },
+        ],
+        headline2: [
+          "2.875rem",
+          {
+            lineHeight: "125%",
+            letterSpacing: "-0.0575rem",
+            fontWeight: "800",
+          },
+        ],
+        headline3: [
+          "2rem",
+          { lineHeight: "125%", letterSpacing: "-0.02rem", fontWeight: "700" },
+        ],
+        headline4: [
+          "1.5rem",
+          { lineHeight: "125%", letterSpacing: "-0.03rem", fontWeight: "700" },
+        ],
+        body1: ["1.25rem", { lineHeight: "150%", fontWeight: "600" }],
+        body2: ["1rem", { lineHeight: "150%", fontWeight: "400" }],
+        body3: ["1rem", { lineHeight: "150%", fontWeight: "500" }],
+        body4: ["0.875rem", { lineHeight: "150%", fontWeight: "500" }],
+        body5: ["0.75rem", { lineHeight: "150%", fontWeight: "500" }],
+        tag: ["0.75rem", { lineHeight: "150%", fontWeight: "500" }],
+      },
+      boxShadow: {
+        nav: "2px 2px 12px 0px rgba(64, 50, 133, 0.12)",
+        primary: "2px 2px 12px 0px rgba(64, 50, 133, 0.16)",
+        secondary: "2px 2px 12px 0px rgba(64, 50, 133, 0.08)",
+      },
+      borderRadius: {
+        btn: "6.1875rem",
+      },
     },
   },
   plugins: [require("daisyui")],
