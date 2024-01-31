@@ -16,8 +16,8 @@ function Profilepopup() {
           className="w-[4.125rem] h-[4.04306rem]"
         />
       </div>
-      <div className="flex grow flex-row">
-        <div className="relative flex grow justify-center ">
+      <div className="flex grow">
+        <div className="relative flex grow justify-center w-[36.25rem]">
           <div>
             <img
               src="\images\dany-photo.png"
@@ -47,7 +47,7 @@ function Profilepopup() {
           </div>
         </div>
 
-        <div className="flex flex-col grow space-y-10 pt-6 text-[1rem] text-gray-900 font-semibold">
+        <div className="flex flex-col grow w-[29.875rem] space-y-10 pt-6 text-[1rem] text-gray-900 font-semibold">
           <div>
             <div className="flex gap-4">
               <p className="text-[2.875rem] font-extrabold">Daeny</p>
