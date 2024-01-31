@@ -103,9 +103,9 @@ export default {
         tag: ["0.75rem", { lineHeight: "150%", fontWeight: "500" }],
       },
       boxShadow: {
-        nav: "2px 2px 12px 0px rgba(64, 50, 133, 0.12)",
-        primary: "2px 2px 12px 0px rgba(64, 50, 133, 0.16)",
-        secondary: "2px 2px 12px 0px rgba(64, 50, 133, 0.08)",
+        nav: "2px 2px 12px 0 rgba(64, 50, 133, 0.12)",
+        btn1: "2px 2px 12px 0 rgba(64, 50, 133, 0.16)",
+        btn2: "2px 2px 12px 0 rgba(64, 50, 133, 0.08)",
       },
       borderRadius: {
         btn: "6.1875rem",
