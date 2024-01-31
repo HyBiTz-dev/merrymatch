@@ -1,4 +1,13 @@
 function Profilepopup() {
+  const mockTagDB = [
+    "dragon",
+    "romantic relationship",
+    "political",
+    "blackhair",
+    "friendly",
+    "fire",
+  ];
+
   return (
     <div className="flex overflow-auto flex-col w-[71.25rem] h-[46.25rem] rounded-[2rem] gap-[0.01944rem] bg-main">
       <div className="flex justify-end items-center h-[4.04306rem] ">
@@ -9,7 +18,7 @@ function Profilepopup() {
       </div>
       <div className="flex grow flex-row">
         <div className="relative flex grow justify-center ">
-          <div className="">
+          <div>
             <img
               src="\images\dany-photo.png"
               className="w-[29.875rem] h-[29.875rem] rounded-[2rem]"
@@ -38,7 +47,7 @@ function Profilepopup() {
           </div>
         </div>
 
-        <div className="flex flex-col grow space-y-10 pt-6 text-[1rem] text-gray-900 ">
+        <div className="flex flex-col grow space-y-10 pt-6 text-[1rem] text-gray-900 font-semibold">
           <div>
             <div className="flex gap-4">
               <p className="text-[2.875rem] font-extrabold">Daeny</p>
@@ -81,9 +90,15 @@ function Profilepopup() {
             <p>I know nothing...but you</p>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-6 w-[26.125rem]">
             <p className="text-2xl font-bold">Hobbies and Interests</p>
-            <div>tags</div>
+            <div className="flex flex-wrap items-center w-[26.125rem] gap-y-[0.75rem] gap-x-[0.75rem]">
+              {mockTagDB.map((tag) => (
+                <p className="flex h-[2.5rem] gap-2 rounded-[0.75rem] py-2 px-4 text-purple-600 border-solid border-purple-300 border-[0.063rem]">
+                  {tag}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </div>
