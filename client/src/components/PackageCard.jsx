@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 function PackageCard(props) {
   let cardIcon = props.icon;
   let cardName = props.name;
@@ -26,7 +28,7 @@ function PackageCard(props) {
       <div className="package-details flex flex-col items-start pb-9 gap-4 self-stretch border-b-[1px] border-solid border-gray-300">
         {cardDetails.map((items) => {
           return (
-            <div className="package-feature flex items-start gap-3 self-stertch">
+            <div className="package-feature flex items-start gap-3 self-strech">
               <img
                 className="package-circle-checkbox w-6 h-6"
                 src="../../public/images/checkbox-circle-fill.svg"
@@ -38,9 +40,9 @@ function PackageCard(props) {
           );
         })}
       </div>
-      <button className="btn flex px-6 py-3 justify-center items-center gap-[0.5rem] self-stretch rounded-[6.1875rem] bg-red-100 shadow-[2px_2px_12px_0_rgba(64,50,133,0.08)] text-red-600 text-center text-base font-[700] leading-6 ">
+      <Button secondary className="w-full">
         Choose Package
-      </button>
+      </Button>
     </div>
   );
 }
