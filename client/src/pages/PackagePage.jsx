@@ -9,11 +9,10 @@ export default function PackagePage() {
     "../../public/images/platinum.svg",
     "../../public/images/premium.svg",
   ];
-  let name_pricePackage = [
-    ["Basic", "59.00"],
-    ["Platinum", "99"],
-    ["Premium", "149.00"],
-  ];
+  let namePackage = ["Basic", "Platinum", "Premium"];
+
+  let pricePackage = ["59.00", "99", "149.00"];
+  let perDatePackage = ["month", "month", "month"];
   let detailPackage = [
     ["‘Merry’ more than a daily limited", "Up to 25 Merry per day"],
     ["‘Merry’ more than a daily limited", "Up to 45 Merry per day"],
@@ -35,9 +34,18 @@ export default function PackagePage() {
           </section>
 
           <section className="package-wrapper w-auto h-auto flex items-start gap-6 mt-20">
-            <PackageCard />
-            <PackageCard />
-            <PackageCard />
+            {iconPackage.map((items, index) => {
+              return (
+                <PackageCard
+                  key={index}
+                  icon={items}
+                  name={namePackage[index]}
+                  price={pricePackage[index]}
+                  perDate={perDatePackage[index]}
+                  details={[...detailPackage[index]]}
+                />
+              );
+            })}
           </section>
         </div>
       </section>
