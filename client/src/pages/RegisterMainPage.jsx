@@ -2,29 +2,77 @@ import Navbar from "../components/Navbar";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { Step1, Step2, Step3 } from "../components/RegisterForm";
+import Button from "../components/Button";
+import * as Yup from "yup";
 
 function RegisterMainPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const formik = useFormik({
     initialValues: {
       name: "",
-      dateOfBirth: "",
-      location: "",
-      city: "",
+      dateOfBirth: null,
+      location: null,
+      city: null,
       username: "",
       email: "",
       password: "",
       confirmPassword: "",
-      gender: "",
-      genderInterests: "",
-      recial: "",
-      meeting: "",
+      gender: null,
+      genderInterests: null,
+      recial: null,
+      meeting: null,
       hobbiesInterests: [],
+      profilePictures: [],
     },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .max(64, "Must be 64 characters or less")
+        .required("Required"),
+      dateOfBirth: Yup.date()
+        .required("Required")
+        .test(
+          "is-over-18",
+          "You must be at least 18 years old",
+          function (value) {
+            const currentDate = new Date();
+            const userDate = new Date(value);
+            const userAge = currentDate.getFullYear() - userDate.getFullYear();
+            return userAge >= 18;
+          }
+        ),
+      location: Yup.string().nullable(false).required("Required"),
+      city: Yup.string().nullable(false).required("Required"),
+      username: Yup.string()
+        .max(64, "Must be 64 characters or less")
+        .min(6, "Must be at least 6 character")
+        .required("Required"),
+      email: Yup.string().email("Invalid email address").required("Required"),
+      password: Yup.string()
+        .min(8, "Must be at least 8 character")
+        .required("Required"),
+      confirmPassword: Yup.string()
+        .oneOf(
+          [Yup.ref("password"), null],
+          "Confirm Password must match password"
+        )
+        .required("Required"),
+      gender: Yup.string().nullable(false).required("Required"),
+      genderInterests: Yup.string().nullable(false).required("Required"),
+      recial: Yup.string().nullable(false).required("Required"),
+      meeting: Yup.string().nullable(false).required("Required"),
+      hobbiesInterests: Yup.array()
+        .max(10, "Must be 10 hobbies Interests or less")
+        .required("Required"),
+      profilePictures: Yup.array()
+        .min(2, "Must be at least 2 picture")
+        .required("Required"),
+    }),
     onSubmit: (values) => {
       console.log(values);
     },
   });
+
+  console.log(formik.errors);
 
   const steps = [Step1, Step2, Step3];
 
@@ -138,21 +186,13 @@ function RegisterMainPage() {
               Back
             </button>
             {currentStep < 3 ? (
-              <button
-                type="button"
-                className="rounded-[6.1875rem] bg-red-500 text-white p-3 pl-6 pr-6 hover:bg-red-400 active:bg-red-600"
-                onClick={nextStep}
-              >
+              <Button primary onClick={nextStep}>
                 Next Step
-              </button>
+              </Button>
             ) : (
-              <button
-                type="submit"
-                className="rounded-[6.1875rem] bg-red-500 text-white p-3 pl-6 pr-6 hover:bg-red-400 active:bg-red-600"
-                onClick={formik.handleSubmit}
-              >
+              <Button type="submit" primary onClick={formik.handleSubmit}>
                 Confirm
-              </button>
+              </Button>
             )}
           </div>
         </div>
