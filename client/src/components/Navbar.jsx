@@ -23,7 +23,12 @@ function Navbar() {
           </a>
         </li>
         <li className="px-6">
-          <Button primary>Login</Button>
+          <Button
+            primary
+            onClick={(event) => (window.location.href = "/login")}
+          >
+            Login
+          </Button>
         </li>
       </ul>
     </nav>
