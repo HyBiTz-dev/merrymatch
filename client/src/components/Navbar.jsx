@@ -1,34 +1,24 @@
-import Button from "./Button";
-
 function Navbar() {
   return (
-    <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[30.5rem] bg-main relative z-50 shadow-nav">
+    <nav className="flex justify-center items-center w-full h-20 pr-40 pl-40 gap-[30.5rem] bg-main">
       <div>
-        <a href="/">
-          <img src="/images/logo.svg" width={167} height={56} alt="logo" />
-        </a>
+        <img src="/images/logo.svg" width={167} height={56} alt="logo" />
       </div>
       <ul className="flex justify-center items-center">
         <li className="px-6">
-          <a
-            href="#why-merry-match"
-            className="text-blue-800 text-base font-bold"
-          >
+          <a href="" className="text-blue-800 font-bold">
             Why Merry Match?
           </a>
         </li>
         <li className="px-6">
-          <a href="#how-to-merry" className="text-blue-800 text-base font-bold">
+          <a href="" className="text-blue-800 font-bold">
             How to Merry
           </a>
         </li>
         <li className="px-6">
-          <Button
-            primary
-            onClick={(event) => (window.location.href = "/login")}
-          >
+          <button className="btn bg-red-500 hover:bg-red-400 active:bg-red-600 text-white border-none rounded-3xl w-24 h-12">
             Login
-          </Button>
+          </button>
         </li>
       </ul>
     </nav>
