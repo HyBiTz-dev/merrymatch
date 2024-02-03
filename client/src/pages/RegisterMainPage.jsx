@@ -10,7 +10,7 @@ function RegisterMainPage() {
   const formik = useFormik({
     initialValues: {
       name: "",
-      dateOfBirth: null,
+      dateOfBirth: "",
       location: null,
       city: null,
       username: "",
@@ -61,6 +61,7 @@ function RegisterMainPage() {
       recial: Yup.string().nullable(false).required("Required"),
       meeting: Yup.string().nullable(false).required("Required"),
       hobbiesInterests: Yup.array()
+        .min(1, "Must be at least 1 hobbies Interests or less")
         .max(10, "Must be 10 hobbies Interests or less")
         .required("Required"),
       profilePictures: Yup.array()
@@ -70,16 +71,43 @@ function RegisterMainPage() {
     onSubmit: (values) => {
       console.log(values);
     },
+    validateOnChange: true,
+    validateOnBlur: true,
   });
-
-  console.log(formik.errors);
 
   const steps = [Step1, Step2, Step3];
 
   const StepComponent = steps[currentStep - 1];
 
+  const stepsFields = [
+    [
+      "name",
+      "dateOfBirth",
+      "location",
+      "city",
+      "username",
+      "email",
+      "password",
+      "confirmPassword",
+    ],
+    ["gender", "genderInterests", "racial", "meeting", "hobbiesInterests"],
+    ["profilePictures"],
+  ];
+
   const nextStep = () => {
-    setCurrentStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
+    const currentStepFields = stepsFields[currentStep - 1];
+    formik.setTouched(
+      currentStepFields.reduce((acc, field) => ({ ...acc, [field]: true }), {})
+    );
+
+    formik.validateForm().then((errors) => {
+      const currentStepErrors = currentStepFields.some(
+        (field) => errors[field]
+      );
+      if (!currentStepErrors && currentStep < steps.length) {
+        setCurrentStep((prevStep) => prevStep + 1);
+      }
+    });
   };
 
   const prevStep = () => {
