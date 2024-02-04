@@ -1,138 +1,104 @@
+import { InputField, SelectInputField } from "./InputField";
 import TagsInput from "./TagInput";
 export const Step1 = ({ formik }) => {
   return (
     <form className="flex flex-col gap-10 pb-10" onSubmit={formik.handleSubmit}>
       <div className="text-2xl text-purple-500 pb-6">Basic Information</div>
       <div id="input-container-1" className="flex justify-between">
-        <div id="name-input">
-          <div className="text-base text-black">Name</div>
-          <input
-            className="border bg-white rounded-lg p-3 w-[27.9rem] text-black focus:border-purple-500 outline-none"
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Name"
-            onChange={formik.handleChange}
-            value={formik.values.name || ""}
-          />
-          {formik.errors && formik.errors.name && <p>{formik.errors.name}</p>}
-        </div>
+        <InputField
+          formik={formik}
+          fieldName="name"
+          label="Name"
+          type="text"
+          placeholder="Name"
+        />
         <div id="date-of-birth-input">
           <div className="text-base text-black">Date of birth</div>
-          <input
-            className="border bg-white rounded-lg p-3 w-[27.9rem] text-black focus:border-purple-500 outline-none"
-            id="dateOfBirth"
-            name="dateOfBirth"
-            type="date"
-            onChange={formik.handleChange}
-            value={formik.values.dateOfBirth}
-          />
+          <div
+            className={`relative ${
+              formik.errors.dateOfBirth ? "border-red-500" : "border-gray-300"
+            } rounded-lg`}
+          >
+            <input
+              className={`border bg-white rounded-lg p-3 w-[27.9rem] text-black focus:border-purple-500 outline-none ${
+                formik.errors.dateOfBirth ? "border-red-500" : ""
+              }`}
+              id="dateOfBirth"
+              name="dateOfBirth"
+              type="date"
+              onChange={formik.handleChange}
+              value={formik.values.dateOfBirth}
+            />
+            {formik.errors.dateOfBirth ? (
+              <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
+                <img src="public/images/alert_error_icon.svg" />
+              </div>
+            ) : (
+              <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
+                <img src="public/images/dateIcon.svg" />
+              </div>
+            )}
+          </div>
           {formik.errors && formik.errors.dateOfBirth && (
-            <p>{formik.errors.dateOfBirth}</p>
+            <p className=" text-red-500">{formik.errors.dateOfBirth}</p>
           )}
         </div>
       </div>
       <div id="input-container-2" className="flex justify-between">
-        <div id="location-input">
-          <div className="text-base text-black">Location</div>
-          <select
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500 outline-none"
-            id="location"
-            name="location"
-            onChange={formik.handleChange}
-            value={formik.values.location}
-          >
-            <option disabled selected>
-              Location
-            </option>
-            <option>Thailand</option>
-            <option>China</option>
-            <option>etc</option>
-          </select>
-          {formik.errors && formik.errors.location && (
-            <p>{formik.errors.location}</p>
-          )}
-        </div>
-        <div id="city-input">
-          <div className="text-base text-black">City</div>
-          <select
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500 outline-none"
-            id="city"
-            name="city"
-            onChange={formik.handleChange}
-            value={formik.values.city}
-          >
-            <option disabled selected>
-              city
-            </option>
-            <option>Bangkok</option>
-            <option>Chingmai</option>
-            <option>etc</option>
-          </select>
-          {formik.errors && formik.errors.city && <p>{formik.errors.city}</p>}
-        </div>
+        <SelectInputField
+          formik={formik}
+          fieldName="location"
+          label="Location"
+          options={[
+            { label: "Thailand", value: "Thailand" },
+            { label: "China", value: "China" },
+            { label: "etc", value: "etc" },
+          ]}
+          placeholder="Location"
+        />
+        <SelectInputField
+          formik={formik}
+          fieldName="city"
+          label="City"
+          options={[
+            { label: "Bangkok", value: "Bangkok" },
+            { label: "Chiang Mai", value: "Chiang Mai" },
+            { label: "etc", value: "etc" },
+          ]}
+          placeholder="City"
+        />
       </div>
       <div id="input-container-3" className="flex justify-between">
-        <div id="username-input">
-          <div className="text-base text-black">Username</div>
-          <input
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500 outline-none"
-            id="username"
-            name="username"
-            type="text"
-            placeholder="At least 6 characters"
-            onChange={formik.handleChange}
-            value={formik.values.username}
-          />
-          {formik.errors && formik.errors.username && (
-            <p>{formik.errors.username}</p>
-          )}
-        </div>
-        <div id="email-input">
-          <div className="text-base text-black">Email</div>
-          <input
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500 outline-none"
-            id="email"
-            name="email"
-            type="email"
-            placeholder="name@website.com"
-            onChange={formik.handleChange}
-            value={formik.values.email}
-          />
-          {formik.errors && formik.errors.email && <p>{formik.errors.email}</p>}
-        </div>
+        <InputField
+          formik={formik}
+          fieldName="username"
+          label="Username"
+          type="text"
+          placeholder="At least 6 characters"
+        />
+        <InputField
+          formik={formik}
+          fieldName="email"
+          label="Email"
+          type="email"
+          placeholder="name@website.com"
+        />
       </div>
       <div id="input-container-4" className="flex justify-between">
-        <div id="password-input">
-          <div className="text-base text-black">Password</div>
-          <input
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500"
-            id="password"
-            name="password"
-            type="password"
-            placeholder="At least 8 characters"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-          />
-          {formik.errors && formik.errors.password && (
-            <p>{formik.errors.password}</p>
-          )}
-        </div>
-        <div id="confirm-password-input">
-          <div className="text-base text-black">Confirm Password</div>
-          <input
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500"
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            placeholder="At least 8 characters"
-            onChange={formik.handleChange}
-            value={formik.values.confirmPassword}
-          />
-          {formik.errors && formik.errors.confirmPassword && (
-            <p>{formik.errors.confirmPassword}</p>
-          )}
-        </div>
+        <InputField
+          formik={formik}
+          fieldName="password"
+          label="Password"
+          type="password"
+          placeholder="At least 8 characters"
+        />
+        <InputField
+          formik={formik}
+          fieldName="confirmPassword"
+          label="confirmPassword"
+          type="password"
+          placeholder="At least 8 characters"
+        />
       </div>
     </form>
   );
@@ -145,94 +111,56 @@ export const Step2 = ({ formik }) => {
         Identities and Interests
       </div>
       <div id="input-container-1" className="flex justify-between">
-        <div id="gender-input">
-          <div className="text-base text-black">Sexual identities </div>
-          <select
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500 outline-none"
-            id="gender"
-            name="gender"
-            onChange={formik.handleChange}
-            value={formik.values.gender}
-          >
-            <option disabled selected>
-              Select Sexual identities
-            </option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>non-binary</option>
-            <option>etc</option>
-          </select>
-          {formik.errors && formik.errors.gender && (
-            <p>{formik.errors.gender}</p>
-          )}
-        </div>
-        <div id="gender-interests-input">
-          <div className="gender-interests-base text-black ">
-            Sexual preferences
-          </div>
-          <select
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500 outline-none"
-            id="genderInterests"
-            name="genderInterests"
-            onChange={formik.handleChange}
-            value={formik.values.genderInterests}
-          >
-            <option disabled selected>
-              Select Sexual preferences
-            </option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>non-binary</option>
-            <option>etc</option>
-          </select>
-          {formik.errors && formik.errors.genderInterests && (
-            <p>{formik.errors.genderInterests}</p>
-          )}
-        </div>
+        <SelectInputField
+          formik={formik}
+          fieldName="gender"
+          label="Sexual identities"
+          options={[
+            { label: "Male", value: "Male" },
+            { label: "Female", value: "Female" },
+            { label: "Non-binary", value: "Non-binary" },
+            { label: "etc", value: "etc" },
+          ]}
+          placeholder="Sexual identities"
+        />
+        <SelectInputField
+          formik={formik}
+          fieldName="genderInterests"
+          label="Sexual preferences"
+          options={[
+            { label: "Male", value: "Male" },
+            { label: "Female", value: "Female" },
+            { label: "Non-binary", value: "Non-binary" },
+            { label: "etc", value: "etc" },
+          ]}
+          placeholder="Sexual preferences"
+        />
       </div>
       <div id="input-container-2" className="flex justify-between">
-        <div id="recial-input">
-          <div className="text-base text-black">Racial preferences</div>
-          <select
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500 outline-none"
-            id="recial"
-            name="recial"
-            onChange={formik.handleChange}
-            value={formik.values.recial}
-          >
-            <option disabled selected>
-              Select Racial preferences
-            </option>
-            <option>Asian</option>
-            <option>Caucasian</option>
-            <option>Black</option>
-            <option>etc</option>
-          </select>
-          {formik.errors && formik.errors.recial && (
-            <p>{formik.errors.recial}</p>
-          )}
-        </div>
-        <div id="meeting-input">
-          <div className="text-base text-black">Meeting interests</div>
-          <select
-            className="border text-black bg-white rounded-lg p-3 w-[27.9rem] focus:border-purple-500 outline-none"
-            id="meeting"
-            name="meeting"
-            onChange={formik.handleChange}
-            value={formik.values.meeting}
-          >
-            <option disabled selected>
-              Select Meeting interests
-            </option>
-            <option>friends</option>
-            <option>partners</option>
-            <option>long-term commitment</option>
-            <option>etc</option>
-          </select>
-          {formik.errors && formik.errors.meeting && (
-            <p>{formik.errors.meeting}</p>
-          )}
-        </div>
+        <SelectInputField
+          formik={formik}
+          fieldName="recial"
+          label="Racial preferences"
+          options={[
+            { label: "Asian", value: "Asian" },
+            { label: "Caucasian", value: "Caucasian" },
+            { label: "Black", value: "Black" },
+            { label: "etc", value: "etc" },
+          ]}
+          placeholder="Racial preferences"
+        />
+        <SelectInputField
+          formik={formik}
+          fieldName="meeting"
+          label="Meeting interests"
+          options={[
+            { label: "friends", value: "friends" },
+            { label: "partners", value: "partners" },
+            { label: "long-term commitment", value: "long-term commitment" },
+            { label: "etc", value: "etc" },
+          ]}
+          placeholder="Meeting interests"
+        />
       </div>
       <div id="input-container-3" className="flex justify-around">
         <div id="hobbies-interests-input">
