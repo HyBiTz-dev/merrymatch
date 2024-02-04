@@ -1,9 +1,10 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { handleLogin } from "./Auth";
+import { useAuth } from "./Auth";
 
 function LoginForm() {
+  const { handleLogin } = useAuth();
   const formik = useFormik({
     initialValues: {
       email: "",
