@@ -4,8 +4,11 @@ import { useState } from "react";
 import { Step1, Step2, Step3 } from "../components/RegisterForm";
 import Button from "../components/Button";
 import * as Yup from "yup";
+import { supabase } from "../lib/helper/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 function RegisterMainPage() {
+  const navigate = useNavigate("");
   const [currentStep, setCurrentStep] = useState(1);
   const formik = useFormik({
     initialValues: {
@@ -68,11 +71,23 @@ function RegisterMainPage() {
         .min(2, "Must be at least 2 picture")
         .required("Required"),
     }),
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        const { user, error } = await supabase.auth.signUp({
+          email: values.email,
+          password: values.password,
+        });
+        if (error) {
+          console.error("ลงทะเบียนไม่สำเร็จ: ", error.message);
+        } else {
+          console.log("ลงทะเบียนสำเร็จ: ", user);
+        }
+      } catch (error) {
+        console.error("ลงทะเบียนไม่สำเร็จ: ", error.message);
+      }
     },
     validateOnChange: false,
-    validateOnBlur: false,
+    validateOnBlur: true,
   });
 
   const steps = [Step1, Step2, Step3];
@@ -210,7 +225,10 @@ function RegisterMainPage() {
                 id="confirm-button"
                 type="submit"
                 primary
-                onClick={formik.handleSubmit}
+                onClick={async () => {
+                  await formik.handleSubmit();
+                  navigate("/login");
+                }}
               >
                 Confirm
               </Button>
