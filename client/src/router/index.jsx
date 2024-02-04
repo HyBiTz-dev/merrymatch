@@ -8,7 +8,7 @@ import Home from "../pages/Homepage";
 // import AdminComplaint from "../pages/admin/Complaint";
 // import Cratepackage from "../pages/admin/Createpackage";
 // import Editpackage from "../pages/admin/Editpackage";
-// import Register from "../pages/Register";
+import Register from "../pages/RegisterMainPage";
 
 export default function Router() {
   const routes = [
@@ -20,10 +20,10 @@ export default function Router() {
     //   path: "/login",
     //   element: <Login />,
     // },
-    // {
-    //   path: "/register",
-    //   element: <Register />,
-    // },
+    {
+      path: "/register",
+      element: <Register />,
+    },
     // {
     //   path: "/package",
     //   element: <Package />,
