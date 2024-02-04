@@ -20,8 +20,8 @@ export default function PackagePage() {
   ];
   return (
     <>
-      <Navbar />
-      <section className="package-section flex flex-col h-[56.4375rem] justify-center items-center pt-[5rem] pr-[10.0625rem] pb-[10rem] pl-[10rem]">
+      <Navbar auth />
+      <section className="package-section bg-white flex flex-col h-[56.4375rem] justify-center items-center pt-[5rem] pr-[10.0625rem] pb-[10rem] pl-[10rem]">
         <div className="package-container flex flex-col items-start gap-[5rem]">
           <section className="package-header flex flex-col items-start gap-[0.5rem] self-stretch">
             <p className=" w-full h-auto text-body4 text-beige-700 text-sm font-[600]">
