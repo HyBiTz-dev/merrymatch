@@ -1,15 +1,11 @@
 import Button from "./Button";
 import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../features/auth/Auth";
 
 function Navbar({ username, auth, unauth }) {
   const navigate = useNavigate();
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-
-    navigate("/");
-    window.location.reload();
-  };
+  const { handleLogout } = useAuth();
 
   if (unauth) {
     return (

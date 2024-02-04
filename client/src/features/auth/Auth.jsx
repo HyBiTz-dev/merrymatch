@@ -37,6 +37,7 @@ export const useAuth = () => {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     navigate("/");
+    window.location.reload();
   };
 
   return { handleLogin, handleLogout };

@@ -1,6 +1,6 @@
 import { useRoutes } from "react-router-dom";
 import Home from "../pages/Homepage";
-// import Login from "../pages/Login";
+import Login from "../pages/LoginPage";
 import PackagePage from "../pages/Packagepage";
 import MatchingPage from "../pages/MatchingPage";
 // import Admin from "../pages/admin/Admin";
@@ -9,6 +9,7 @@ import MatchingPage from "../pages/MatchingPage";
 // import Cratepackage from "../pages/admin/Createpackage";
 // import Editpackage from "../pages/admin/Editpackage";
 import Register from "../pages/RegisterMainPage";
+import AdminPage from "../pages/AdminTestPage";
 
 export default function Router() {
   const routes = [
@@ -16,10 +17,10 @@ export default function Router() {
       path: "/",
       element: <Home />,
     },
-    // {
-    //   path: "/login",
-    //   element: <Login />,
-    // },
+    {
+      path: "/login",
+      element: <Login />,
+    },
     {
       path: "/register",
       element: <Register />,
@@ -31,6 +32,10 @@ export default function Router() {
     {
       path: "/matching",
       element: <MatchingPage />,
+    },
+    {
+      path: "/admintest",
+      element: <AdminPage />,
     },
     // {
     //   path: "/admin",

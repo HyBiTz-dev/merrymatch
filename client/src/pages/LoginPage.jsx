@@ -8,7 +8,7 @@ function LoginPage() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar unauth />
       <main className="bg-main flex justify-center content-center w-full relative">
         <BeigeVector />
         <div className="flex flex-row mt-20 justify-between content-center w-[70rem] mb-20">
