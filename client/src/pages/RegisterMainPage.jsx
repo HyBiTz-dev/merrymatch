@@ -10,7 +10,7 @@ function RegisterMainPage() {
   const formik = useFormik({
     initialValues: {
       name: "",
-      dateOfBirth: null,
+      dateOfBirth: "",
       location: null,
       city: null,
       username: "",
@@ -61,6 +61,7 @@ function RegisterMainPage() {
       recial: Yup.string().nullable(false).required("Required"),
       meeting: Yup.string().nullable(false).required("Required"),
       hobbiesInterests: Yup.array()
+        .min(1, "Must be at least 1 hobbies Interests or less")
         .max(10, "Must be 10 hobbies Interests or less")
         .required("Required"),
       profilePictures: Yup.array()
@@ -70,16 +71,43 @@ function RegisterMainPage() {
     onSubmit: (values) => {
       console.log(values);
     },
+    validateOnChange: false,
+    validateOnBlur: false,
   });
-
-  console.log(formik.errors);
 
   const steps = [Step1, Step2, Step3];
 
   const StepComponent = steps[currentStep - 1];
 
+  const stepsFields = [
+    [
+      "name",
+      "dateOfBirth",
+      "location",
+      "city",
+      "username",
+      "email",
+      "password",
+      "confirmPassword",
+    ],
+    ["gender", "genderInterests", "racial", "meeting", "hobbiesInterests"],
+    ["profilePictures"],
+  ];
+
   const nextStep = () => {
-    setCurrentStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
+    const currentStepFields = stepsFields[currentStep - 1];
+    formik.setTouched(
+      currentStepFields.reduce((acc, field) => ({ ...acc, [field]: true }), {})
+    );
+
+    formik.validateForm().then((errors) => {
+      const currentStepErrors = currentStepFields.some(
+        (field) => errors[field]
+      );
+      if (!currentStepErrors && currentStep < steps.length) {
+        setCurrentStep((prevStep) => prevStep + 1);
+      }
+    });
   };
 
   const prevStep = () => {
@@ -99,7 +127,7 @@ function RegisterMainPage() {
                 Join us and start matching{" "}
               </div>
             </div>
-            <div id="header-tabs" className="flex gap-3">
+            <div id="current-step-tabs" className="flex gap-3">
               {currentStep === 1 ? (
                 <div className="flex items-center gap-4 border-purple-500 border p-4 pr-8 rounded-2xl">
                   <div className=" text-2xl font-bold text-purple-500 bg-gray-200 p-4 pt-2 pb-2 rounded-2xl">
@@ -168,6 +196,7 @@ function RegisterMainPage() {
             id="button-container"
           >
             <button
+              id="back-step-button"
               disabled={currentStep === 1}
               className="flex items-center m-auto justify-center text-base gap-2 text-red-500 disabled:text-gray-500 hover:text-red-600"
               onClick={prevStep}
@@ -186,11 +215,16 @@ function RegisterMainPage() {
               Back
             </button>
             {currentStep < 3 ? (
-              <Button primary onClick={nextStep}>
+              <Button id="next-step-button" primary onClick={nextStep}>
                 Next Step
               </Button>
             ) : (
-              <Button type="submit" primary onClick={formik.handleSubmit}>
+              <Button
+                id="confirm-button"
+                type="submit"
+                primary
+                onClick={formik.handleSubmit}
+              >
                 Confirm
               </Button>
             )}
