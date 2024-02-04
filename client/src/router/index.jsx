@@ -1,7 +1,7 @@
 import { useRoutes } from "react-router-dom";
 import Home from "../pages/Homepage";
 // import Login from "../pages/Login";
-// import Package from "../pages/Package";
+import PackagePage from "../pages/Packagepage";
 // import Matching from "../pages/Matching";
 // import Admin from "../pages/admin/Admin";
 // import AdminPackage from "../pages/admin/Package";
@@ -24,10 +24,10 @@ export default function Router() {
       path: "/register",
       element: <Register />,
     },
-    // {
-    //   path: "/package",
-    //   element: <Package />,
-    // },
+    {
+      path: "/package",
+      element: <PackagePage />,
+    },
     // {
     //   path: "/matching",
     //   element: <Matching />,
