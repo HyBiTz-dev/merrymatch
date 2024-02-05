@@ -22,7 +22,7 @@ function RegisterMainPage() {
       confirmPassword: "",
       gender: null,
       genderInterests: null,
-      recial: null,
+      racial: null,
       meeting: null,
       hobbiesInterests: [],
       profilePictures: [],
@@ -61,7 +61,7 @@ function RegisterMainPage() {
         .required("Required"),
       gender: Yup.string().nullable(false).required("Required"),
       genderInterests: Yup.string().nullable(false).required("Required"),
-      recial: Yup.string().nullable(false).required("Required"),
+      racial: Yup.string().nullable(false).required("Required"),
       meeting: Yup.string().nullable(false).required("Required"),
       hobbiesInterests: Yup.array()
         .min(1, "Must be at least 1 hobbies Interests or less")
@@ -76,8 +76,10 @@ function RegisterMainPage() {
         const { user, error } = await supabase.auth.signUp({
           email: values.email,
           password: values.password,
+          role: user,
         });
         if (error) {
+          alert("ลงทะเบียนไม่สำเร็จ");
           console.error("ลงทะเบียนไม่สำเร็จ: ", error.message);
         } else {
           console.log("ลงทะเบียนสำเร็จ: ", user);

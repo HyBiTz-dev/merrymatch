@@ -1,4 +1,4 @@
-function TagsInput({ tags, setTags }) {
+function TagsInput({ tags, setTags, error, formik }) {
   const addTags = (event) => {
     if (event.key === "Enter" && event.target.value !== "") {
       setTags([...tags, event.target.value]);
@@ -9,7 +9,11 @@ function TagsInput({ tags, setTags }) {
     setTags(tags.filter((tag, i) => i !== index));
   }
   return (
-    <div className="flex items-center flex-wrap gap-2 border bg-white rounded-lg p-3 w-[66rem]">
+    <div
+      className={`flex relative items-center flex-wrap gap-2 border bg-white rounded-lg p-3 w-[66rem] ${
+        error ? "border-red-500" : "border-gray-300"
+      }`}
+    >
       {tags.map((tag, index) => (
         <div
           key={index}
@@ -29,9 +33,15 @@ function TagsInput({ tags, setTags }) {
       <input
         className="border-none bg-white outline-none "
         onKeyUp={(event) => addTags(event)}
+        onBlur={formik.handleBlur}
         type="text"
         placeholder="Hobbies Interest"
-      ></input>
+      />
+      {error && (
+        <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
+          <img src="public/images/alert_error_icon.svg" />
+        </div>
+      )}
     </div>
   );
 }
