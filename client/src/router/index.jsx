@@ -3,6 +3,9 @@ import Home from "../pages/Homepage";
 import Login from "../pages/LoginPage";
 import PackagePage from "../pages/Packagepage";
 import MatchingPage from "../pages/MatchingPage";
+import AdminPackageList from "../pages/AdminPackageList";
+import AdminPackageCreate from "../pages/AdminPackageCreate";
+import AdminPackageEdit from "../pages/AdminPackageEdit";
 // import Admin from "../pages/admin/Admin";
 // import AdminPackage from "../pages/admin/Package";
 // import AdminComplaint from "../pages/admin/Complaint";
@@ -42,24 +45,24 @@ export default function Router() {
     //   element: <Admin />,
     // },
 
-    // {
-    //   path: "/admin/package",
-    //   element: <AdminPackage />,
-    // },
+    {
+      path: "/admin/package",
+      element: <AdminPackageList />,
+    },
 
     // {
     //   path: "/admin/complaint",
     //   element: <AdminComplaint />,
     // },
 
-    // {
-    //   path: "/admin/createpackage",
-    //   element: <Cratepackage />,
-    // },
-    // {
-    //   path: "/admin/editpackage",
-    //   element: <Editpackage />,
-    // },
+    {
+      path: "/admin/createpackage",
+      element: <AdminPackageCreate />,
+    },
+    {
+      path: "/admin/editpackage",
+      element: <AdminPackageEdit />,
+    },
   ];
 
   return useRoutes(routes);
