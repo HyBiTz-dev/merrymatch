@@ -1,10 +1,10 @@
 import SideBarAdmin from "../components/SidebarAdmin";
-import AdminPackageList from "./AdminPackageList";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { useState } from "react";
 import classNames from "classnames";
 
-function AdminPackageAdd() {
+function AdminPackageCreate() {
   const inputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [merryLimit, setMerryLimit] = useState("");
@@ -12,6 +12,8 @@ function AdminPackageAdd() {
   const [packages, setPackages] = useState([]);
   const [packageNames, setPackageNames] = useState("");
   const [errorMessages, setErrorMessages] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -64,7 +66,10 @@ function AdminPackageAdd() {
             Add Package
           </span>
           <div className="flex ">
-            <button className="btn bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-600 rounded-[6rem] w-[6rem]">
+            <button
+              onClick={() => navigate("/admin/package")}
+              className="btn bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-600 rounded-[6rem] w-[6rem]"
+            >
               Cancel
             </button>
             <button
@@ -195,4 +200,4 @@ function AdminPackageAdd() {
   );
 }
 
-export default AdminPackageAdd;
+export default AdminPackageCreate;

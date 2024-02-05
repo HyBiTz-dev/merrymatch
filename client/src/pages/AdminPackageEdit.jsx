@@ -2,12 +2,15 @@ import SideBarAdmin from "../components/SidebarAdmin";
 import { useRef } from "react";
 import { useState } from "react";
 import classNames from "classnames";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function AdminPackageEdit() {
   const inputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [merryLimit, setMerryLimit] = useState("");
   const [detailInputs, setDetailInputs] = useState([""]);
+
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -36,7 +39,10 @@ function AdminPackageEdit() {
             Edit ‘Premium’
           </span>
           <div className="flex ">
-            <button className="btn bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-600 rounded-[6rem] w-[6rem]">
+            <button
+              onClick={() => navigate("/admin/package")}
+              className="btn bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-600 rounded-[6rem] w-[6rem]"
+            >
               Cancel
             </button>
             <button className="btn bg-red-500 hover:bg-red-400 active:bg-red-600 text-white rounded-[6rem] w-[6rem]">

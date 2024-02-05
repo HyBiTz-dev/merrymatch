@@ -42,7 +42,7 @@ function AdminPackageList() {
             </div>
             <div className="ml-auto mr-14">
               <button
-                onClick={() => navigate("/admin/package/add")}
+                onClick={() => navigate("/admin/createpackage")}
                 className="btn  bg-red-500 hover:bg-red-400 active:bg-red-600 text-white w-40 h-[3rem]"
               >
                 + Add Package
@@ -83,10 +83,16 @@ function AdminPackageList() {
                         <td>{packageItem.createdDate}</td>
                         <td>{packageItem.updatedDate}</td>
                         <td>
-                          <img src="/images/delete.svg" alt="delete icon" />
+                          <button>
+                            <img src="/images/delete.svg" alt="delete icon" />
+                          </button>
                         </td>
                         <td>
-                          <img src="/images/edit.svg" alt="edit icon" />
+                          <button
+                            onClick={() => navigate("/admin/editpackage")}
+                          >
+                            <img src="/images/edit.svg" alt="edit icon" />
+                          </button>
                         </td>
                       </tr>
                     ))}
