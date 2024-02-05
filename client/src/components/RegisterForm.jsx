@@ -16,20 +16,25 @@ export const Step1 = ({ formik }) => {
           <div className="text-base text-black">Date of birth</div>
           <div
             className={`relative ${
-              formik.errors.dateOfBirth ? "border-red-500" : "border-gray-300"
+              formik.touched.dateOfBirth && formik.errors.dateOfBirth
+                ? "border-red-500"
+                : "border-gray-300"
             } rounded-lg`}
           >
             <input
               className={`border bg-white rounded-lg p-3 w-[27.9rem] text-black focus:border-purple-500 outline-none ${
-                formik.errors.dateOfBirth ? "border-red-500" : ""
+                formik.touched.dateOfBirth && formik.errors.dateOfBirth
+                  ? "border-red-500"
+                  : ""
               }`}
               id="dateOfBirth"
               name="dateOfBirth"
               type="date"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.dateOfBirth}
             />
-            {formik.errors.dateOfBirth ? (
+            {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? (
               <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
                 <img src="public/images/alert_error_icon.svg" />
               </div>
@@ -39,7 +44,7 @@ export const Step1 = ({ formik }) => {
               </div>
             )}
           </div>
-          {formik.errors && formik.errors.dateOfBirth && (
+          {formik.touched.dateOfBirth && formik.errors.dateOfBirth && (
             <p className=" text-red-500">{formik.errors.dateOfBirth}</p>
           )}
         </div>
@@ -139,7 +144,7 @@ export const Step2 = ({ formik }) => {
       <div id="input-container-2" className="flex justify-between">
         <SelectInputField
           formik={formik}
-          fieldName="recial"
+          fieldName="racial"
           label="Racial preferences"
           options={[
             { label: "Asian", value: "Asian" },
@@ -168,12 +173,17 @@ export const Step2 = ({ formik }) => {
             Hobbies / Interests (Maximum 10)
           </div>
           <TagsInput
+            formik={formik}
             tags={formik.values.hobbiesInterests}
             setTags={(tags) => formik.setFieldValue("hobbiesInterests", tags)}
+            error={
+              formik.touched.hobbiesInterests && formik.errors.hobbiesInterests
+            }
           />
-          {formik.errors && formik.errors.hobbiesInterests && (
-            <p>{formik.errors.hobbiesInterests}</p>
-          )}
+          {formik.touched.hobbiesInterests &&
+            formik.errors.hobbiesInterests && (
+              <p className=" text-red-500">{formik.errors.hobbiesInterests}</p>
+            )}
         </div>
       </div>
     </form>
