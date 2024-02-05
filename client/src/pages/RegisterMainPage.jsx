@@ -76,7 +76,6 @@ function RegisterMainPage() {
         const { user, error } = await supabase.auth.signUp({
           email: values.email,
           password: values.password,
-          role: user,
         });
         if (error) {
           alert("ลงทะเบียนไม่สำเร็จ");
@@ -227,8 +226,8 @@ function RegisterMainPage() {
                 id="confirm-button"
                 type="submit"
                 primary
-                onClick={async () => {
-                  await formik.handleSubmit();
+                onClick={() => {
+                  formik.handleSubmit();
                   navigate("/login");
                 }}
               >
