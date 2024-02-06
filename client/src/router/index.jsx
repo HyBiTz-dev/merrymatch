@@ -9,6 +9,7 @@ import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/ChatPage";
+import FilingComplaintPage from "../pages/FilingComplaintPage";
 
 export default function Router() {
   const routes = [
@@ -56,6 +57,7 @@ export default function Router() {
       path: "/admin/editpackage",
       element: <AdminPackageEdit />,
     },
+    { path: "/filing-complaint", element: <FilingComplaintPage /> },
   ];
 
   return useRoutes(routes);
