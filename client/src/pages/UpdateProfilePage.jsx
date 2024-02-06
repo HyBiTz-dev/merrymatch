@@ -85,6 +85,7 @@ function UpdateProfilePage() {
       console.error("Failed to fetch cities:", error);
     }
   };
+
   const formik = useFormik({
     initialValues: {
       name: "",
