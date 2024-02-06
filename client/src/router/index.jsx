@@ -9,6 +9,7 @@ import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/ChatPage";
+import Payment1Page from "../pages/Payment1Page";
 
 export default function Router() {
   const routes = [
@@ -27,6 +28,10 @@ export default function Router() {
     {
       path: "/package",
       element: <PackagePage />,
+    },
+    {
+      path: "/test-payment1",
+      element: <Payment1Page />,
     },
     {
       path: "/matching",
