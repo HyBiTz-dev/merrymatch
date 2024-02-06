@@ -228,7 +228,7 @@ function RegisterMainPage() {
                 type="submit"
                 primary
                 onClick={async () => {
-                  await formik.handleSubmit();
+                   formik.handleSubmit();
                   navigate("/login");
                 }}
               >
