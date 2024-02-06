@@ -38,7 +38,6 @@ export default function Router() {
             />
             <Route path="/admin/editpackage" element={<AdminPackageEdit />} />
             {/* <Route path="/admin/complaint" element={<AdminComplaint />} /> */}
-            <Route path="/filing-complaint" element={<FilingComplaintPage />} />
           </>
         )}
       </Routes>
