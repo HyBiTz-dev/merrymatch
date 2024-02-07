@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import MerryCard from "../components/MatchedCard";
+import MerryCard from "../components/MerryCard";
 
 function MerryListPage() {
   return (
