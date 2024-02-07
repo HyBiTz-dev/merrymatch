@@ -1,4 +1,5 @@
 import Button from "./Button";
+import Tooltip from "./Tooltip";
 
 function MerryCard() {
   return (
@@ -64,18 +65,14 @@ function MerryCard() {
             </p>
           </div> */}
           <div className="flex gap-4">
-            <Button actionGray className="relative">
-              <img src="/images/chat.svg" className="absolute inset-3"></img>
-            </Button>
-            <Button actionGray className="relative">
-              <img src="/images/Frame.svg" className="absolute inset-3"></img>
-            </Button>
-            <Button actionRed className="relative">
-              <img
-                src="/images/merry-white.svg"
-                className="absolute inset-1"
-              ></img>
-            </Button>
+            <Tooltip gray text="Go to chat" img="/images/chat.svg" />
+            <Tooltip gray text="See profile" img="/images/Frame.svg" />
+            <Tooltip
+              red
+              text="Merry"
+              img="/images/merry-white.svg"
+              imgHover="/images/merry-red.svg"
+            />
           </div>
         </div>
       </div>
