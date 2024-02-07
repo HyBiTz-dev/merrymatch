@@ -71,29 +71,5 @@ export default function Button({
         {children}
       </button>
     );
-  } else if (actionRed) {
-    const classes =
-      "btn bg-red-500 hover:bg-white active:bg-white border-none rounded-2xl shadow-btn2 w-12";
-    return (
-      <button
-        className={className + " " + classes}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        {children}
-      </button>
-    );
-  } else if (actionGray) {
-    const classes =
-      "btn bg-white hover:bg-white active:bg-white border-none rounded-2xl shadow-btn2 w-12";
-    return (
-      <button
-        className={className + " " + classes}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        {children}
-      </button>
-    );
   }
 }
