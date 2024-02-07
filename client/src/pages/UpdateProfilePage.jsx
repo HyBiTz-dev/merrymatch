@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import { InputField, SelectInputField } from "../components/InputField";
 import TagsInput from "../components/TagInput";
+import * as Yup from "yup";
 
 function UpdateProfilePage() {
   const formik = useFormik({
@@ -22,6 +23,46 @@ function UpdateProfilePage() {
       description: "",
       profilePictures: [],
     },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .max(64, "Must be 64 characters or less")
+        .required("Required"),
+      dateOfBirth: Yup.date()
+        .required("Required")
+        .test(
+          "is-over-18",
+          "You must be at least 18 years old",
+          function (value) {
+            const currentDate = new Date();
+            const userDate = new Date(value);
+            const userAge = currentDate.getFullYear() - userDate.getFullYear();
+            return userAge >= 18;
+          }
+        ),
+      location: Yup.string().nullable(false).required("Required"),
+      city: Yup.string().nullable(false).required("Required"),
+      username: Yup.string()
+        .max(64, "Must be 64 characters or less")
+        .min(6, "Must be at least 6 character")
+        .required("Required"),
+      email: Yup.string().email("Invalid email address").required("Required"),
+      gender: Yup.string().nullable(false).required("Required"),
+      genderInterests: Yup.string().nullable(false).required("Required"),
+      racial: Yup.string().nullable(false).required("Required"),
+      meeting: Yup.string().nullable(false).required("Required"),
+      hobbiesInterests: Yup.array()
+        .min(1, "Must be at least 1 hobbies Interests or less")
+        .max(10, "Must be 10 hobbies Interests or less")
+        .required("Required"),
+      profilePictures: Yup.array()
+        .min(2, "Must be at least 2 picture")
+        .required("Required"),
+    }),
+    onSubmit: async (values) => {
+      console.log(values);
+    },
+    validateOnChange: false,
+    validateOnBlur: true,
   });
   return (
     <>
@@ -37,7 +78,15 @@ function UpdateProfilePage() {
           </div>
           <div className="flex gap-4">
             <Button secondary>Preview Profile</Button>
-            <Button primary>Update Profile</Button>
+            <Button
+              primary
+              type="submit"
+              onClick={async () => {
+                formik.handleSubmit();
+              }}
+            >
+              Update Profile
+            </Button>
           </div>
         </header>
         <form className="flex flex-col gap-20">
@@ -230,7 +279,9 @@ function UpdateProfilePage() {
                   id="description"
                   name="description"
                   placeholder="Enter your description"
-                  value=""
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               </div>
             </div>
