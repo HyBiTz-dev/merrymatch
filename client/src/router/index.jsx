@@ -3,7 +3,7 @@ import Home from "../pages/Homepage";
 import Login from "../pages/LoginPage";
 import PackagePage from "../pages/Packagepage";
 import MatchingPage from "../pages/MatchingPage";
-import AdminPackageList from "../pages/AdminPackageList";
+// import AdminPackageList from "../pages/AdminPackageList";
 import AdminPackageCreate from "../pages/AdminPackageCreate";
 import AdminPackageEdit from "../pages/AdminPackageEdit";
 // import Admin from "../pages/admin/Admin";
@@ -13,6 +13,7 @@ import AdminPackageEdit from "../pages/AdminPackageEdit";
 // import Editpackage from "../pages/admin/Editpackage";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
+import MerryListPage from "../pages/MerryListPage";
 
 export default function Router() {
   const routes = [
@@ -45,10 +46,10 @@ export default function Router() {
     //   element: <Admin />,
     // },
 
-    {
-      path: "/admin/package",
-      element: <AdminPackageList />,
-    },
+    // {
+    //   path: "/admin/package",
+    //   element: <AdminPackageList />,
+    // },
 
     // {
     //   path: "/admin/complaint",
@@ -62,6 +63,10 @@ export default function Router() {
     {
       path: "/admin/editpackage",
       element: <AdminPackageEdit />,
+    },
+    {
+      path: "/merrylist",
+      element: <MerryListPage />,
     },
   ];
 
