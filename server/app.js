@@ -1,59 +1,44 @@
-const express = require("express");
-const app = express();
-const port = 3000;
-const cors = require("cors");
+import { supabase } from "./utils/db.js";
+import bodyParser from "body-parser";
+import express from "express";
+import cors from "cors";
 
-app.use(express.json());
-app.use(cors());
+//Router API
+import messagesRouter from "./apps/messages.js";
+import packagesRouter from "./apps/packages.js";
+import authRouter from "./apps/auth.js";
 
-const allPackages = [
-  {
-    id: 1,
-    packageName: "Basic",
-    merryLimit: 25,
-    icon: "/images/basic.svg",
-    details: ["‘Merry’ more than a daily limited, Up to 25 Merry per day"],
-    createdDate: "12/02/2022 10:30PM",
-    updatedDate: "12/02/2022 10:30PM",
-  },
-  {
-    id: 2,
-    packageName: "Platinum",
-    merryLimit: 45,
-    icon: "/images/platinum.svg",
-    details: ["'Merry’ more than a daily limited", "Up to 45 Merry per day"],
-    createdDate: "12/02/2022 10:30PM",
-    updatedDate: "12/02/2022 10:30PM",
-  },
-  {
-    id: 3,
-    packageName: "Premium",
-    merryLimit: 70,
-    icon: "/images/premium.svg",
-    details: ["‘Merry’ more than a daily limited, Up to 70 Merry per day"],
-    createdDate: "12/02/2022 10:30PM",
-    updatedDate: "12/02/2022 10:30PM",
-  },
-];
+async function init() {
+  const app = express();
+  const port = 3000;
 
-app.get("/packages", (req, res) => {
-  res.json(allPackages);
-});
+  app.use(bodyParser.json());
+  app.use(cors());
+  app.use("/messages", messagesRouter);
+  app.use("/packages", packagesRouter);
+  app.use("/login", authRouter);
 
-app.get("/packages/:id", (req, res) => {
-  const id = req.params.id;
-  const package = allPackages.find((p) => p.id == id);
-  if (!package) {
-    res.status(404).json({ error: "Package not found" });
-  } else {
-    res.json(package);
-  }
-});
+  app.get("/login", async (req, res) => {
+    try {
+      const { data, error } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          console.log(event, session);
+        }
+      );
+      return res.send({ data });
+    } catch (error) {
+      console.log({ error });
+      return res.send({ error });
+    }
+  });
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
+  app.get("/", (req, res) => {
+    res.send("Hello World!");
+  });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+  });
+}
+
+init();
