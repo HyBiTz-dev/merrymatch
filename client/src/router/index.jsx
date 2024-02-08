@@ -6,13 +6,9 @@ import MatchingPage from "../pages/MatchingPage";
 import AdminPackageList from "../pages/AdminPackageList";
 import AdminPackageCreate from "../pages/AdminPackageCreate";
 import AdminPackageEdit from "../pages/AdminPackageEdit";
-// import Admin from "../pages/admin/Admin";
-// import AdminPackage from "../pages/admin/Package";
-// import AdminComplaint from "../pages/admin/Complaint";
-// import Cratepackage from "../pages/admin/Createpackage";
-// import Editpackage from "../pages/admin/Editpackage";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
+import Chat from "../pages/ChatPage";
 
 export default function Router() {
   const routes = [
@@ -37,24 +33,21 @@ export default function Router() {
       element: <MatchingPage />,
     },
     {
+      path: "/chat",
+      element: <Chat />,
+    },
+    {
       path: "/admintest",
       element: <AdminPage />,
     },
-    // {
-    //   path: "/admin",
-    //   element: <Admin />,
-    // },
-
     {
       path: "/admin/package",
       element: <AdminPackageList />,
     },
-
     // {
     //   path: "/admin/complaint",
     //   element: <AdminComplaint />,
     // },
-
     {
       path: "/admin/createpackage",
       element: <AdminPackageCreate />,

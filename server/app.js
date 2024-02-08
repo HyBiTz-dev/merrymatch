@@ -1,4 +1,4 @@
-import { supabase } from "./utils/db.js";
+import { supabase } from "./utils/supabaseClient.js";
 import bodyParser from "body-parser";
 import express from "express";
 import cors from "cors";
@@ -17,20 +17,6 @@ async function init() {
   app.use("/messages", messagesRouter);
   app.use("/packages", packagesRouter);
   app.use("/login", authRouter);
-
-  app.get("/login", async (req, res) => {
-    try {
-      const { data, error } = supabase.auth.onAuthStateChange(
-        (event, session) => {
-          console.log(event, session);
-        }
-      );
-      return res.send({ data });
-    } catch (error) {
-      console.log({ error });
-      return res.send({ error });
-    }
-  });
 
   app.get("/", (req, res) => {
     res.send("Hello World!");

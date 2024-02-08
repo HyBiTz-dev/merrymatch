@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
+import Ageslider from "../components/Ageslider";
 import TinderCard from "react-tinder-card";
 
 function MatchingPage() {
@@ -37,7 +38,10 @@ function MatchingPage() {
             <div className="text-headline4 text-gray-900">
               Chat with Merry Match
             </div>
-            <div className="flex justify-center items-center gap-3 py-4 px-3">
+            <div
+              className="flex justify-center items-center gap-3 py-4 px-3 cursor-pointer"
+              onClick={(event) => (window.location.href = "/chat")}
+            >
               <img src="/images/avatar-chat.png" alt="" />
               <div>
                 <div className="text-body2 text-gray-900">Ygritte</div>
@@ -317,26 +321,7 @@ function MatchingPage() {
                 </label>
               </div>
             </div>
-            <div className="flex flex-col gap-4">
-              <p className="text-base font-bold text-purple-800">Age Range</p>
-              <input
-                type="range"
-                min={0}
-                max="100"
-                className="range range-secondary"
-              />
-              <div className="flex justify-center items-center gap-1">
-                <input
-                  type="text"
-                  className="input border border-gray-400 w-full focus:outline-none bg-white text-body2 text-gray-600"
-                />
-                <span className="text-body2 text-black">-</span>
-                <input
-                  type="text"
-                  className="input border border-gray-400 w-full focus:outline-none bg-white text-body2 text-gray-600"
-                />
-              </div>
-            </div>
+            <Ageslider />
           </div>
           <div className="flex justify-center items-center border-t border-gray-300 gap-4 px-4 py-4">
             <Button ghost>Clear</Button>
