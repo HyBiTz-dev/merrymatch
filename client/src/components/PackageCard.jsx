@@ -1,5 +1,5 @@
 import Button from "./Button";
-import { userPackageData } from "../pages/Packagepage";
+import { userPackageData } from "../pages/PackagePage";
 import { useContext } from "react";
 
 function PackageCard(props) {

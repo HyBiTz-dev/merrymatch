@@ -1,7 +1,7 @@
 import { useRoutes } from "react-router-dom";
 import Home from "../pages/Homepage";
 import Login from "../pages/LoginPage";
-import PackagePage from "../pages/Packagepage";
+import PackagePage from "../pages/PackagePage";
 import MatchingPage from "../pages/MatchingPage";
 import AdminPackageList from "../pages/AdminPackageList";
 import AdminPackageCreate from "../pages/AdminPackageCreate";
