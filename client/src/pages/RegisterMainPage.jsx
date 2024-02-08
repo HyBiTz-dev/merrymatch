@@ -72,20 +72,7 @@ function RegisterMainPage() {
         .required("Required"),
     }),
     onSubmit: async (values) => {
-      try {
-        const { user, error } = await supabase.auth.signUp({
-          email: values.email,
-          password: values.password,
-        });
-        if (error) {
-          alert("ลงทะเบียนไม่สำเร็จ");
-          console.error("ลงทะเบียนไม่สำเร็จ: ", error.message);
-        } else {
-          console.log("ลงทะเบียนสำเร็จ: ", user);
-        }
-      } catch (error) {
-        console.error("ลงทะเบียนไม่สำเร็จ: ", error.message);
-      }
+      console.log(values);
     },
     validateOnChange: false,
     validateOnBlur: true,
@@ -209,16 +196,21 @@ function RegisterMainPage() {
           <div id="pagination-number">{currentStep}/3</div>
           <div className="flex gap-6" id="button-container">
             {currentStep === 1 ? (
-              <Button ghostarrow disabled>
+              <Button ghostarrow type="button" disabled>
                 Back
               </Button>
             ) : (
-              <Button ghostarrow onClick={prevStep}>
+              <Button ghostarrow type="button" onClick={prevStep}>
                 Back
               </Button>
             )}
             {currentStep < 3 ? (
-              <Button id="next-step-button" primary onClick={nextStep}>
+              <Button
+                id="next-step-button"
+                type="button"
+                primary
+                onClick={nextStep}
+              >
                 Next Step
               </Button>
             ) : (

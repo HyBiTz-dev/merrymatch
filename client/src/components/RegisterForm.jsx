@@ -1,6 +1,20 @@
+import { useEffect, useState } from "react";
 import { InputField, SelectInputField } from "./InputField";
 import TagsInput from "./TagInput";
+import axios from "axios";
 export const Step1 = ({ formik }) => {
+  const [country, setCountry] = useState([]);
+  const getCountry = async () => {
+    try {
+      const result = await axios.get("http://localhost:3000/register/country");
+      setCountry(result.data.country_name);
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+    }
+  };
+  useEffect(() => {
+    getCountry();
+  }, []);
   return (
     <form className="flex flex-col gap-10 pb-10" onSubmit={formik.handleSubmit}>
       <div className="text-2xl text-purple-500 pb-6">Basic Information</div>
@@ -54,11 +68,10 @@ export const Step1 = ({ formik }) => {
           formik={formik}
           fieldName="location"
           label="Location"
-          options={[
-            { label: "Thailand", value: "Thailand" },
-            { label: "China", value: "China" },
-            { label: "etc", value: "etc" },
-          ]}
+          options={country.map((countryName) => ({
+            value: countryName,
+            label: countryName,
+          }))}
           placeholder="Location"
         />
         <SelectInputField
@@ -110,6 +123,38 @@ export const Step1 = ({ formik }) => {
 };
 
 export const Step2 = ({ formik }) => {
+  const [gender, setGender] = useState([]);
+  const [genderInterests, setGenderInterests] = useState([]);
+  const [racial, setRacial] = useState([]);
+  const [relation, setRelation] = useState([]);
+  const getGender = async () => {
+    try {
+      const result = await axios.get("http://localhost:3000/register/gender");
+      setGender(result.data.gender_name);
+      setGenderInterests(result.data.gender_name);
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+    }
+  };
+  const getRacial = async () => {
+    try {
+      const result = await axios.get("http://localhost:3000/register/racial");
+      setRacial(result.data.racial_name);
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+    }
+  };
+  const getRelation = async () => {
+    try {
+      const result = await axios.get("http://localhost:3000/register/relation");
+      setRelation(result.data.relation_name);
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+    }
+  };
+  useEffect(() => {
+    getGender(), getRacial(), getRelation();
+  }, []);
   return (
     <form className="flex flex-col gap-10 pb-10" onSubmit={formik.handleSubmit}>
       <div className="text-2xl text-purple-500 pb-6">
@@ -120,24 +165,20 @@ export const Step2 = ({ formik }) => {
           formik={formik}
           fieldName="gender"
           label="Sexual identities"
-          options={[
-            { label: "Male", value: "Male" },
-            { label: "Female", value: "Female" },
-            { label: "Non-binary", value: "Non-binary" },
-            { label: "etc", value: "etc" },
-          ]}
+          options={gender.map((genderName) => ({
+            value: genderName,
+            label: genderName,
+          }))}
           placeholder="Sexual identities"
         />
         <SelectInputField
           formik={formik}
           fieldName="genderInterests"
           label="Sexual preferences"
-          options={[
-            { label: "Male", value: "Male" },
-            { label: "Female", value: "Female" },
-            { label: "Non-binary", value: "Non-binary" },
-            { label: "etc", value: "etc" },
-          ]}
+          options={genderInterests.map((genderInterestsName) => ({
+            value: genderInterestsName,
+            label: genderInterestsName,
+          }))}
           placeholder="Sexual preferences"
         />
       </div>
@@ -146,24 +187,20 @@ export const Step2 = ({ formik }) => {
           formik={formik}
           fieldName="racial"
           label="Racial preferences"
-          options={[
-            { label: "Asian", value: "Asian" },
-            { label: "Caucasian", value: "Caucasian" },
-            { label: "Black", value: "Black" },
-            { label: "etc", value: "etc" },
-          ]}
+          options={racial.map((racialName) => ({
+            value: racialName,
+            label: racialName,
+          }))}
           placeholder="Racial preferences"
         />
         <SelectInputField
           formik={formik}
           fieldName="meeting"
           label="Meeting interests"
-          options={[
-            { label: "friends", value: "friends" },
-            { label: "partners", value: "partners" },
-            { label: "long-term commitment", value: "long-term commitment" },
-            { label: "etc", value: "etc" },
-          ]}
+          options={relation.map((relationName) => ({
+            value: relationName,
+            label: relationName,
+          }))}
           placeholder="Meeting interests"
         />
       </div>
