@@ -8,7 +8,10 @@ import AdminPackageCreate from "../pages/AdminPackageCreate";
 import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
+<<<<<<< HEAD
 import Chat from "../pages/ChatPage";
+=======
+>>>>>>> 341ac165009e47bd6bedf10589e4914ae237fa83
 import FilingComplaintPage from "../pages/FilingComplaintPage";
 
 export default function Router() {
