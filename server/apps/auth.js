@@ -3,7 +3,7 @@ import { supabase } from "../utils/supabaseClient.js";
 
 const authRouter = Router();
 
-authRouter.post("/login", async (req, res) => {
+authRouter.post("/", async (req, res) => {
   const { email, password } = req.body;
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -30,16 +30,18 @@ authRouter.post("/login", async (req, res) => {
         .eq("user_id", user.id)
         .single();
 
-      let redirectPath = "/";
-      if (userRoles.roles[0] === "Admin") {
-        redirectPath = "/admintest";
-      }
+      // let redirectPath = "/";
+      // if (userRoles.roles[0] === "Admin") {
+      //   redirectPath = "/admintest";
+      // } else {
+      //   redirectPath = "/";
+      // }
 
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-        expiresIn: "3600000",
-      });
+      // const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      //   expiresIn: "3600000",
+      // });
 
-      res.status(200).json({ token, redirectPath });
+      // res.status(200).json({ token, redirectPath });
     }
   } catch (error) {
     console.error("Unexpected error during login:", error.message);
