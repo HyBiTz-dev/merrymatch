@@ -1,37 +1,25 @@
-import { supabase } from "../../supabaseClient";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const useAuth = () => {
-  const navigate = useNavigate();
-
   const handleLogin = async (values) => {
-    if (values.email && values.password)
+    if (values.email && values.password) {
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const response = await axios.post("/login", {
           email: values.email,
           password: values.password,
         });
-        if (error) {
-          console.error("Login error:", error.message);
-          alert("The email address or password is incorrect.");
-        } else {
+
+        if (response.status === 200) {
+          const data = response.data;
           console.log("Login successful:", data);
-          let { data: user_roles_view } = await supabase
-            .from("user_roles_view")
-            .select("roles")
-            .eq("user_id", data.user.id);
-
-          if (user_roles_view[0].roles[0] === "User") {
-            navigate("/");
-          }
-
-          if (user_roles_view[0].roles[0] === "Admin") {
-            navigate("/admintest");
-          }
+        } else {
+          console.error("Login error:", response.data.error);
+          alert("The email address or password is incorrect.");
         }
       } catch (error) {
         console.error("Unexpected error during login:", error.message);
       }
+    }
   };
 
   const handleLogout = async () => {
