@@ -3,7 +3,7 @@ import { supabase } from "../utils/supabaseClient.js";
 
 const merryListRouter = Router();
 
-authRouter.get("/", async (req, res) => {
+merryListRouter.get("/", async (req, res) => {
   try {
     return res.send("merrylist");
   } catch (error) {
