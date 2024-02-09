@@ -2,8 +2,12 @@ import React from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import PackageCard from "../components/PackageCard";
+import { createContext } from "react";
+
+export const userPackageData = React.createContext();
 
 export default function PackagePage() {
+  let numberPackage = 3;
   let iconPackage = [
     "../../public/images/basic.svg",
     "../../public/images/platinum.svg",
@@ -18,36 +22,35 @@ export default function PackagePage() {
     ["‘Merry’ more than a daily limited", "Up to 45 Merry per day"],
     ["‘Merry’ more than a daily limited", "Up to 70 Merry per day"],
   ];
+  let packageData = {
+    number: numberPackage,
+    icon: iconPackage,
+    name: namePackage,
+    price: pricePackage,
+    perDate: perDatePackage,
+    detail: detailPackage,
+  };
+
   return (
     <>
       <Navbar auth />
       <section className="package-section bg-white flex flex-col h-[56.4375rem] justify-center items-center pt-[5rem] pr-[10.0625rem] pb-[10rem] pl-[10rem]">
-        <div className="package-container flex flex-col items-start gap-[5rem]">
-          <section className="package-header flex flex-col items-start gap-[0.5rem] self-stretch">
-            <p className=" w-full h-auto text-body4 text-beige-700 text-sm font-[600]">
-              MERRY MEMBERSHIP
-            </p>
-            <h2 className=" w-full h-auto text-headline2 text-purple-500 text-[2.875rem] font-[800]">
-              Be part of Merry Membership <br />
-              to make more Merry!
-            </h2>
-          </section>
-
-          <section className="package-wrapper w-auto h-auto flex items-start gap-6 mt-20">
-            {iconPackage.map((items, index) => {
-              return (
-                <PackageCard
-                  key={index}
-                  icon={items}
-                  name={namePackage[index]}
-                  price={pricePackage[index]}
-                  perDate={perDatePackage[index]}
-                  details={[...detailPackage[index]]}
-                />
-              );
-            })}
-          </section>
-        </div>
+        <userPackageData.Provider value={{ package: packageData }}>
+          <div className="package-container flex flex-col items-start gap-[5rem]">
+            <section className="package-header flex flex-col items-start gap-[0.5rem] self-stretch">
+              <p className=" w-full h-auto text-body4 text-beige-700 text-sm font-[600]">
+                MERRY MEMBERSHIP
+              </p>
+              <h2 className=" w-full h-auto text-headline2 text-purple-500 text-[2.875rem] font-[800]">
+                Be part of Merry Membership <br />
+                to make more Merry!
+              </h2>
+            </section>
+            <section className="package-wrapper w-auto h-auto flex items-start gap-6 mt-20">
+              <PackageCard />
+            </section>
+          </div>
+        </userPackageData.Provider>
       </section>
       <Footer />
     </>

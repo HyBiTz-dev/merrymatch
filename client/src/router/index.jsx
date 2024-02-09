@@ -1,7 +1,7 @@
 import { useRoutes } from "react-router-dom";
 import Home from "../pages/Homepage";
 import Login from "../pages/LoginPage";
-import PackagePage from "../pages/Packagepage";
+import PackagePage from "../pages/PackagePage";
 import MatchingPage from "../pages/MatchingPage";
 import AdminPackageList from "../pages/AdminPackageList";
 import AdminPackageCreate from "../pages/AdminPackageCreate";
@@ -9,6 +9,7 @@ import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/ChatPage";
+import Payment1Page from "../pages/Payment1Page";
 
 export default function Router() {
   const routes = [
@@ -27,6 +28,10 @@ export default function Router() {
     {
       path: "/package",
       element: <PackagePage />,
+    },
+    {
+      path: "/test-payment1",
+      element: <Payment1Page />,
     },
     {
       path: "/matching",
