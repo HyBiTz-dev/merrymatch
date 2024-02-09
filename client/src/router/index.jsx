@@ -3,7 +3,7 @@ import Home from "../pages/Homepage";
 import Login from "../pages/LoginPage";
 import PackagePage from "../pages/Packagepage";
 import MatchingPage from "../pages/MatchingPage";
-// import AdminPackageList from "../pages/AdminPackageList";
+import AdminPackageList from "../pages/AdminPackageList";
 import AdminPackageCreate from "../pages/AdminPackageCreate";
 import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";

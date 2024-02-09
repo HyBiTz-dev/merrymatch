@@ -1,8 +1,31 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MerryCard from "../components/MerryCard";
+import { useEffect, useState } from "react";
 
 function MerryListPage() {
+  const [timeUntilMidnight, setTimeUntilMidnight] = useState(null);
+
+  useEffect(() => {
+    const calTime = () => {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const timeUntilMidnightInMilliseconds = midnight - now;
+      let minutes = Math.ceil(
+        (timeUntilMidnightInMilliseconds / (1000 * 60)) % 60
+      );
+      let hours = Math.floor(
+        (timeUntilMidnightInMilliseconds / (1000 * 60 * 60)) % 24
+      );
+      const timeStr = `${hours}h ${minutes}m`;
+      setTimeUntilMidnight(timeStr);
+    };
+    calTime();
+    const interval = setInterval(calTime, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <Navbar auth />
@@ -22,7 +45,7 @@ function MerryListPage() {
               <span className="text-body2 text-red-400">2/20</span>
             </div>
             <p className="text-body5 text-gray-600 flex justify-end mr-10">
-              Reset in 12h...
+              Reset in {timeUntilMidnight}
             </p>
           </div>
         </header>

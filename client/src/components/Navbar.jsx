@@ -99,7 +99,7 @@ function Navbar({ username, auth, unauth }) {
                     </a>
                   </li>
                   <li>
-                    <a href="" className="text-gray-700">
+                    <a href="/merrylist" className="text-gray-700">
                       <img src="images/member-list.svg" alt="" />
                       Merry List
                     </a>
