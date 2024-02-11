@@ -3,8 +3,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+// import { DndProvider } from "react-dnd";
+// import { HTML5Backend } from "react-dnd-html5-backend";
+import { supabase } from "../supabaseClient";
 
 function AdminPackageList() {
   const [allPackages, setAllPackages] = useState([]);
@@ -16,8 +17,9 @@ function AdminPackageList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resp = await axios.get("http://localhost:3000/packages");
-        setAllPackages(resp.data);
+        const { data, error } = await supabase.from("packages").select();
+        if (error) throw error;
+        setAllPackages(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -25,7 +27,7 @@ function AdminPackageList() {
     fetchData();
   }, []);
 
-  const openModal = (packageId) => {
+  const openModal = (packageId) => () => {
     setShowModal(true);
     setDeletePackageId(packageId);
   };
@@ -36,19 +38,22 @@ function AdminPackageList() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/packages/${deletePackageId}`);
-      closeModal();
+      await supabase.from("packages").delete().eq("id", deletePackageId);
+      setAllPackages(
+        allPackages.filter((packageItem) => packageItem.id !== deletePackageId)
+      );
     } catch (error) {
-      console.error("Error deleting data:", error);
+      console.error("Error deleting package:", error);
     }
+    setShowModal(false);
   };
 
   const filteredAllPackages = allPackages.filter((packageItem) =>
-    packageItem.packageName.toLowerCase().includes(searchTerm.toLowerCase())
+    packageItem.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="flex">
+    <div className="flex bg-white ">
       <SideBarAdmin />
       <div className="w-full">
         <div className="h-20 flex items-center bg-white  border-b border-b-gray-400">
@@ -108,15 +113,18 @@ function AdminPackageList() {
                         </td>
                         <td>{index + 1}</td>
                         <td>
-                          <img src={packageItem.icon} alt="package icon" />
+                          <img
+                            src={packageItem.package_icon}
+                            alt="package icon"
+                          />
                         </td>
-                        <td>{packageItem.packageName}</td>
+                        <td>{packageItem.name}</td>
                         <td>{`${packageItem.price} THB`}</td>
-                        <td>{`${packageItem.merryLimit} Merry`}</td>
-                        <td>{packageItem.createdDate}</td>
-                        <td>{packageItem.updatedDate}</td>
+                        <td>{`${packageItem.merry_limit} Merry`}</td>
+                        <td>{packageItem.created_at}</td>
+                        <td>{packageItem.updated_at}</td>
                         <td>
-                          <button onClick={() => openModal(packageItem.id)}>
+                          <button onClick={openModal(packageItem.id)}>
                             <img src="/images/delete.svg" alt="delete icon" />
                           </button>
                           {showModal && (

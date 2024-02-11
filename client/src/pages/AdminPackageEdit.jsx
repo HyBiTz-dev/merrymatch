@@ -1,36 +1,17 @@
 import SideBarAdmin from "../components/SidebarAdmin";
 import { useRef } from "react";
 import { useState } from "react";
-<<<<<<< HEAD
-// import classNames from "classnames";
-import { Navigate, useNavigate } from "react-router-dom";
-=======
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
->>>>>>> dccf965 (feat/pung(admin-package-page):create modal for delete button)
 
 function AdminPackageEdit() {
   const inputRef = useRef(null);
-  const { id } = useParams();
-  const [packageData, setPackageData] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [merryLimit, setMerryLimit] = useState("");
   const [detailInputs, setDetailInputs] = useState([""]);
-
-  useEffect(() => {
-    const fetchPackageData = async () => {
-      try {
-        const resp = await axios.get(`http://localhost:3000/packages/${id}`);
-        setPackageData(resp.data);
-      } catch (error) {
-        console.error("Error fetching package data:", error);
-      }
-    };
-    fetchPackageData();
-  }, [id]);
 
   const navigate = useNavigate();
 
@@ -89,7 +70,17 @@ function AdminPackageEdit() {
                   />
                 </label>
                 <label className="form-control">
-                  <div className="">
+                  <div>
+                    <span className="">Price</span>
+                    <span className=" text-red-500"> *</span>
+                  </div>
+                  <input
+                    type="text"
+                    className="input input-bordered input-md "
+                  />
+                </label>
+                <label className="form-control">
+                  <div>
                     <span className="">Merry limit</span>
                     <span className=" text-red-500"> *</span>
                   </div>
