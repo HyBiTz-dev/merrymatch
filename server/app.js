@@ -13,6 +13,7 @@ import registerRouter from "./apps/register.js";
 import conversationRouter from "./apps/conversation.js";
 import userRouter from "./apps/user.js";
 import complaintRouter from "./apps/complaint.js";
+import merryListRouter from "./apps/merryList.js";
 
 async function init() {
   const app = express();
@@ -39,6 +40,7 @@ async function init() {
   app.use("/conversation", conversationRouter);
   app.use("/user", userRouter);
   app.use("/filing-complaint", complaintRouter);
+  app.use("/merrylist", merryListRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello World!");
