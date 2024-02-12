@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { supabase } from "../utils/supabaseClient.js";
 import jwt from "jsonwebtoken";
+import { jwtDecode } from "jwt-decode";
 
 const authRouter = Router();
 
@@ -17,12 +18,6 @@ authRouter.post("/", async (req, res) => {
         .status(400)
         .json({ error: "The email address or password is incorrect." });
     } else {
-      // const user = await supabase
-      //   .from("users")
-      //   .select()
-      //   .eq("email", email)
-      //   .single();
-
       const { data: user_roles_view } = await supabase
         .from("user_roles_view")
         .select("roles")
@@ -38,6 +33,11 @@ authRouter.post("/", async (req, res) => {
         }
       );
 
+      // // Decode token
+      // const decodedToken = jwtDecode(token);
+
+      // // แสดงข้อมูลใน token
+      // console.log(decodedToken);
       return res.status(200).json({ message: "Login successful", token });
     }
   } catch (error) {

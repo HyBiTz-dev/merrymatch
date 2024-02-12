@@ -1,4 +1,5 @@
 import { useRoutes } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Homepage";
 import Login from "../pages/LoginPage";
 import PackagePage from "../pages/Packagepage";
@@ -12,55 +13,34 @@ import Chat from "../pages/ChatPage";
 import { useAuth } from "../context/authentication";
 
 export default function Router() {
-  // const { state } = useAuth();
-  // const role = state ? state.role : null;
-  // console.log(state);
-  const routes = [
-    {
-      path: "/",
-      element: <Home />,
-    },
-    {
-      path: "/login",
-      element: <Login />,
-    },
-    {
-      path: "/register",
-      element: <Register />,
-    },
-    {
-      path: "/package",
-      element: <PackagePage />,
-    },
-    {
-      path: "/matching",
-      element: <MatchingPage />,
-    },
-    {
-      path: "/chat",
-      element: <Chat />,
-    },
-    {
-      path: "/admintest",
-      element: <AdminPage />,
-    },
-    {
-      path: "/admin/package",
-      element: <AdminPackageList />,
-    },
-    // {
-    //   path: "/admin/complaint",
-    //   element: <AdminComplaint />,
-    // },
-    {
-      path: "/admin/createpackage",
-      element: <AdminPackageCreate />,
-    },
-    {
-      path: "/admin/editpackage",
-      element: <AdminPackageEdit />,
-    },
-  ];
+  const { state } = useAuth();
+  const role = state ? state.role : null;
+  return (
+    <div>
+      <Routes>
+        {/* ------Common routes for both User and Admin------ */}
+        <Route path="/" element={<Home />} />
+        <Route path="/package" element={<PackagePage />} />
+        <Route path="/matching" element={<MatchingPage />} />
+        {/* <Route path="/merrylist" element={<MerryListPage/>} /> */}
+        <Route path="/chat" element={<Chat />} />
 
-  return useRoutes(routes);
+        {/* ------Admin routes------ */}
+        {role === "Admin" && (
+          <>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/admintest" element={<AdminPage />} />
+            <Route path="/admin/package" element={<AdminPackageList />} />
+            <Route
+              path="/admin/createpackage"
+              element={<AdminPackageCreate />}
+            />
+            <Route path="/admin/editpackage" element={<AdminPackageEdit />} />
+            {/* <Route path="/admin/complaint" element={<AdminComplaint />} /> */}
+          </>
+        )}
+      </Routes>
+    </div>
+  );
 }

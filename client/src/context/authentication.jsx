@@ -6,11 +6,23 @@ import { jwtDecode } from "jwt-decode";
 const AuthContext = createContext();
 const useAuth = () => useContext(AuthContext);
 const getState = () => {
-  const token = localStorage.getItem("Token");
+  // ดึงค่า token จาก local storage
+  const token = localStorage.getItem("token");
+
   if (token) {
-    const userDataFromToken = jwtDecode(token);
-    return userDataFromToken;
+    try {
+      //   ถอดรหัส token เพื่อให้ได้ข้อมูล
+      const userDataFromToken = jwtDecode(token);
+      //   console.log(userDataFromToken);
+      return userDataFromToken;
+    } catch (error) {
+      // หากเกิดข้อผิดพลาดในการถอดรหัส token
+      console.error("Error decoding token:", error);
+      // ส่งคืนค่า null เพื่อบอกว่าไม่สามารถถอดรหัส token ได้
+      return null;
+    }
   } else {
+    // หากไม่มี token ใน local storage
     return null;
   }
 };
@@ -19,9 +31,6 @@ function AuthProvider(props) {
   const navigate = useNavigate();
   const [state, setState] = useState(getState());
   //   console.log(state);
-
-  //   const login = async (data) => {
-  //     const result = await axios.post("http://localhost:3000/login", data);
 
   const login = async (data) => {
     if (data.email && data.password) {
