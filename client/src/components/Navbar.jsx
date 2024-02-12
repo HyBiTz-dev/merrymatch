@@ -1,13 +1,13 @@
 import Button from "./Button";
 import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../features/auth/Auth";
+import { useAuth } from "../context/authentication";
 
-function Navbar({ username, auth, unauth }) {
+function Navbar({ username }) {
   const navigate = useNavigate();
-  const { handleLogout } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
 
-  if (unauth) {
+  const unauth = () => {
     return (
       <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[30.5rem] bg-white relative z-50 shadow-nav">
         <div>
@@ -43,8 +43,8 @@ function Navbar({ username, auth, unauth }) {
         </ul>
       </nav>
     );
-  }
-  if (auth) {
+  };
+  const auth = () => {
     return (
       <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[30.5rem] bg-white relative z-50 shadow-nav">
         <div>
@@ -118,7 +118,7 @@ function Navbar({ username, auth, unauth }) {
                   </li>
                 </div>
                 <li className="border-t">
-                  <a onClick={handleLogout} className="text-gray-700">
+                  <a onClick={logout} className="text-gray-700">
                     <img src="images/logout.svg" alt="" />
                     Logout
                   </a>
@@ -129,7 +129,8 @@ function Navbar({ username, auth, unauth }) {
         </ul>
       </nav>
     );
-  }
+  };
+  return isAuthenticated ? auth() : unauth();
 }
 
 export default Navbar;
