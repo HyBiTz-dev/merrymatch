@@ -43,7 +43,7 @@ export default function Router() {
             <Route
               path="/admin/complaint"
               element={<AdminComplaintListPage />}
-            ></Route>
+            />
           </>
         )}
       </Routes>

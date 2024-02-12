@@ -1,4 +1,5 @@
 import SideBarAdmin from "../components/SidebarAdmin";
+import SelectStatus from "../components/SelectStatus";
 
 function AdminComplaintListPage() {
   return (
@@ -14,7 +15,7 @@ function AdminComplaintListPage() {
               <input
                 type="text"
                 placeholder="Search..."
-                className="input input-bordered focus:border-purple-500 w-80 max-w-xs pl-12 bg-inherit"
+                className="input input-bordered focus:border-purple-500 w-80 max-w-xs pl-12 bg-inherit border-gray-400"
               />
               <img
                 src="/images/search.svg"
@@ -22,9 +23,7 @@ function AdminComplaintListPage() {
                 className="absolute flex items-center inset-y-3 left-0 pl-4"
               />
             </div>
-            <div className="ml-auto mr-14">
-              <button>All Status</button>
-            </div>
+            <SelectStatus />
           </div>
         </div>
         <div className="bg-gray-100 flex h-[calc(100vh_-_80px)]">
