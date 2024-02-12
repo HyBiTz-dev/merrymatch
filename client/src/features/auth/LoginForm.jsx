@@ -1,10 +1,19 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "./Auth";
+import { useAuth } from "../../context/authentication";
 
 function LoginForm() {
-  const { handleLogin } = useAuth();
+  const { login } = useAuth();
+
+  const handleLogin = async (data) => {
+    await login({
+      email: data.email,
+      password: data.password,
+    });
+    console.log("Login successful");
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -14,8 +23,8 @@ function LoginForm() {
       email: Yup.string().email("Invalid Email").required("Required"),
       password: Yup.string().required("Required"),
     }),
-    onSubmit: (values) => {
-      handleLogin(values);
+    onSubmit: (data) => {
+      handleLogin(data);
     },
   });
   return (

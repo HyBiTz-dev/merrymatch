@@ -9,8 +9,12 @@ import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/ChatPage";
+import { useAuth } from "../context/authentication";
 
 export default function Router() {
+  // const { state } = useAuth();
+  // const role = state ? state.role : null;
+  // console.log(state);
   const routes = [
     {
       path: "/",

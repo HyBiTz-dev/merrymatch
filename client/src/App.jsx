@@ -1,13 +1,11 @@
 import "./App.css";
-import { BrowserRouter } from "react-router-dom";
-import Router from "./router";
+import AuthenticatedApp from "./router/AuthenticatedApp";
+import UnauthenticatedApp from "./router/UnauthenticatedApp";
+import { useAuth } from "./context/authentication";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
-  );
+  const auth = useAuth();
+  return auth.isAuthenticated ? <AuthenticatedApp /> : <UnauthenticatedApp />;
 }
 
 export default App;
