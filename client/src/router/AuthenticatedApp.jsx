@@ -10,6 +10,7 @@ import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/MessagePage";
+import FilingComplaintPage from "../pages/FilingComplaintPage";
 import { useAuth } from "../context/authentication";
 
 export default function Router() {
@@ -38,6 +39,8 @@ export default function Router() {
             />
             <Route path="/admin/editpackage" element={<AdminPackageEdit />} />
             {/* <Route path="/admin/complaint" element={<AdminComplaint />} /> */}
+
+            <Route path="/filing-complaint" element={<FilingComplaintPage />} />
           </>
         )}
       </Routes>
