@@ -1,6 +1,7 @@
 function TagsInput({ tags, setTags, error, formik }) {
   const addTags = (event) => {
     if (event.key === "Enter" && event.target.value !== "") {
+      event.preventDefault();
       setTags([...tags, event.target.value]);
       event.target.value = "";
     }
@@ -32,7 +33,7 @@ function TagsInput({ tags, setTags, error, formik }) {
       ))}
       <input
         className="border-none bg-white outline-none "
-        onKeyUp={(event) => addTags(event)}
+        onKeyDown={addTags}
         onBlur={formik.handleBlur}
         type="text"
         placeholder="Hobbies Interest"
