@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Step1, Step2, Step3 } from "../components/RegisterForm";
 import Button from "../components/Button";
 import * as Yup from "yup";
-import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function RegisterMainPage() {
   const navigate = useNavigate("");
@@ -14,7 +14,7 @@ function RegisterMainPage() {
     initialValues: {
       name: "",
       dateOfBirth: "",
-      location: null,
+      country: null,
       city: null,
       username: "",
       email: "",
@@ -33,6 +33,7 @@ function RegisterMainPage() {
         .required("Required"),
       dateOfBirth: Yup.date()
         .required("Required")
+        .max(new Date(), "Date of birth cannot be in the future")
         .test(
           "is-over-18",
           "You must be at least 18 years old",
@@ -43,7 +44,7 @@ function RegisterMainPage() {
             return userAge >= 18;
           }
         ),
-      location: Yup.string().nullable(false).required("Required"),
+      country: Yup.string().nullable(false).required("Required"),
       city: Yup.string().nullable(false).required("Required"),
       username: Yup.string()
         .max(64, "Must be 64 characters or less")
@@ -68,16 +69,44 @@ function RegisterMainPage() {
         .max(10, "Must be 10 hobbies Interests or less")
         .required("Required"),
       profilePictures: Yup.array()
-        .min(2, "Must be at least 2 picture")
+        .min(1, "Must be at least 2 picture")
         .required("Required"),
     }),
     onSubmit: async (values) => {
-      console.log(values);
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("dateOfBirth", values.dateOfBirth);
+      formData.append("country", values.country);
+      formData.append("city", values.city);
+      formData.append("username", values.username);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+      formData.append("gender", values.gender);
+      formData.append("genderInterests", values.genderInterests);
+      formData.append("racial", values.racial);
+      formData.append("meeting", values.meeting);
+      formData.append("hobbiesInterests", values.hobbiesInterests);
+      values.profilePictures.forEach((file) => {
+        formData.append("profilePictures", file, file.name);
+      });
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/register/",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error:", error.response.data);
+      }
     },
     validateOnChange: false,
     validateOnBlur: true,
   });
-
   const steps = [Step1, Step2, Step3];
 
   const StepComponent = steps[currentStep - 1];
@@ -86,7 +115,7 @@ function RegisterMainPage() {
     [
       "name",
       "dateOfBirth",
-      "location",
+      "country",
       "city",
       "username",
       "email",

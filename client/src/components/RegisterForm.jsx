@@ -4,17 +4,41 @@ import TagsInput from "./TagInput";
 import axios from "axios";
 export const Step1 = ({ formik }) => {
   const [country, setCountry] = useState([]);
+  const [city, SetCity] = useState([]);
   const getCountry = async () => {
     try {
       const result = await axios.get("http://localhost:3000/register/country");
-      setCountry(result.data.country_name);
+      setCountry(result.data.countries);
     } catch (error) {
       console.error("Error fetching countries:", error);
+    }
+  };
+  const getCity = async () => {
+    const countryId = formik.values.country;
+    if (!countryId) {
+      console.error("No country_id provided");
+      SetCity([]);
+      return;
+    }
+    try {
+      const result = await axios.get(
+        `http://localhost:3000/register/city?country_id=${formik.values.country}`
+      );
+      const dataCity = result.data.cities[0].city_id.map((id, index) => ({
+        value: id,
+        label: result.data.cities[0].city_name[index],
+      }));
+      SetCity(dataCity);
+    } catch (error) {
+      console.error("Failed to fetch cities:", error);
     }
   };
   useEffect(() => {
     getCountry();
   }, []);
+  useEffect(() => {
+    getCity();
+  }, [formik.values.country]);
   return (
     <form className="flex flex-col gap-10 pb-10" onSubmit={formik.handleSubmit}>
       <div className="text-2xl text-purple-500 pb-6">Basic Information</div>
@@ -66,11 +90,11 @@ export const Step1 = ({ formik }) => {
       <div id="input-container-2" className="flex justify-between">
         <SelectInputField
           formik={formik}
-          fieldName="location"
+          fieldName="country"
           label="Location"
           options={country.map((countryName) => ({
-            value: countryName,
-            label: countryName,
+            value: countryName.id,
+            label: countryName.country_name,
           }))}
           placeholder="Location"
         />
@@ -78,11 +102,7 @@ export const Step1 = ({ formik }) => {
           formik={formik}
           fieldName="city"
           label="City"
-          options={[
-            { label: "Bangkok", value: "Bangkok" },
-            { label: "Chiang Mai", value: "Chiang Mai" },
-            { label: "etc", value: "etc" },
-          ]}
+          options={city}
           placeholder="City"
         />
       </div>
@@ -130,8 +150,8 @@ export const Step2 = ({ formik }) => {
   const getGender = async () => {
     try {
       const result = await axios.get("http://localhost:3000/register/gender");
-      setGender(result.data.gender_name);
-      setGenderInterests(result.data.gender_name);
+      setGender(result.data.gender);
+      setGenderInterests(result.data.gender);
     } catch (error) {
       console.error("Error fetching countries:", error);
     }
@@ -139,7 +159,7 @@ export const Step2 = ({ formik }) => {
   const getRacial = async () => {
     try {
       const result = await axios.get("http://localhost:3000/register/racial");
-      setRacial(result.data.racial_name);
+      setRacial(result.data.racial);
     } catch (error) {
       console.error("Error fetching countries:", error);
     }
@@ -147,7 +167,7 @@ export const Step2 = ({ formik }) => {
   const getRelation = async () => {
     try {
       const result = await axios.get("http://localhost:3000/register/relation");
-      setRelation(result.data.relation_name);
+      setRelation(result.data.relation_interest);
     } catch (error) {
       console.error("Error fetching countries:", error);
     }
@@ -166,8 +186,8 @@ export const Step2 = ({ formik }) => {
           fieldName="gender"
           label="Sexual identities"
           options={gender.map((genderName) => ({
-            value: genderName,
-            label: genderName,
+            value: genderName.id,
+            label: genderName.name,
           }))}
           placeholder="Sexual identities"
         />
@@ -176,8 +196,8 @@ export const Step2 = ({ formik }) => {
           fieldName="genderInterests"
           label="Sexual preferences"
           options={genderInterests.map((genderInterestsName) => ({
-            value: genderInterestsName,
-            label: genderInterestsName,
+            value: genderInterestsName.id,
+            label: genderInterestsName.name,
           }))}
           placeholder="Sexual preferences"
         />
@@ -188,8 +208,8 @@ export const Step2 = ({ formik }) => {
           fieldName="racial"
           label="Racial preferences"
           options={racial.map((racialName) => ({
-            value: racialName,
-            label: racialName,
+            value: racialName.id,
+            label: racialName.name,
           }))}
           placeholder="Racial preferences"
         />
@@ -198,8 +218,8 @@ export const Step2 = ({ formik }) => {
           fieldName="meeting"
           label="Meeting interests"
           options={relation.map((relationName) => ({
-            value: relationName,
-            label: relationName,
+            value: relationName.id,
+            label: relationName.name,
           }))}
           placeholder="Meeting interests"
         />
@@ -272,6 +292,7 @@ export const Step3 = ({ formik }) => {
               id="picture-upload"
               name="profilePictures"
               type="file"
+              multiple
               accept="image/*"
               className="hidden"
               onChange={(event) => {
