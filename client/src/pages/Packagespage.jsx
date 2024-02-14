@@ -30,7 +30,7 @@ export default function PackagePage() {
       newArrray.map((items, index) => {
         newObject.icon.push(items.package_icon);
         newObject.name.push(items.name);
-        newObject.price.push(items.price);
+        newObject.price.push(parseFloat(items.price).toFixed(2));
         newObject.details.push(items.details);
         newObject.perDate[index] = "mouth";
       });
