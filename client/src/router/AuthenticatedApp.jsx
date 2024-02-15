@@ -25,6 +25,7 @@ export default function Router() {
         <Route path="/matching" element={<MatchingPage />} />
         {/* <Route path="/merrylist" element={<MerryListPage/>} /> */}
         <Route path="/chat" element={<Chat />} />
+        <Route path="/filing-complaint" element={<FilingComplaintPage />} />
 
         {/* ------Admin routes------ */}
         {role === "Admin" && (
@@ -39,8 +40,6 @@ export default function Router() {
             />
             <Route path="/admin/editpackage" element={<AdminPackageEdit />} />
             {/* <Route path="/admin/complaint" element={<AdminComplaint />} /> */}
-
-            <Route path="/filing-complaint" element={<FilingComplaintPage />} />
           </>
         )}
       </Routes>

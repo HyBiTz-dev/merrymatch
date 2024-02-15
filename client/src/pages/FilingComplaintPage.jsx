@@ -1,16 +1,36 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ComplaintForm from "../components/ComplaintForm";
+import axios from "axios";
+import { useAuth } from "../context/authentication";
 
 function FilingComplaintPage() {
-  const handleSubmit = (values, { setSubmitting }) => {
-    const complaintForm = {
+  const { state } = useAuth();
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    const complaintData = {
+      userId: state.id,
       issue: values.issue,
       description: values.description,
-      submittingDate: new Date().toISOString(),
     };
 
-    console.log("Complaint Info:", complaintForm);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/filing-complaint/submit",
+        complaintData
+      );
+
+      console.log(response);
+
+      if (response.status === 200) {
+        console.log("Complaint submitted successfully:", response.data);
+      } else {
+        console.error("Failed to submit complaint:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error submitting complaint:", error.message);
+    }
+
     setSubmitting(false);
   };
 
