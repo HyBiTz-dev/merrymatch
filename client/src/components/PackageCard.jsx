@@ -4,6 +4,8 @@ import { useContext } from "react";
 
 function PackageCard(props) {
   const context = useContext(userPackageData);
+  let cardKey = context.package.package_num;
+  let package_id = context.package.package_id;
   let cardIcon = context.package.icon;
   let cardName = context.package.name;
   let cardPrice = context.package.price;
@@ -12,10 +14,10 @@ function PackageCard(props) {
   return (
     <>
       {cardIcon ? (
-        cardIcon.map((item, index) => {
+        cardKey.map((item, index) => {
           return (
             <div
-              key={index}
+              key={cardKey[index]}
               className="package-card flex flex-col w-[22.3125rem] h-auto p-10 items-start gap-6 rounded-[2rem] border-[1px] border-solid border-gray-400 bg-white"
             >
               <img
