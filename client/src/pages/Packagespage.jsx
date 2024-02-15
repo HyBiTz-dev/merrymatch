@@ -2,7 +2,6 @@ import React from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import PackageCard from "../components/PackageCard";
-import { createContext } from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
@@ -21,6 +20,8 @@ export default function PackagePage() {
       console.log(data);
       let newArrray = [...data];
       let newObject = {
+        package_num: [],
+        package_id: [],
         icon: [],
         name: [],
         price: [],
@@ -28,6 +29,8 @@ export default function PackagePage() {
         details: [],
       };
       newArrray.map((items, index) => {
+        newObject.package_num.push(index + 1);
+        newObject.package_id.push(items.id);
         newObject.icon.push(items.package_icon);
         newObject.name.push(items.name);
         newObject.price.push(parseFloat(items.price).toFixed(2));
@@ -57,27 +60,6 @@ export default function PackagePage() {
   }, []);
 
   console.log(allPackages);
-  let iconPackage = [
-    "../../public/images/basic.svg",
-    "../../public/images/platinum.svg",
-    "../../public/images/premium.svg",
-  ];
-  let namePackages = ["Basic", "Platinum", "Premium"];
-  let pricePackages = ["59.00", "99", "149.00"];
-  let perDatePackages = ["month", "month", "month"];
-  let detailPackages = [
-    ["‘Merry’ more than a daily limited", "Up to 25 Merry per day"],
-    ["‘Merry’ more than a daily limited", "Up to 45 Merry per day"],
-    ["‘Merry’ more than a daily limited", "Up to 70 Merry per day"],
-  ];
-
-  let packageData = {
-    icon: iconPackage,
-    name: namePackages,
-    price: pricePackages,
-    perDate: perDatePackages,
-    details: detailPackages,
-  };
 
   return (
     <>
