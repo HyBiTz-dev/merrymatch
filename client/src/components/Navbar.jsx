@@ -5,7 +5,8 @@ import { useAuth } from "../context/authentication";
 
 function Navbar({ username }) {
   const navigate = useNavigate();
-  const { logout, isAuthenticated } = useAuth();
+  const { logout, isAuthenticated , state } = useAuth();
+  
 
   const unauth = () => {
     return (
@@ -93,8 +94,8 @@ function Navbar({ username }) {
                 </li>
                 <div>
                   <li>
-                    <a href="" className="text-gray-700">
-                      <img src="/images/profile.svg" alt="" />
+                    <a href={`/update/${state?.id}`} className="text-gray-700">
+                      <img src="images/profile.svg" alt="" />
                       Profile
                     </a>
                   </li>

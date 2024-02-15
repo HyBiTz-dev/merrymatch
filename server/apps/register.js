@@ -8,65 +8,48 @@ const registerRouter = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-registerRouter.get("/country", async (req, res) => {
-  try {
-    let { data: countries, error } = await supabase.from("country").select("*");
-    if (error) {
-      return res.status(400).json({ message: error.message });
-    }
-    return res.json({ countries });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-});
-registerRouter.get("/city", async (req, res) => {
-  try {
-    const { data: cities, error } = await supabase
-      .from("country_city_view_2")
-      .select("city_name,city_id")
-      .eq("id", req.query.country_id);
-    if (error) {
-      return res.status(400).json({ message: error.message });
-    }
-    return res.status(200).json({ cities });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-});
+registerRouter.get("/data", async (req, res) => {
+  const { dataType, country_id } = req.query;
 
-registerRouter.get("/gender", async (req, res) => {
   try {
-    let { data: gender, error } = await supabase.from("gender").select("*");
-    if (error) {
-      return res.status(400).json({ message: error.message });
+    let data, error;
+    switch (dataType) {
+      case "country":
+        ({ data, error } = await supabase.from("country").select("*"));
+        break;
+      case "city":
+        if (!country_id) {
+          return res
+            .status(400)
+            .json({ message: "Country ID is required for cities." });
+        }
+        ({ data, error } = await supabase
+          .from("country_city_view_2")
+          .select("city_name,city_id")
+          .eq("id", country_id));
+        break;
+      case "gender":
+        ({ data, error } = await supabase.from("gender").select("*"));
+        break;
+      case "racial":
+        ({ data, error } = await supabase.from("racial").select("*"));
+        break;
+      case "relation":
+        ({ data, error } = await supabase
+          .from("relation_interest")
+          .select("*"));
+        break;
+      default:
+        return res
+          .status(400)
+          .json({ message: "Invalid data type requested." });
     }
-    return res.json({ gender });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-});
 
-registerRouter.get("/racial", async (req, res) => {
-  try {
-    let { data: racial, error } = await supabase.from("racial").select("*");
     if (error) {
       return res.status(400).json({ message: error.message });
     }
-    return res.json({ racial });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-});
 
-registerRouter.get("/relation", async (req, res) => {
-  try {
-    let { data: relation_interest, error } = await supabase
-      .from("relation_interest")
-      .select("*");
-    if (error) {
-      return res.status(400).json({ message: error.message });
-    }
-    return res.json({ relation_interest });
+    return res.json({ [dataType]: data });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -90,6 +73,7 @@ registerRouter.post(
         racial,
         meeting,
         hobbiesInterests,
+        age,
       } = req.body;
       const hobbiesInterestsArray = req.body.hobbiesInterests.split(",");
       const { data: user, error: userError } = await supabase.auth.signUp({
@@ -117,6 +101,7 @@ registerRouter.post(
           user_id: user.user.id,
           gender_interest_id: genderInterests,
           username: username,
+          age: age,
         })
         .select();
       if (profileError) {
@@ -174,7 +159,7 @@ registerRouter.post(
       }
       const { data: userImage, error: userImageError } = await supabase
         .from("user_image")
-        .insert([{ user_profile_id: userProfile[0].id, image_file: urlArray }])
+        .insert([{ user_profile_id: userProfile[0].id, image_url: urlArray }])
         .select();
       if (userImageError) {
         return res.status(400).json({ message: userImageError.message });

@@ -40,7 +40,15 @@ function RegisterMainPage() {
           function (value) {
             const currentDate = new Date();
             const userDate = new Date(value);
-            const userAge = currentDate.getFullYear() - userDate.getFullYear();
+            let userAge = currentDate.getFullYear() - userDate.getFullYear();
+
+            if (
+              currentDate.getMonth() < userDate.getMonth() ||
+              (currentDate.getMonth() === userDate.getMonth() &&
+                currentDate.getDate() < userDate.getDate())
+            ) {
+              userAge--;
+            }
             return userAge >= 18;
           }
         ),
@@ -72,7 +80,18 @@ function RegisterMainPage() {
         .min(1, "Must be at least 2 picture")
         .required("Required"),
     }),
+
     onSubmit: async (values) => {
+      const currentDate = new Date();
+      const userDate = new Date(values.dateOfBirth);
+      let userAge = currentDate.getFullYear() - userDate.getFullYear();
+      if (
+        currentDate.getMonth() < userDate.getMonth() ||
+        (currentDate.getMonth() === userDate.getMonth() &&
+          currentDate.getDate() < userDate.getDate())
+      ) {
+        userAge--;
+      }
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("dateOfBirth", values.dateOfBirth);
@@ -86,6 +105,7 @@ function RegisterMainPage() {
       formData.append("racial", values.racial);
       formData.append("meeting", values.meeting);
       formData.append("hobbiesInterests", values.hobbiesInterests);
+      formData.append("age", userAge);
       values.profilePictures.forEach((file) => {
         formData.append("profilePictures", file, file.name);
       });

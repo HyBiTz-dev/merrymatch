@@ -5,13 +5,80 @@ import Button from "../components/Button";
 import { InputField, SelectInputField } from "../components/InputField";
 import TagsInput from "../components/TagInput";
 import * as Yup from "yup";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function UpdateProfilePage() {
+  const [userData, setUserData] = useState({});
+  const [country, setCountry] = useState([]);
+  const [city, SetCity] = useState([]);
+  const [gender, setGender] = useState([]);
+  const [genderInterests, setGenderInterests] = useState([]);
+  const [racial, setRacial] = useState([]);
+  const [relation, setRelation] = useState([]);
+  const [uploadedPictures, setUploadedPictures] = useState([]);
+  const param = useParams();
+  const getUserData = async () => {
+    try {
+      const result = await axios.get(`http://localhost:3000/user/${param.id}`);
+      setUserData(result.data.userData[0]);
+      setUploadedPictures(result.data.userData[0].image_url);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  const getData = async (dataType) => {
+    try {
+      const result = await axios.get(
+        `http://localhost:3000/user/data?dataType=${dataType}`
+      );
+      switch (dataType) {
+        case "country":
+          setCountry(result.data[dataType]);
+          break;
+        case "gender":
+          setGender(result.data[dataType]);
+          setGenderInterests(result.data[dataType]);
+          break;
+        case "racial":
+          setRacial(result.data[dataType]);
+          break;
+        case "relation":
+          setRelation(result.data[dataType]);
+          break;
+        default:
+          console.error("Invalid dataType");
+      }
+    } catch (error) {
+      console.error(`Error fetching ${dataType}:`, error);
+    }
+  };
+  const getCity = async () => {
+    const countryId = formik.values.country;
+    if (!countryId) {
+      console.error("No country_id provided");
+      SetCity([]);
+      return;
+    }
+    try {
+      const result = await axios.get(
+        `http://localhost:3000/user/data?dataType=city&country_id=${formik.values.country}`
+      );
+      const dataCity = result.data.city[0].city_id.map((id, index) => ({
+        value: id,
+        label: result.data.city[0].city_name[index],
+      }));
+      SetCity(dataCity);
+    } catch (error) {
+      console.error("Failed to fetch cities:", error);
+    }
+  };
   const formik = useFormik({
     initialValues: {
       name: "",
       dateOfBirth: "",
-      location: null,
+      country: null,
       city: null,
       username: "",
       email: "",
@@ -55,7 +122,15 @@ function UpdateProfilePage() {
         .max(10, "Must be 10 hobbies Interests or less")
         .required("Required"),
       profilePictures: Yup.array()
-        .min(2, "Must be at least 2 picture")
+        .test(
+          "min-two-pictures",
+          "Upload at least 2 pictures",
+          function (pictures) {
+            const uploadedCount = uploadedPictures.length;
+            const newUploadCount = pictures.length;
+            return uploadedCount + newUploadCount >= 2;
+          }
+        )
         .required("Required"),
     }),
     onSubmit: async (values) => {
@@ -64,6 +139,46 @@ function UpdateProfilePage() {
     validateOnChange: false,
     validateOnBlur: true,
   });
+  useEffect(() => {
+    getUserData();
+  }, [param.id]);
+  useEffect(() => {
+    if (Object.keys(userData).length > 0) {
+      formik.setValues({
+        name: userData.name || "",
+        dateOfBirth: userData.date_of_birth || "",
+        country: userData.country_id || null,
+        city: userData.city_id || null,
+        username: userData.username || "",
+        email: userData.email || "",
+        gender: userData.gender_id || null,
+        genderInterests: userData.gender_interest_id || null,
+        racial: userData.racial_id || null,
+        meeting: userData.relation_interest_id || null,
+        hobbiesInterests: userData.hobbie_interest_array || [],
+        description: userData.description || "",
+        profilePictures: [],
+      });
+    }
+  }, [userData]);
+  useEffect(() => {
+    getData("country");
+    getData("gender");
+    getData("racial");
+    getData("relation");
+  }, []);
+  useEffect(() => {
+    getCity();
+  }, [formik.values.country]);
+  const totalPictures =
+    uploadedPictures.length + formik.values.profilePictures.length;
+  const uploadSlots = Math.max(5 - totalPictures, 0);
+
+  const handleRemoveUploadedPicture = (index) => {
+    const newPictures = uploadedPictures.filter((_, i) => i !== index);
+    setUploadedPictures(newPictures);
+  };
+
   return (
     <>
       <Navbar auth />
@@ -140,24 +255,19 @@ function UpdateProfilePage() {
             <div className="flex justify-between gap-6">
               <SelectInputField
                 formik={formik}
-                fieldName="location"
+                fieldName="country"
                 label="Location"
-                options={[
-                  { label: "Thailand", value: "Thailand" },
-                  { label: "China", value: "China" },
-                  { label: "etc", value: "etc" },
-                ]}
+                options={country.map((countryName) => ({
+                  value: countryName.id,
+                  label: countryName.country_name,
+                }))}
                 placeholder="Location"
               />
               <SelectInputField
                 formik={formik}
                 fieldName="city"
                 label="City"
-                options={[
-                  { label: "Bangkok", value: "Bangkok" },
-                  { label: "Chiang Mai", value: "Chiang Mai" },
-                  { label: "etc", value: "etc" },
-                ]}
+                options={city}
                 placeholder="City"
               />
             </div>
@@ -187,24 +297,20 @@ function UpdateProfilePage() {
                 formik={formik}
                 fieldName="gender"
                 label="Sexual identities"
-                options={[
-                  { label: "Male", value: "Male" },
-                  { label: "Female", value: "Female" },
-                  { label: "Non-binary", value: "Non-binary" },
-                  { label: "etc", value: "etc" },
-                ]}
+                options={gender.map((genderName) => ({
+                  value: genderName.id,
+                  label: genderName.name,
+                }))}
                 placeholder="Sexual identities"
               />
               <SelectInputField
                 formik={formik}
                 fieldName="genderInterests"
                 label="Sexual preferences"
-                options={[
-                  { label: "Male", value: "Male" },
-                  { label: "Female", value: "Female" },
-                  { label: "Non-binary", value: "Non-binary" },
-                  { label: "etc", value: "etc" },
-                ]}
+                options={genderInterests.map((genderInterestsName) => ({
+                  value: genderInterestsName.id,
+                  label: genderInterestsName.name,
+                }))}
                 placeholder="Sexual preferences"
               />
             </div>
@@ -213,27 +319,20 @@ function UpdateProfilePage() {
                 formik={formik}
                 fieldName="racial"
                 label="Racial preferences"
-                options={[
-                  { label: "Asian", value: "Asian" },
-                  { label: "Caucasian", value: "Caucasian" },
-                  { label: "Black", value: "Black" },
-                  { label: "etc", value: "etc" },
-                ]}
+                options={racial.map((racialName) => ({
+                  value: racialName.id,
+                  label: racialName.name,
+                }))}
                 placeholder="Racial preferences"
               />
               <SelectInputField
                 formik={formik}
                 fieldName="meeting"
                 label="Meeting interests"
-                options={[
-                  { label: "friends", value: "friends" },
-                  { label: "partners", value: "partners" },
-                  {
-                    label: "long-term commitment",
-                    value: "long-term commitment",
-                  },
-                  { label: "etc", value: "etc" },
-                ]}
+                options={relation.map((relationName) => ({
+                  value: relationName.id,
+                  label: relationName.name,
+                }))}
                 placeholder="Meeting interests"
               />
             </div>
@@ -294,6 +393,22 @@ function UpdateProfilePage() {
               </div>
             </div>
             <div className="flex gap-6">
+              {uploadedPictures.map((url, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={url}
+                    alt={`Uploaded Picture ${index}`}
+                    className="w-[10.5rem] h-[10.5rem] object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6"
+                    onClick={() => handleRemoveUploadedPicture(index)}
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
               {formik.values.profilePictures.map((picture, index) => (
                 <div key={index} className="relative">
                   <img
@@ -314,44 +429,40 @@ function UpdateProfilePage() {
                   </button>
                 </div>
               ))}
-              {[...Array(5 - formik.values.profilePictures.length)].map(
-                (_, index) => (
-                  <div
-                    key={index}
-                    className="w-[10.5rem] h-[10.5rem] border bg-gray-200 rounded-lg flex justify-center items-center"
+              {[...Array(uploadSlots)].map((_, index) => (
+                <div
+                  key={index}
+                  className="w-[10.5rem] h-[10.5rem] border bg-gray-200 rounded-lg flex justify-center items-center"
+                >
+                  <label
+                    htmlFor="picture-upload"
+                    className="cursor-pointer flex flex-col items-center"
                   >
-                    <label
-                      htmlFor="picture-upload"
-                      className="cursor-pointer flex flex-col items-center"
-                    >
-                      <div className="text-purple-600 text-base">+</div>
-                      <div className="text-purple-600 text-sm">
-                        Upload photo
-                      </div>
-                      <input
-                        id="picture-upload"
-                        name="profilePictures"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(event) => {
-                          const file = event.target.files[0];
-                          if (file) {
-                            formik.setFieldValue("profilePictures", [
-                              ...formik.values.profilePictures,
-                              file,
-                            ]);
-                          }
-                        }}
-                      />
-                    </label>
-                  </div>
-                )
-              )}
-              {formik.errors && formik.errors.profilePictures && (
-                <p>{formik.errors.profilePictures}</p>
-              )}
+                    <div className="text-purple-600 text-base">+</div>
+                    <div className="text-purple-600 text-sm">Upload photo</div>
+                    <input
+                      id="picture-upload"
+                      name="profilePictures"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(event) => {
+                        const file = event.target.files[0];
+                        if (file) {
+                          formik.setFieldValue("profilePictures", [
+                            ...formik.values.profilePictures,
+                            file,
+                          ]);
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+              ))}
             </div>
+            {formik.errors && formik.errors.profilePictures && (
+              <p>{formik.errors.profilePictures}</p>
+            )}
           </div>
           <div className="flex justify-end">
             <button className=" py-1 px-2 font-bold text-gray-700 ">

@@ -11,7 +11,6 @@ authRouter.post("/", async (req, res) => {
       email: req.body.email,
       password: req.body.password,
     });
-
     if (error) {
       console.error("Login error:", error.message);
       return res
