@@ -4,28 +4,35 @@ import { auth } from "../middleware/auth.js";
 
 const messagesRouter = Router();
 
-messagesRouter.get("/", async (req, res) => {
-  try {
-    const { data, error } = await supabase.from("messages").select("*");
-    console.log(data);
-    return res.send({ data });
-  } catch (error) {
-    console.log({ error });
-    return res.send({ error });
-  }
-});
-
-messagesRouter.post("/", auth, async (req, res) => {
-  const data = req.body;
-
-  const { error } = await supabase
+messagesRouter.get("/:conversationId", async (req, res) => {
+  let { data: messages, error } = await supabase
     .from("messages")
-    .insert({ content: data.content });
+    .select("*")
+    .eq("conversation_id", req.params.conversationId);
 
   if (error) {
-    return res.json({ messages: error });
+    return res.status(500).json(error);
   }
-  return res.json({ messages: "Send messages success" });
+
+  return res.status(200).json({ messages });
+});
+
+messagesRouter.post("/", async (req, res) => {
+  const message = req.body;
+
+  const { data, error } = await supabase
+    .from("messages")
+    .insert({
+      conversation_id: message.conversation_id,
+      sender_id: message.sender_id,
+      message_text: message.message_text,
+    })
+    .select();
+  if (error) {
+    return res.status(500).json(error);
+  }
+
+  return res.status(200).json(data);
 });
 
 export default messagesRouter;
