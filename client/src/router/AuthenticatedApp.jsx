@@ -10,6 +10,7 @@ import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/MessagePage";
+import FilingComplaintPage from "../pages/FilingComplaintPage";
 import { useAuth } from "../context/authentication";
 
 export default function Router() {
@@ -24,6 +25,7 @@ export default function Router() {
         <Route path="/matching" element={<MatchingPage />} />
         {/* <Route path="/merrylist" element={<MerryListPage/>} /> */}
         <Route path="/messages/:id" element={<Chat />} />
+        <Route path="/filing-complaint" element={<FilingComplaintPage />} />
 
         {/* ------Admin routes------ */}
         {role === "Admin" && (

@@ -23,10 +23,21 @@ authRouter.post("/", async (req, res) => {
         .select("roles")
         .eq("user_id", data.user.id);
 
+      const { data: user_profile } = await supabase
+        .from("user_profile")
+        .select("*")
+        .eq("user_id", data.user.id);
+
       let role = user_roles_view[0].roles[0];
 
       const token = jwt.sign(
-        { id: data.user.id, email: data.user.email, role: role },
+        {
+          id: data.user.id,
+          email: data.user.email,
+          name: user_profile[0].name,
+          username: user_profile[0].username,
+          role: role,
+        },
         process.env.SUPABASE_JWT_SECRET,
         {
           expiresIn: data.session.expires_in,
