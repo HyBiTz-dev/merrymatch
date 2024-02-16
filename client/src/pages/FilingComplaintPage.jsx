@@ -10,6 +10,7 @@ function FilingComplaintPage() {
   const handleSubmit = async (values, { setSubmitting }) => {
     const complaintData = {
       userId: state.id,
+      userName: state.name,
       issue: values.issue,
       description: values.description,
     };
