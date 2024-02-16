@@ -7,8 +7,10 @@ export const Step1 = ({ formik }) => {
   const [city, SetCity] = useState([]);
   const getCountry = async () => {
     try {
-      const result = await axios.get("http://localhost:3000/register/country");
-      setCountry(result.data.countries);
+      const result = await axios.get(
+        "http://localhost:3000/register/data?dataType=country"
+      );
+      setCountry(result.data.country);
     } catch (error) {
       console.error("Error fetching countries:", error);
     }
@@ -22,11 +24,11 @@ export const Step1 = ({ formik }) => {
     }
     try {
       const result = await axios.get(
-        `http://localhost:3000/register/city?country_id=${formik.values.country}`
+        `http://localhost:3000/user/data?dataType=city&country_id=${formik.values.country}`
       );
-      const dataCity = result.data.cities[0].city_id.map((id, index) => ({
+      const dataCity = result.data.city[0].city_id.map((id, index) => ({
         value: id,
-        label: result.data.cities[0].city_name[index],
+        label: result.data.city[0].city_name[index],
       }));
       SetCity(dataCity);
     } catch (error) {
@@ -147,33 +149,33 @@ export const Step2 = ({ formik }) => {
   const [genderInterests, setGenderInterests] = useState([]);
   const [racial, setRacial] = useState([]);
   const [relation, setRelation] = useState([]);
-  const getGender = async () => {
+  const getData = async (dataType) => {
     try {
-      const result = await axios.get("http://localhost:3000/register/gender");
-      setGender(result.data.gender);
-      setGenderInterests(result.data.gender);
+      const result = await axios.get(
+        `http://localhost:3000/user/data?dataType=${dataType}`
+      );
+      switch (dataType) {
+        case "gender":
+          setGender(result.data[dataType]);
+          setGenderInterests(result.data[dataType]);
+          break;
+        case "racial":
+          setRacial(result.data[dataType]);
+          break;
+        case "relation":
+          setRelation(result.data[dataType]);
+          break;
+        default:
+          console.error("Invalid dataType");
+      }
     } catch (error) {
-      console.error("Error fetching countries:", error);
-    }
-  };
-  const getRacial = async () => {
-    try {
-      const result = await axios.get("http://localhost:3000/register/racial");
-      setRacial(result.data.racial);
-    } catch (error) {
-      console.error("Error fetching countries:", error);
-    }
-  };
-  const getRelation = async () => {
-    try {
-      const result = await axios.get("http://localhost:3000/register/relation");
-      setRelation(result.data.relation_interest);
-    } catch (error) {
-      console.error("Error fetching countries:", error);
+      console.error(`Error fetching ${dataType}:`, error);
     }
   };
   useEffect(() => {
-    getGender(), getRacial(), getRelation();
+    getData("gender");
+    getData("racial");
+    getData("relation");
   }, []);
   return (
     <form className="flex flex-col gap-10 pb-10" onSubmit={formik.handleSubmit}>

@@ -11,12 +11,14 @@ export default function Button({
   chat,
   view,
   match,
+  type,
 }) {
   if (primary) {
     const classes =
       "btn bg-red-500 hover:bg-red-400 active:bg-red-600 text-white disabled:bg-gray-300 disabled:text-gray-600 border-none rounded-btn px-6 shadow-btn1 font-bold text-base";
     return (
       <button
+        type={type}
         className={className + " " + classes}
         onClick={onClick}
         disabled={disabled}

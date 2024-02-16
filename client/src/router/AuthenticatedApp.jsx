@@ -12,6 +12,7 @@ import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/MessagePage";
 import FilingComplaintPage from "../pages/FilingComplaintPage";
 import { useAuth } from "../context/authentication";
+import UpdateProfilePage from "../pages/UpdateProfilePage";
 
 export default function Router() {
   const { state } = useAuth();
@@ -23,6 +24,7 @@ export default function Router() {
         <Route path="/" element={<Home />} />
         <Route path="/package" element={<PackagePage />} />
         <Route path="/matching" element={<MatchingPage />} />
+        <Route path="/update/:id" element={<UpdateProfilePage />} />
         {/* <Route path="/merrylist" element={<MerryListPage/>} /> */}
         <Route path="/messages/:id" element={<Chat />} />
         <Route path="/filing-complaint" element={<FilingComplaintPage />} />
