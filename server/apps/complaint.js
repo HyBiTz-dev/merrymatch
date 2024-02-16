@@ -4,13 +4,14 @@ import { supabase } from "../utils/supabaseClient.js";
 const complaintRouter = Router();
 
 complaintRouter.post("/submit", async (req, res) => {
-  const { userId, issue, description } = req.body;
+  const { userId, userName, issue, description } = req.body;
 
   try {
     console.log("Received request:", req.body);
 
     const { data, error } = await supabase.from("user_complaint").upsert({
       user_id: userId,
+      user_name: userName,
       complaint_issue: issue,
       complaint_description: description,
     });
