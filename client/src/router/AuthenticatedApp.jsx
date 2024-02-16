@@ -11,6 +11,7 @@ import Register from "../pages/RegisterMainPage";
 import Chat from "../pages/MessagePage";
 import FilingComplaintPage from "../pages/FilingComplaintPage";
 import MerryListPage from "../pages/MerryListPage";
+import AdminComplaintListPage from "../pages/AdminComplaintListPage";
 import { useAuth } from "../context/authentication";
 import UpdateProfilePage from "../pages/UpdateProfilePage";
 
@@ -41,7 +42,7 @@ export default function Router() {
             />
             <Route path="/admin/editpackage" element={<AdminPackageEdit />} />
             <Route
-              path="/admin/complaint"
+              path="/admin/complaint-list"
               element={<AdminComplaintListPage />}
             />
           </>
