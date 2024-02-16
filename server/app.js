@@ -26,100 +26,79 @@ async function init() {
       methods: ["GET", "POST"],
     },
   });
-}
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.use(bodyParser.json());
-app.use(cors());
-app.use("/messages", messagesRouter);
-app.use("/packages", packagesRouter);
-app.use("/login", authRouter);
-app.use("/register", registerRouter);
-app.use("/conversation", conversationRouter);
-app.use("/user", userRouter);
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+  app.use(bodyParser.json());
+  app.use(cors());
+  app.use("/messages", messagesRouter);
+  app.use("/packages", packagesRouter);
+  app.use("/login", authRouter);
+  app.use("/register", registerRouter);
+  app.use("/conversation", conversationRouter);
+  app.use("/user", userRouter);
 
-app.get("/login", async (req, res) => {
-  try {
-    const { data, error } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log(event, session);
-      }
-    );
-    return res.send({ data });
-  } catch (error) {
-    console.log({ error });
-    return res.send({ error });
-  }
-});
-
-app.delete("/packages/:id", (req, res) => {
-  const id = req.params.id;
-  const packageIndex = allPackages.findIndex((p) => p.id == id);
-  if (packageIndex === -1) {
-    res.status(404).json({ error: "Package not found" });
-  } else {
-    allPackages.splice(packageIndex, 1);
-    res.json({ message: "Package has deleted" });
-  }
-});
-
-app.put("/packages/:id", (req, res) => {
-  const id = req.params.id;
-  const packageIndex = allPackages.findIndex((p) => p.id == id);
-  if (packageIndex === -1) {
-    res.status(404).json({ error: "Package not found" });
-  } else {
-    allPackages[packageIndex] = req.body;
-    res.json({ message: "Package has updated" });
-  }
-});
-
-let users = [];
-
-const addUser = (userId, socketId) => {
-  !users.some((user) => user.userId === userId) &&
-    users.push({ userId, socketId });
-};
-
-const removeUser = (socketId) => {
-  users = users.filter((user) => user.socketId !== socketId);
-};
-
-const getUser = (userId) => {
-  return users.find((user) => user.userId === userId);
-};
-
-io.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.on("addUser", (userId) => {
-    addUser(userId, socket.id);
-    io.emit("getUsers", users);
+  app.get("/", (req, res) => {
+    res.send("Hello World!");
   });
 
-  socket.on("sendMessages", ({ senderId, receiverId, messages }) => {
-    const user = getUser(receiverId);
-    if (user) {
-      io.to(user.socketId).emit("getMessage", {
-        senderId,
-        messages,
-      });
+  app.get("/login", async (req, res) => {
+    try {
+      const { data, error } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          console.log(event, session);
+        }
+      );
+      return res.send({ data });
+    } catch (error) {
+      console.log({ error });
+      return res.send({ error });
     }
   });
 
-  socket.on("disconnect", () => {
-    console.log("a user disconnected!");
-    removeUser(socket.id);
-    io.emit("getUsers", users);
-  });
-});
+  let users = [];
 
-server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+  const addUser = (userId, socketId) => {
+    !users.some((user) => user.userId === userId) &&
+      users.push({ userId, socketId });
+  };
+
+  const removeUser = (socketId) => {
+    users = users.filter((user) => user.socketId !== socketId);
+  };
+
+  const getUser = (userId) => {
+    return users.find((user) => user.userId === userId);
+  };
+
+  io.on("connection", (socket) => {
+    console.log("a user connected");
+    socket.on("addUser", (userId) => {
+      addUser(userId, socket.id);
+      io.emit("getUsers", users);
+    });
+
+    socket.on("sendMessages", ({ senderId, receiverId, messages }) => {
+      const user = getUser(receiverId);
+      if (user) {
+        io.to(user.socketId).emit("getMessage", {
+          senderId,
+          messages,
+        });
+      }
+    });
+
+    socket.on("disconnect", () => {
+      console.log("a user disconnected!");
+      removeUser(socket.id);
+      io.emit("getUsers", users);
+    });
+  });
+
+  server.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+  });
+}
 
 init();
