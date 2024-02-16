@@ -2,7 +2,8 @@ import SideBarAdmin from "../components/SidebarAdmin";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { useState } from "react";
-// import classNames from "classnames";
+import classNames from "classnames";
+import Button from "../components/Button";
 
 function AdminPackageCreate() {
   const inputRef = useRef(null);
@@ -66,18 +67,20 @@ function AdminPackageCreate() {
             Add Package
           </span>
           <div className="flex ">
-            <button
+            <Button
+              secondary
               onClick={() => navigate("/admin/package")}
-              className="btn bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-600 rounded-[6rem] w-[6rem]"
+              className=" text-red-600 rounded-[6rem] w-[6rem]"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              primary
               onClick={handleCreatePackage}
-              className="btn bg-red-500 hover:bg-red-400 active:bg-red-600 text-white rounded-[6rem] w-[6rem]"
+              className=" text-white rounded-[6rem] w-[6rem]"
             >
               Create
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -98,21 +101,29 @@ function AdminPackageCreate() {
               </label>
               <label className="form-control">
                 <div className="">
-                  <span className="">Merry limit</span>
+                  <span className="">Package Price</span>
                   <span className=" text-red-500"> *</span>
                 </div>
-                <select
-                  value={merryLimit}
-                  onChange={handleMerryLimitChange}
-                  className="select select-bordered "
-                >
-                  <option></option>
-                  <option value="25">25</option>
-                  <option value="50">45</option>
-                  <option value="70">70</option>
-                </select>
+                <input type="text" className="input input-bordered input-md " />
               </label>
             </div>
+            <label className="form-control">
+              <div className="">
+                <span className="">Merry limit</span>
+                <span className=" text-red-500"> *</span>
+              </div>
+              <select
+                value={merryLimit}
+                onChange={handleMerryLimitChange}
+                className="select select-bordered "
+              >
+                <option></option>
+                <option value="25">25</option>
+                <option value="50">45</option>
+                <option value="70">70</option>
+              </select>
+            </label>
+
             <div className="pb-10">
               <span>Icon</span>
               <span className="text-red-500"> *</span>
@@ -172,8 +183,14 @@ function AdminPackageCreate() {
                           : prevDetails
                       )
                     }
+                    // className={
+                    //   "btn bg-white text-gray-500 hover:text-red-400 active:text-red-600 font-bold " +
+                    //   !deletable
+                    //     ? "cursor-not-allowed grayscale"
+                    //     : ""
+                    // }
                     className={classNames(
-                      "w-[3rem] pl-6 bg-white text-gray-500 hover:text-red-400 active:text-red-600 font-bold",
+                      "pl-6 bg-white text-gray-500 hover:text-red-400 active:text-red-600 font-bold",
                       { "cursor-not-allowed grayscale": !deletable }
                     )}
                   >
@@ -184,14 +201,15 @@ function AdminPackageCreate() {
             })}
 
             <div className="pl-[3.12rem]">
-              <button
+              <Button
+                secondary
                 onClick={() =>
                   setDetailInputs((prevDetails) => [...prevDetails, ""])
                 }
-                className="btn bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-600 rounded-[6rem] w-[8.75rem] h-12"
+                className=" text-red-600 rounded-[6rem] w-[8.75rem] h-12"
               >
                 + Add detail
-              </button>
+              </Button>
             </div>
           </div>
         </div>

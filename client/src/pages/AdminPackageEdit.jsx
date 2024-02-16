@@ -1,14 +1,36 @@
 import SideBarAdmin from "../components/SidebarAdmin";
 import { useRef } from "react";
 import { useState } from "react";
+<<<<<<< HEAD
 // import classNames from "classnames";
 import { Navigate, useNavigate } from "react-router-dom";
+=======
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import classNames from "classnames";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
+>>>>>>> dccf965 (feat/pung(admin-package-page):create modal for delete button)
 
 function AdminPackageEdit() {
   const inputRef = useRef(null);
+  const { id } = useParams();
+  const [packageData, setPackageData] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [merryLimit, setMerryLimit] = useState("");
   const [detailInputs, setDetailInputs] = useState([""]);
+
+  useEffect(() => {
+    const fetchPackageData = async () => {
+      try {
+        const resp = await axios.get(`http://localhost:3000/packages/${id}`);
+        setPackageData(resp.data);
+      } catch (error) {
+        console.error("Error fetching package data:", error);
+      }
+    };
+    fetchPackageData();
+  }, [id]);
 
   const navigate = useNavigate();
 
@@ -39,15 +61,16 @@ function AdminPackageEdit() {
             Edit ‘Premium’
           </span>
           <div className="flex ">
-            <button
+            <Button
+              secondary
               onClick={() => navigate("/admin/package")}
-              className="btn bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-600 rounded-[6rem] w-[6rem]"
+              className=" text-red-600 rounded-[6rem] w-[6rem]"
             >
               Cancel
-            </button>
-            <button className="btn bg-red-500 hover:bg-red-400 active:bg-red-600 text-white rounded-[6rem] w-[6rem]">
+            </Button>
+            <Button primary className=" text-white rounded-[6rem] w-[6rem]">
               Edit
-            </button>
+            </Button>
           </div>
         </div>
 

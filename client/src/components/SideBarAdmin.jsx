@@ -1,7 +1,7 @@
 function SideBarAdmin() {
   return (
-    <div className="flex h-screen w-[15rem] border-r border-r-gray-400 flex-col">
-      <div className="">
+    <div className="flex h-screen w-[15rem] bg-white border-r border-r-gray-400 flex-col">
+      <div>
         <div className="mx-6 my-6 flex flex-col items-center">
           <img
             src="/images/logo(merry-match-admin).svg"
