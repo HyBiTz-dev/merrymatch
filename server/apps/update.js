@@ -66,31 +66,42 @@ userRouter.get("/:id", async (req, res) => {
   }
 });
 
-// userRouter.delete("/delete_image", async (req, res) => {
-//   const { imagePath } = req.body;
+userRouter.delete("/delete_image", async (req, res) => {
+  const { imagePath } = req.body;
+  if (!imagePath) {
+    return res.status(400).json({ message: "Image path is required." });
+  }
+  try {
+    const path = imagePath.replace(
+      "https://dlceurosjrzecltovrjb.supabase.co/storage/v1/object/public/",
+      ""
+    );
+    const { error } = await supabase.storage
+      .from("images/profile")
+      .remove([path]);
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+    const { data: userProfiles, error: selectError } = await supabase
+      .from("user_profiles")
+      .select("image_url")
+      .eq("user_id", userId);
 
-//   if (!imagePath) {
-//     return res.status(400).json({ message: "Image path is required." });
-//   }
-
-//   try {
-//     const path = imagePath.replace(
-//       "https://dlceurosjrzecltovrjb.supabase.co/storage/v1/object/public/",
-//       ""
-//     );
-
-//     const { error } = await supabase.storage
-//       .from("images/profile")
-//       .remove([path]);
-
-//     if (error) {
-//       return res.status(400).json({ message: error.message });
-//     }
-
-//     return res.status(200).json({ message: "Image deleted successfully." });
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// });
+    if (selectError) throw selectError;
+    const updatedImageUrls = userProfiles[0].image_url.filter(
+      (url) => url !== imagePath
+    );
+    const { error: updateError } = await supabase
+      .from("user_profiles")
+      .update({ image_url: updatedImageUrls })
+      .eq("user_id", userId);
+    if (updateError) throw updateError;
+    return res
+      .status(200)
+      .json({ message: "Image and database record deleted successfully." });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 export default userRouter;

@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ProfileModal from "../components/Modal/ProfileModal";
 
 function UpdateProfilePage() {
   const [userData, setUserData] = useState({});
@@ -18,7 +19,17 @@ function UpdateProfilePage() {
   const [racial, setRacial] = useState([]);
   const [relation, setRelation] = useState([]);
   const [uploadedPictures, setUploadedPictures] = useState([]);
+  console.log("uploaded : ", uploadedPictures);
+  const [deletePictures, setDeletePictures] = useState([]);
+  console.log("deleted : ", deletePictures);
   const param = useParams();
+  const [showModal, setShowModal] = useState(false);
+  const openModal = () => {
+    setShowModal(true);
+  };
+  const closeModal = () => {
+    setShowModal(false);
+  };
   const getUserData = async () => {
     try {
       const result = await axios.get(`http://localhost:3000/user/${param.id}`);
@@ -102,11 +113,19 @@ function UpdateProfilePage() {
           function (value) {
             const currentDate = new Date();
             const userDate = new Date(value);
-            const userAge = currentDate.getFullYear() - userDate.getFullYear();
+            let userAge = currentDate.getFullYear() - userDate.getFullYear();
+
+            if (
+              currentDate.getMonth() < userDate.getMonth() ||
+              (currentDate.getMonth() === userDate.getMonth() &&
+                currentDate.getDate() < userDate.getDate())
+            ) {
+              userAge--;
+            }
             return userAge >= 18;
           }
         ),
-      location: Yup.string().nullable(false).required("Required"),
+      country: Yup.string().nullable(false).required("Required"),
       city: Yup.string().nullable(false).required("Required"),
       username: Yup.string()
         .max(64, "Must be 64 characters or less")
@@ -134,13 +153,49 @@ function UpdateProfilePage() {
         .required("Required"),
     }),
     onSubmit: async (values) => {
-      console.log(values);
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("dateOfBirth", values.dateOfBirth);
+      formData.append("country", values.country);
+      formData.append("city", values.city);
+      formData.append("username", values.username);
+      formData.append("email", values.email);
+      formData.append("gender", values.gender);
+      formData.append("genderInterests", values.genderInterests);
+      formData.append("racial", values.racial);
+      formData.append("meeting", values.meeting);
+      formData.append("hobbiesInterests", values.hobbiesInterests);
+      formData.append("description", values.description);
+      formData.append("uploadedPicture", uploadedPictures);
+      formData.append("deletePictures", deletePictures);
+      formData.append("userId", userData.id);
+      values.profilePictures.forEach((file) => {
+        formData.append("profilePictures", file, file.name);
+      });
+      try {
+        const response = await axios.put(
+          `http://localhost:3000/user/${param.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error:", error.response.data);
+      }
     },
     validateOnChange: false,
     validateOnBlur: true,
   });
   useEffect(() => {
     getUserData();
+    getData("country");
+    getData("gender");
+    getData("racial");
+    getData("relation");
   }, [param.id]);
   useEffect(() => {
     if (Object.keys(userData).length > 0) {
@@ -162,12 +217,6 @@ function UpdateProfilePage() {
     }
   }, [userData]);
   useEffect(() => {
-    getData("country");
-    getData("gender");
-    getData("racial");
-    getData("relation");
-  }, []);
-  useEffect(() => {
     getCity();
   }, [formik.values.country]);
   const totalPictures =
@@ -176,14 +225,17 @@ function UpdateProfilePage() {
 
   const handleRemoveUploadedPicture = (index) => {
     const newPictures = uploadedPictures.filter((_, i) => i !== index);
+    const delPic = uploadedPictures.filter((_, i) => i == index);
+    const newDelPic = deletePictures;
+    setDeletePictures(newDelPic.concat(delPic));
     setUploadedPictures(newPictures);
   };
-
   return (
     <>
       <Navbar auth />
       <div className="flex flex-col items-center w-full h-full bg-main py-20 gap-20">
         <header className="flex w-[58.188rem] pb-20 pt-20 justify-evenly items-end">
+          <ProfileModal isOpen={showModal} onClose={closeModal} />
           <div className="flex flex-col w-[32rem]">
             <div className=" text-beige-700 font-semibold">PROFILE</div>
             <div className=" text-purple-500 text-5xl font-extrabold">
@@ -192,11 +244,13 @@ function UpdateProfilePage() {
             </div>
           </div>
           <div className="flex gap-4">
-            <Button secondary>Preview Profile</Button>
+            <Button secondary type="button" onClick={openModal}>
+              Preview Profile
+            </Button>
             <Button
               primary
               type="submit"
-              onClick={async () => {
+              onClick={() => {
                 formik.handleSubmit();
               }}
             >
@@ -204,7 +258,7 @@ function UpdateProfilePage() {
             </Button>
           </div>
         </header>
-        <form className="flex flex-col gap-20">
+        <form className="flex flex-col gap-20" onSubmit={formik.handleSubmit}>
           <div className="flex flex-col gap-6">
             <div className="text-2xl text-purple-500">Basic Information</div>
             <div className="flex justify-between gap-6">
@@ -465,7 +519,10 @@ function UpdateProfilePage() {
             )}
           </div>
           <div className="flex justify-end">
-            <button className=" py-1 px-2 font-bold text-gray-700 ">
+            <button
+              className=" py-1 px-2 font-bold text-gray-700 "
+              type="button"
+            >
               Delete account
             </button>
           </div>

@@ -5,8 +5,7 @@ import { useAuth } from "../context/authentication";
 
 function Navbar({ username }) {
   const navigate = useNavigate();
-  const { logout, isAuthenticated , state } = useAuth();
-  
+  const { logout, isAuthenticated, state } = useAuth();
 
   const unauth = () => {
     return (

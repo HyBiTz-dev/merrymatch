@@ -12,11 +12,7 @@ import authRouter from "./apps/auth.js";
 import registerRouter from "./apps/register.js";
 import conversationRouter from "./apps/conversation.js";
 import userRouter from "./apps/user.js";
-<<<<<<< HEAD
 import complaintRouter from "./apps/complaint.js";
-=======
-import userRouter from "./apps/update.js";
->>>>>>> 9ddd216 (feat/five(update_profile): feat can fetch data form user_id and image Url)
 
 async function init() {
   const app = express();
