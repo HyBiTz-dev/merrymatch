@@ -30,9 +30,9 @@ const AgeSliderStyle = styled(Slider)({
 
 const minDistance = 1;
 export default function AgeSlider() {
-  const [value, setValue] = useState([18, 50]);
+  const [value, setValue] = useState([18, 80]);
   const [ageLeft, setAgeLeft] = useState(18);
-  const [ageRight, setAgeRight] = useState(50);
+  const [ageRight, setAgeRight] = useState(80);
   const handleChange = (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
@@ -60,7 +60,7 @@ export default function AgeSlider() {
             disableSwap
             onChange={handleChange}
             min={18}
-            max={100}
+            max={80}
           />
         </Box>
         <div className="input-age flex justify-center items-center gap-1">

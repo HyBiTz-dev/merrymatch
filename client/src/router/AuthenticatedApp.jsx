@@ -9,7 +9,7 @@ import AdminPackageCreate from "../pages/AdminPackageCreate";
 import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
-import Chat from "../pages/ChatPage";
+import Chat from "../pages/MessagePage";
 import { useAuth } from "../context/authentication";
 
 export default function Router() {
@@ -23,7 +23,7 @@ export default function Router() {
         <Route path="/package" element={<PackagePage />} />
         <Route path="/matching" element={<MatchingPage />} />
         {/* <Route path="/merrylist" element={<MerryListPage/>} /> */}
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/messages/:id" element={<Chat />} />
 
         {/* ------Admin routes------ */}
         {role === "Admin" && (
