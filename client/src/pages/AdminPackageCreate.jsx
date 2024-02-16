@@ -1,11 +1,10 @@
 import SideBarAdmin from "../components/SidebarAdmin";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
-import { useState } from "react";
 import classNames from "classnames";
 import Button from "../components/Button";
-import { supabase } from "../supabaseClient";
 import { Formik, Field, FieldArray, Form } from "formik";
+import axios from "axios";
 
 function AdminPackageCreate() {
   const inputRef = useRef(null);
@@ -25,24 +24,24 @@ function AdminPackageCreate() {
   };
 
   async function handleCreatePackage(values) {
-    const { packageName, price, merryLimit, packageDetails, packageIcon } =
+    const { packageName, price, merryLimit, packageIcon, packageDetails } =
       values;
-
-    console.log(values);
-
     try {
-      const data = {
-        name: packageName,
-        price,
-        package_icon: packageIcon,
-        merry_limit: merryLimit,
-        details: packageDetails,
-      };
-      let { error } = await supabase.from("packages").insert(data);
+      const { data, error } = await axios.post(
+        "http://localhost:3000/package",
+        {
+          packageName,
+          price,
+          merryLimit,
+          packageIcon,
+          details: packageDetails,
+        }
+      );
+      console.log(data);
       if (error) throw error;
       navigate("/admin/package");
     } catch (error) {
-      alert("Error updating package: " + error.message);
+      alert("Error creating package: " + error.message);
     }
   }
 
@@ -157,7 +156,7 @@ function AdminPackageCreate() {
                         innerRef={inputRef}
                         name="packageIcon"
                         type="file"
-                        value={null}
+                        value={undefined}
                         onChange={(e) => handleFileChange(e, setFieldValue)}
                         className="input input-bordered hidden"
                       />

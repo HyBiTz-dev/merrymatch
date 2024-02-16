@@ -3,9 +3,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-// import { DndProvider } from "react-dnd";
-// import { HTML5Backend } from "react-dnd-html5-backend";
-import { supabase } from "../supabaseClient";
 
 function AdminPackageList() {
   const [allPackages, setAllPackages] = useState([]);
@@ -15,17 +12,31 @@ function AdminPackageList() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchPackageData = async () => {
       try {
-        const { data, error } = await supabase.from("packages").select();
+        const { data, error } = await axios.get(
+          "http://localhost:3000/package"
+        );
         if (error) throw error;
         setAllPackages(data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching package data:", error);
       }
     };
-    fetchData();
+    fetchPackageData();
   }, []);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/package/${deletePackageId}`);
+      setAllPackages(
+        allPackages.filter((packageItem) => packageItem.id !== deletePackageId)
+      );
+    } catch (error) {
+      console.error("Error deleting package:", error);
+    }
+    setShowModal(false);
+  };
 
   const openModal = (packageId) => () => {
     setShowModal(true);
@@ -33,18 +44,6 @@ function AdminPackageList() {
   };
 
   const closeModal = () => {
-    setShowModal(false);
-  };
-
-  const handleDelete = async () => {
-    try {
-      await supabase.from("packages").delete().eq("id", deletePackageId);
-      setAllPackages(
-        allPackages.filter((packageItem) => packageItem.id !== deletePackageId)
-      );
-    } catch (error) {
-      console.error("Error deleting package:", error);
-    }
     setShowModal(false);
   };
 
