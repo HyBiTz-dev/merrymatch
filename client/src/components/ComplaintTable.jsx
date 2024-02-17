@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-const ComplaintTable = ({}) => {
+const ComplaintTable = () => {
   const [complaints, setComplaints] = useState([]);
   const navigate = useNavigate();
 
@@ -35,8 +35,20 @@ const ComplaintTable = ({}) => {
     fetchData();
   }, []);
 
-  const handleRowClick = (complaintId) => {
-    navigate(`/complaint-details/${complaintId}`);
+  const handleRowClick = async (complaintId, complaintStatus) => {
+    if (complaintStatus === "new") {
+      try {
+        await supabase
+          .from("user_complaint")
+          .update({ complaint_status: "pending" })
+          .eq("id", complaintId);
+      } catch (error) {
+        console.error("Error updating status:", error.message);
+        return;
+      }
+    }
+
+    navigate(`/admin/complaint-details/${complaintId}`);
   };
 
   return (
@@ -58,7 +70,9 @@ const ComplaintTable = ({}) => {
                 <tr
                   key={complaint.id}
                   className="bg-white h-[5.625rem] rounded-b-2xl border-gray-200"
-                  onClick={() => handleRowClick(complaint.id)}
+                  onClick={() =>
+                    handleRowClick(complaint.id, complaint.complaint_status)
+                  }
                 >
                   <td className="w-[10.25rem] px-10 py-[0.625rem]">
                     {complaint.user_name}

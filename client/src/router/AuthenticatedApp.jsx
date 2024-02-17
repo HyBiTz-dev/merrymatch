@@ -14,6 +14,7 @@ import MerryListPage from "../pages/MerryListPage";
 import AdminComplaintListPage from "../pages/AdminComplaintListPage";
 import { useAuth } from "../context/authentication";
 import UpdateProfilePage from "../pages/UpdateProfilePage";
+import AdminComplaintDetailPage from "../pages/AdminComplaintDetailPage";
 
 export default function Router() {
   const { state } = useAuth();
@@ -44,6 +45,10 @@ export default function Router() {
             <Route
               path="/admin/complaint-list"
               element={<AdminComplaintListPage />}
+            />
+            <Route
+              path="/admin/complaint-details/:id"
+              element={<AdminComplaintDetailPage />}
             />
           </>
         )}
