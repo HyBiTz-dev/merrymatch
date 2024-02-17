@@ -3,7 +3,13 @@ import package_cube from "../../public/images/package_cube.svg";
 import visa from "../../public/images/visa.svg";
 import master_card from "../../public/images/master_card.svg";
 import Button from "../components/Button";
+import { loadStripe } from "@stripe/stripe-js";
+import { useStripe } from "@stripe/react-stripe-js";
+
 export default function Payment1Page() {
+  const stripeKey = import.meta.env.VITE_APP_STRIPE_KEY;
+  const stripe = loadStripe(stripeKey);
+
   return (
     <>
       <Navbar auth />
