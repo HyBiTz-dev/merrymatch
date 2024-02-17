@@ -153,7 +153,7 @@ async function init() {
     });
   });
 
-  server.app.listen(port, () => {
+  server.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
   });
 }
