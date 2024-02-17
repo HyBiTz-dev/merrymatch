@@ -4,6 +4,8 @@ import { auth } from "../middleware/auth.js";
 
 const messagesRouter = Router();
 
+// messagesRouter.use(auth);
+
 messagesRouter.get("/:conversationId", async (req, res) => {
   let { data: messages, error } = await supabase
     .from("messages")
@@ -13,8 +15,7 @@ messagesRouter.get("/:conversationId", async (req, res) => {
   if (error) {
     return res.status(500).json(error);
   }
-
-  return res.status(200).json({ messages });
+  return res.status(200).json({ messages, error });
 });
 
 messagesRouter.post("/", async (req, res) => {
