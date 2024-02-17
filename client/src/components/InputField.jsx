@@ -30,7 +30,7 @@ export const InputField = ({ formik, fieldName, label, type, placeholder }) => {
           ) : null}
           {formik.touched[fieldName] && formik.errors[fieldName] && (
             <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-              <img src="public/images/alert_error_icon.svg" />
+              <img src="/public/images/alert_error_icon.svg" />
             </div>
           )}
         </div>
@@ -82,7 +82,7 @@ export const SelectInputField = ({
         </select>
         {formik.touched[fieldName] && formik.errors[fieldName] && (
           <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-            <img src="public/images/alert_error_icon.svg" />
+            <img src="/public/images/alert_error_icon.svg" />
           </div>
         )}
       </div>
