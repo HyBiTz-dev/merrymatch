@@ -7,7 +7,7 @@ function Footer() {
           New generation of online dating website for everyone
         </div>
       </div>
-      <div className="flex flex-col items-center gap-6 pt-6 border-t-2 w-full ">
+      <div className="flex flex-col items-center gap-6 pt-6 border-t border-gray-300 w-full ">
         <div className="text-gray-600 text-sm font-medium">
           copyright ©2022 merrymatch.com All rights reserved
         </div>
