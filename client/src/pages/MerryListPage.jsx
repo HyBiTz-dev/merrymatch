@@ -2,9 +2,30 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MerryCard from "../components/MerryCard";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "../context/authentication";
 
 function MerryListPage() {
   const [timeUntilMidnight, setTimeUntilMidnight] = useState(null);
+  const [packageLimit, setPackageLimit] = useState(null);
+  const { state } = useAuth();
+  const user_id = state.id;
+
+  const fetchUserPackage = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/merrylist/${user_id}/package`
+      );
+      const userPackage = response.data.packageLimit.packages.merry_limit;
+      setPackageLimit(userPackage);
+    } catch (error) {
+      console.log("Error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserPackage();
+  }, []);
 
   useEffect(() => {
     const calTime = () => {
@@ -42,14 +63,13 @@ function MerryListPage() {
               <span className="text-body2 text-gray-700">
                 Merry limit today
               </span>
-              <span className="text-body2 text-red-400">2/20</span>
+              <span className="text-body2 text-red-400">2/{packageLimit}</span>
             </div>
             <p className="text-body5 text-gray-600 flex justify-end mr-10">
               Reset in {timeUntilMidnight}
             </p>
           </div>
         </header>
-        <MerryCard />
         <MerryCard />
       </div>
       <div className="bg-main h-40"></div>
