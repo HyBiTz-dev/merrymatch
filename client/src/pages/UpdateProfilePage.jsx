@@ -9,8 +9,11 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProfileModal from "../components/Modal/ProfileModal";
+import AlertModal from "../components/Modal/AlertModal";
+import { useAuth } from "../context/authentication";
 
 function UpdateProfilePage() {
+  const { logout } = useAuth();
   const [userData, setUserData] = useState({});
   const [country, setCountry] = useState([]);
   const [city, SetCity] = useState([]);
@@ -19,9 +22,7 @@ function UpdateProfilePage() {
   const [racial, setRacial] = useState([]);
   const [relation, setRelation] = useState([]);
   const [uploadedPictures, setUploadedPictures] = useState([]);
-  console.log("uploaded : ", uploadedPictures);
   const [deletePictures, setDeletePictures] = useState([]);
-  console.log("deleted : ", deletePictures);
   const param = useParams();
   const [showModal, setShowModal] = useState(false);
   const openModal = () => {
@@ -29,6 +30,13 @@ function UpdateProfilePage() {
   };
   const closeModal = () => {
     setShowModal(false);
+  };
+  const [showAlert, setShowAlert] = useState(false);
+  const openAlert = () => {
+    setShowAlert(true);
+  };
+  const closeAlert = () => {
+    setShowAlert(false);
   };
   const getUserData = async () => {
     try {
@@ -85,6 +93,16 @@ function UpdateProfilePage() {
       console.error("Failed to fetch cities:", error);
     }
   };
+  function calculateAge(dob) {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -166,9 +184,10 @@ function UpdateProfilePage() {
       formData.append("meeting", values.meeting);
       formData.append("hobbiesInterests", values.hobbiesInterests);
       formData.append("description", values.description);
-      formData.append("uploadedPicture", uploadedPictures);
-      formData.append("deletePictures", deletePictures);
+      formData.append("uploadedPicture", JSON.stringify(uploadedPictures));
+      formData.append("deletePictures", JSON.stringify(deletePictures));
       formData.append("userId", userData.id);
+      formData.append("age", calculateAge(formik.values.dateOfBirth));
       values.profilePictures.forEach((file) => {
         formData.append("profilePictures", file, file.name);
       });
@@ -190,6 +209,23 @@ function UpdateProfilePage() {
     validateOnChange: false,
     validateOnBlur: true,
   });
+  const handleOnDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/user/${param.id}`,
+        {
+          data: {
+            userId: userData.id,
+            uploadedPicture: JSON.stringify(uploadedPictures),
+          },
+        }
+      );
+      logout();
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error:", error.response.data);
+    }
+  };
   useEffect(() => {
     getUserData();
     getData("country");
@@ -230,12 +266,36 @@ function UpdateProfilePage() {
     setDeletePictures(newDelPic.concat(delPic));
     setUploadedPictures(newPictures);
   };
+  const previewData = {
+    ...formik.values,
+    country: country.find((c) => c.id === formik.values.country)?.country_name,
+    city: city.find((c) => c.value === formik.values.city)?.label,
+    gender: gender.find((g) => g.id === formik.values.gender)?.name,
+    genderInterests: genderInterests.find(
+      (gi) => gi.id === formik.values.genderInterests
+    )?.name,
+    racial: racial.find((r) => r.id === formik.values.racial)?.name,
+    meeting: relation.find((m) => m.id === formik.values.meeting)?.name,
+    age: calculateAge(formik.values.dateOfBirth),
+  };
   return (
     <>
       <Navbar auth />
       <div className="flex flex-col items-center w-full h-full bg-main py-20 gap-20">
         <header className="flex w-[58.188rem] pb-20 pt-20 justify-evenly items-end">
-          <ProfileModal isOpen={showModal} onClose={closeModal} />
+          <ProfileModal
+            isOpen={showModal}
+            onClose={closeModal}
+            profileData={previewData}
+          />
+          <AlertModal
+            DeleteModal
+            isOpen={showAlert}
+            onClose={closeAlert}
+            isConfrim={handleOnDelete}
+          >
+            Do you sure to delete accouct?
+          </AlertModal>
           <div className="flex flex-col w-[32rem]">
             <div className=" text-beige-700 font-semibold">PROFILE</div>
             <div className=" text-purple-500 text-5xl font-extrabold">
@@ -293,11 +353,11 @@ function UpdateProfilePage() {
                   />
                   {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? (
                     <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-                      <img src="public/images/alert_error_icon.svg" />
+                      <img src="/public/images/alert_error_icon.svg" />
                     </div>
                   ) : (
                     <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-                      <img src="public/images/dateIcon.svg" />
+                      <img src="/public/images/dateIcon.svg" />
                     </div>
                   )}
                 </div>
@@ -522,6 +582,7 @@ function UpdateProfilePage() {
             <button
               className=" py-1 px-2 font-bold text-gray-700 "
               type="button"
+              onClick={openAlert}
             >
               Delete account
             </button>
