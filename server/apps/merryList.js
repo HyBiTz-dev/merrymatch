@@ -14,21 +14,6 @@ merryListRouter.get("/", async (req, res) => {
 merryListRouter.get("/:user_id", async (req, res) => {
   const { user_id } = req.params;
   try {
-    // let { data: user_profile, error } = await supabase
-    //   .from("user_profile")
-    //   .select("id")
-    //   .eq("user_id", user_id);
-
-    // const { data: received_profile, error } = await supabase
-    //   .from("user_profile")
-    //   .select("id")
-    //   .eq("user_id", user_id);
-
-    // let merryReceivedList = await supabase
-    // .from("like_user")
-    // .select("user_profile_id_received")
-    // .eq("user_profile_id_given", user_profile_id_given);
-
     const { data, error } = await supabase
       .from("like_user")
       .select("user_profile_id_received")
@@ -37,14 +22,8 @@ merryListRouter.get("/:user_id", async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.message });
     }
-    // const userProfileData = user_profile[0];
-    // return res.json({ userProfileData });
-    const received_ids = data.map((item) => item.user_profile_id_received);
 
-    // const receivedUserProfile = await supabase
-    //   .from("user_profile")
-    //   .select("name, date_of_birth")
-    //   .in("user_id", received_ids);
+    const received_ids = data.map((item) => item.user_profile_id_received);
 
     const allLikeUser = await supabase
       .from("like_user")
@@ -74,7 +53,6 @@ merryListRouter.get("/:user_id", async (req, res) => {
       )
       .in("user_id", received_ids, matchedUser_ids);
 
-    // const received_id = data;
     return res.json({
       received_ids,
       receivedUserProfile,
@@ -107,19 +85,40 @@ merryListRouter.get("/:user_id/package", async (req, res) => {
   }
 });
 
-// merryListRouter.get("/likeuser", async (req, res) => {
-//   try {
-//     let { data: like_user, error } = await supabase
-//       .from("like_user")
-//       .select("*");
-//     if (error) {
-//       return res.status(400).json({ message: error.message });
-//     }
-//     const likeUserData = { like_user };
-//     return res.json({ likeUserData });
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// });
+merryListRouter.delete("/:user_id/delete", async (req, res) => {
+  const { user_id } = req.params;
+  const receivedIds = req.query.receivedIds;
+
+  try {
+    const { data } = await supabase
+      .from("like_user")
+      .select("id")
+      .eq("user_profile_id_given", user_id)
+      .eq("user_profile_id_received", receivedIds);
+
+    if (data.length === 0) {
+      return res.status(404).json({ message: "id not found" });
+    }
+    const deleteId = data[0].id;
+    await supabase.from("like_user").delete().eq("id", deleteId);
+    return res.json({ message: "Unmerry Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+merryListRouter.post("/:user_id/merry", async (req, res) => {
+  const { user_id } = req.params;
+  const receivedIds = req.body.params.receivedIds;
+  try {
+    const insert = await supabase.from("like_user").insert({
+      user_profile_id_given: user_id,
+      user_profile_id_received: receivedIds,
+    });
+    return res.json({ message: "Merry Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 export default merryListRouter;
