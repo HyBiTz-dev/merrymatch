@@ -62,7 +62,7 @@ merryListRouter.get("/:user_id", async (req, res) => {
     const receivedUserProfile = await supabase
       .from("user_complete_profile")
       .select(
-        `name, age,
+        `user_id, name, age,
         city:city_id(name),
         country:country_id(country_name),
         gender:gender_id (name),

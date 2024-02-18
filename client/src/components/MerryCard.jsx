@@ -7,6 +7,7 @@ function MerryCard() {
   const [merryList, setMerryList] = useState(null);
   const { state } = useAuth();
   const user_id = state.id;
+  const [matchedUserList, setMatchedUserList] = useState(null);
 
   // ---------------fetchData---------------
   const fetchData = async () => {
@@ -14,9 +15,14 @@ function MerryCard() {
       const response = await axios.get(
         `http://localhost:3000/merrylist/${user_id}`
       );
-      console.log(response.data.receivedUserProfile.data);
       const receivedUserData = response.data.receivedUserProfile.data;
+      const matchedUserData = response.data.matchedUser_ids;
+      const likeUserData = response.data.received_ids;
+      // console.log(receivedUserData);
+      // console.log(matchedUserData);
+      // console.log(likeUserData);
       setMerryList(receivedUserData);
+      setMatchedUserList(matchedUserData);
     } catch (error) {
       console.log("Error fetching data", error);
     }
@@ -30,6 +36,7 @@ function MerryCard() {
 
   const renderList = merryList
     ? merryList.map((user, index) => {
+        const isMatched = matchedUserList.includes(user.user_id);
         return (
           <div className="flex flex-col items-center" key={index}>
             <div className="w-[62.5rem] h-[15.625rem] bg-main flex items-center justify-around border-b-2 border-gray-300">
@@ -91,20 +98,24 @@ function MerryCard() {
                 </div>
               </div>
               <div className="flex flex-col gap-6 items-center">
-                <div className="w-40 h-8 relative border-red-500 border-2 rounded-full">
-                  <img
-                    src="/images/merry-match.svg"
-                    className="absolute top-2 left-3"
-                  ></img>
-                  <p className="text-body3 text-red-500 text-center font-extrabold ml-5 mt-0.5">
-                    Merry Match!
-                  </p>
-                </div>
-                {/* <div className="w-40 h-8 relative border-gray-500 border-2 rounded-full">
-          <p className="text-body3 text-gray-700 text-center font-extrabold mt-0.5">
-            Not Match Yet
-          </p>
-        </div> */}
+                {isMatched && (
+                  <div className="w-40 h-8 relative border-red-500 border-2 rounded-full">
+                    <img
+                      src="/images/merry-match.svg"
+                      className="absolute top-2 left-3"
+                    ></img>
+                    <p className="text-body3 text-red-500 text-center font-extrabold ml-5 mt-0.5">
+                      Merry Match!
+                    </p>
+                  </div>
+                )}
+                {!isMatched && (
+                  <div className="w-40 h-8 relative border-gray-500 border-2 rounded-full">
+                    <p className="text-body3 text-gray-700 text-center font-extrabold mt-0.5">
+                      Not Match Yet
+                    </p>
+                  </div>
+                )}
                 <div className="flex gap-4">
                   <Tooltip gray text="Go to chat" img="/images/chat.svg" />
                   <Tooltip gray text="See profile" img="/images/Frame.svg" />
