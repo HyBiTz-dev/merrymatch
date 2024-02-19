@@ -3,6 +3,7 @@ import { useAuth } from "../context/authentication";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../context/socketContext";
 import ProfileModal from "../components/Modal/ProfileModal";
 
 function MerryCard() {
@@ -12,9 +13,10 @@ function MerryCard() {
   const [matchedUserList, setMatchedUserList] = useState(null);
   // const [merryUser, setMerryUser] = useState(null);
   const [merryUserList, setMerryUserList] = useState();
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [profileData, setProfileData] = useState({});
+  const navigate = useNavigate();
+  const { setCurrentChat } = useSocket();
 
   const openModal = (item) => {
     setProfileData(item);
@@ -53,10 +55,10 @@ function MerryCard() {
   const toggleMerry = async (receivedIds) => {
     try {
       if (!merryUserList.includes(receivedIds)) {
-        const response = await axios.post(
-          `http://localhost:3000/merrylist/${user_id}/merry`,
-          { params: { receivedIds } }
-        );
+        const response = await axios.post(`http://localhost:3000/merrylist/`, {
+          user_id: state?.id,
+          receivedIds,
+        });
         if (response.status === 200) {
           setMerryUserList([...merryUserList, receivedIds]);
         }
@@ -71,6 +73,23 @@ function MerryCard() {
       }
     } catch (error) {
       console.error("Error toggling merry status:", error);
+    }
+  };
+
+  const handleClickChat = async (userId) => {
+    const result = await axios.get(
+      `http://localhost:3000/conversation/${userId}`
+    );
+    if (result.data.conversation.length === 0) {
+      const data = await axios.post(`http://localhost:3000/conversation/`, {
+        sender_id: state?.id,
+        receiver_id: userId,
+      });
+      setCurrentChat(data.data.data[0]);
+      navigate(`/messages/${data.data.data[0].id}`);
+    } else {
+      setCurrentChat(result.data.conversation[0]);
+      navigate(`/messages/${result.data.conversation[0].id}`);
     }
   };
 
@@ -167,7 +186,14 @@ function MerryCard() {
                 )}
                 <div className="flex gap-4">
                   {isMatched ? (
-                    <Tooltip gray text="Go to chat" img="/images/chat.svg" />
+                    <Tooltip
+                      gray
+                      text="Go to chat"
+                      img="/images/chat.svg"
+                      onClick={() => {
+                        handleClickChat(user.user_id);
+                      }}
+                    />
                   ) : null}
                   <Tooltip
                     gray
