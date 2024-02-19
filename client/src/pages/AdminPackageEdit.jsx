@@ -1,35 +1,41 @@
 import SideBarAdmin from "../components/SidebarAdmin";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import classNames from "classnames";
 import Button from "../components/Button";
 import { Formik, Field, FieldArray, Form } from "formik";
-import axios, { all } from "axios";
+import axios from "axios";
 
 function AdminPackageEdit() {
   const inputRef = useRef(null);
-  const { packageId, setPackageId } = useState(null);
-  const [allPackage, setAllPackages] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [deletePackageId, setDeletePackageId] = useState(null);
+  const params = useParams();
+  const [packages, setPackages] = useState(null);
+  // const [showModal, setShowModal] = useState(false);
+  // const [deletePackageId, setDeletePackageId] = useState(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    const packageId = params.id;
+
+    if (!packageId) {
+      navigate("/admin/package");
+    }
+
     const fetchPackageData = async () => {
       try {
         const resp = await axios.get(
           `http://localhost:3000/package/${packageId}`
         );
         const packageData = resp.data;
-        setAllPackages(packageData);
+        setPackages(packageData[0]);
       } catch (error) {
         console.error("Error fetching package data:", error);
       }
     };
     fetchPackageData();
-  }, []);
+  }, [params.id]);
 
   const handleFileChange = (e, setFieldValue) => {
     const file = e.target.files[0];
@@ -46,14 +52,18 @@ function AdminPackageEdit() {
   async function handleEditPackage(values) {
     const { packageName, price, merryLimit, packageIcon, packageDetails } =
       values;
+    const packageId = params.id;
     try {
-      const { data, error } = await axios.put("http://localhost:3000/package", {
-        packageName,
-        price,
-        merryLimit,
-        packageIcon,
-        details: packageDetails,
-      });
+      const { data, error } = await axios.put(
+        `http://localhost:3000/package/${packageId}`,
+        {
+          packageName,
+          price,
+          merryLimit,
+          packageIcon,
+          details: packageDetails,
+        }
+      );
       console.log(data);
       if (error) throw error;
       navigate("/admin/package");
@@ -62,14 +72,18 @@ function AdminPackageEdit() {
     }
   }
 
+  if (!packages) {
+    return null;
+  }
+
   return (
     <Formik
       initialValues={{
-        packageName: allPackage.name || "",
-        price: allPackage.price || 0,
-        merryLimit: allPackage.merryLimit || 0,
-        packageIcon: allPackage.packageIcon || "",
-        packageDetails: allPackage.packageDetails || [""],
+        packageName: packages.name || "",
+        price: packages.price || 0,
+        merryLimit: packages.merry_limit || 0,
+        packageIcon: packages.package_icon || "",
+        packageDetails: packages.details || [""],
       }}
       onSubmit={handleEditPackage}
     >

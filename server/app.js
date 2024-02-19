@@ -146,6 +146,23 @@ async function init() {
     }
   });
 
+  app.get("/package/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+      const { data, error } = await supabase
+        .from("packages")
+        .select("*")
+        .match({ id });
+      if (error) throw error;
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+      res
+        .status(500)
+        .json({ error: "Internal server error", message: error.message });
+    }
+  });
+
   let users = [];
 
   const addUser = (userId, socketId) => {
