@@ -14,8 +14,10 @@ function MerryCard() {
   const [merryUserList, setMerryUserList] = useState();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [profileData, setProfileData] = useState({});
 
-  const openModal = () => {
+  const openModal = (item) => {
+    setProfileData(item);
     setShowModal(true);
   };
 
@@ -83,15 +85,19 @@ function MerryCard() {
           <div className="flex flex-col items-center " key={index}>
             <div className="w-[62.5rem] h-[15.625rem] bg-main flex items-center justify-around border-b-2 border-gray-300">
               <div className="flex gap-10">
-                <ProfileModal isOpen={showModal} onClose={closeModal} />
+                <ProfileModal
+                  isOpen={showModal}
+                  onClose={closeModal}
+                  profileData={profileData}
+                />
                 <div className="relative h-fit">
                   <img
-                    src={user.image_url[0].image_url[0]}
+                    src={user.image_url[0]}
                     className="w-[200px] h-[200px] rounded-3xl object-cover"
                   ></img>
                   {/* <p className="absolute bottom-0 left-0 bg-purple-100 text-purple-600 rounded-bl-3xl rounded-tr-3xl text-body5 w-20 text-center">
-                    Merry today
-                  </p> */}
+                  Merry today
+                </p> */}
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-6">
@@ -106,7 +112,7 @@ function MerryCard() {
                       className="inline w-[4%] ml-2"
                     ></img>
                     <p className="text-body4 inline text-gray-700">
-                      {user.city.name}, {user.country.country_name}
+                      {user.city_name}, {user.country_name}
                     </p>
                   </div>
                   <div className="grid  grid-cols-[170px_minmax(160px,_1fr)_80px] gap-3">
@@ -114,28 +120,28 @@ function MerryCard() {
                       Sexual identities
                     </span>
                     <span className="text-body2 text-gray-700 ">
-                      {user.gender.name}
+                      {user.gender_name}
                     </span>
                     <br />
                     <span className="text-body2 text-gray-900 ">
                       Sexual preferences
                     </span>
                     <span className="text-body2 text-gray-700 ">
-                      {user.gender_interest_id.name}
+                      {user.gender_interest_name}
                     </span>
                     <br />
                     <span className="text-body2 text-gray-900 ">
                       Racial preferences
                     </span>
                     <span className="text-body2 text-gray-700 ">
-                      {user.racial.name}
+                      {user.racial_name}
                     </span>
                     <br />
                     <span className="text-body2 text-gray-900 ">
                       Meeting interests
                     </span>
                     <span className="text-body2 text-gray-700 ">
-                      {user.relation_interest_id.name}
+                      {user.relation_interest_name}
                     </span>
                   </div>
                 </div>
@@ -167,7 +173,9 @@ function MerryCard() {
                     gray
                     text="See profile"
                     img="/images/Frame.svg"
-                    onClick={openModal}
+                    onClick={() => {
+                      openModal(user);
+                    }}
                   />
                   {isMerry && (
                     <Tooltip

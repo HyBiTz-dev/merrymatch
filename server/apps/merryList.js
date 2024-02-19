@@ -38,6 +38,21 @@ merryListRouter.get("/:user_id", async (req, res) => {
       (item) => item.user_profile_id_given
     );
 
+    // const receivedUserProfile = await supabase
+    //   .from("user_profile_view")
+    //   .select(
+    //     `user_id, name, age,
+    //     city:city_id(name),
+    //     country:country_id(country_name),
+    //     gender:gender_id (name),
+    //     gender_interest_id:gender_interest_id (name),
+    //     racial:racial_id(name),
+    //     relation_id:relation_interest(name),
+    //     image_url:user_image(image_url)
+    //     `
+    //   )
+    //   .in("user_id", received_ids, matchedUser_ids);
+
     const receivedUserProfile = await supabase
       .from("user_profile_view")
       .select("*")
