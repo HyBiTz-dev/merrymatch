@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
+
 const useAuth = () => useContext(AuthContext);
+
 const getState = () => {
   // ดึงค่า token จาก local storage
   const token = localStorage.getItem("token");
@@ -41,6 +43,7 @@ function AuthProvider(props) {
 
       const token = result.data.token;
       localStorage.setItem("token", token);
+      // const userDataFromToken = jwtDecode(token);
       setState(getState());
       navigate("/");
     }

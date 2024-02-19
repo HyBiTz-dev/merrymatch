@@ -55,8 +55,10 @@ function Conversation({ conversation, currentUser, Chat, newMessages }) {
       <div className="truncate">
         <div className="text-body2 text-gray-900">{user?.name}</div>
         <div className="text-body4 text-gray-700">
-          {currentUser === messages.sender_id ? "You" : user?.name} :
-          {messages?.message_text}
+          {messages
+            ? `${currentUser === messages?.sender_id ? "You" : user?.name} :
+          ${messages?.message_text}`
+            : ""}
         </div>
       </div>
     </div>

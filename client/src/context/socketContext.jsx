@@ -47,11 +47,13 @@ function SocketProvider(props) {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/messages/${currentChat?.id}`
-        );
-        setMessages(res.data.messages);
-        setArrCurrentChat(Object.values(currentChat));
+        if (currentChat) {
+          const res = await axios.get(
+            `http://localhost:3000/messages/${currentChat?.id}`
+          );
+          setMessages(res.data.messages);
+          setArrCurrentChat(Object.values(currentChat));
+        }
       } catch (error) {
         console.log(error);
       }

@@ -1,10 +1,7 @@
 import Button from "./Button";
-import { supabase } from "../lib/helper/supabaseClient";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authentication";
 
-function Navbar({ username }) {
-  const navigate = useNavigate();
+function Navbar() {
   const { logout, isAuthenticated, state } = useAuth();
 
   const unauth = () => {
@@ -46,7 +43,7 @@ function Navbar({ username }) {
   };
   const auth = () => {
     return (
-      <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[30.5rem] bg-white relative z-50 shadow-nav">
+      <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[28rem] bg-white relative z-50 shadow-nav">
         <div>
           <a href="/">
             <img src="/images/logo.svg" width={167} height={56} alt="logo" />
@@ -76,8 +73,17 @@ function Navbar({ username }) {
               height={48}
               className="bg-gray-100 rounded-3xl p-3"
             />
-            <div className="dropdown dropdown-end">
-              <img tabIndex={0} role="button" src="/images/profile.png" />
+            <div className="dropdown dropdown-end w-12 h-12">
+              <img
+                tabIndex={0}
+                role="button"
+                className="w-12 h-12 rounded-full object-cover"
+                src={
+                  state?.proflie_images !== null
+                    ? state?.proflie_images
+                    : "/images/blank-profile-picture.png"
+                }
+              />
               <ul
                 tabIndex={0}
                 className="menu dropdown-content bg-white shadow-nav rounded-box w-[12.375rem] mt-4 py-2 px-0 gap-2"
@@ -94,7 +100,7 @@ function Navbar({ username }) {
                 <div>
                   <li>
                     <a href={`/update/${state?.id}`} className="text-gray-700">
-                      <img src="images/profile.svg" alt="" />
+                      <img src="/images/profile.svg" alt="" />
                       Profile
                     </a>
                   </li>
@@ -104,12 +110,15 @@ function Navbar({ username }) {
                       Merry List
                     </a>
                   </li>
-                  <li>
-                    <a href="" className="text-gray-700">
-                      <img src="/images/membership.svg" alt="" />
-                      Merry Membership
-                    </a>
-                  </li>
+                  {state?.role === "User" ? null : (
+                    <li>
+                      <a href="" className="text-gray-700">
+                        <img src="/images/membership.svg" alt="" />
+                        Merry Membership
+                      </a>
+                    </li>
+                  )}
+
                   <li>
                     <a href="" className="text-gray-700 w-full">
                       <img src="/images/compliant.svg" alt="" />

@@ -7,6 +7,7 @@ import { useAuth } from "../context/authentication";
 
 export default function Home() {
   const { state } = useAuth();
+
   // const [user, setUser] = useState(null);
 
   // const checkUser = async () => {
