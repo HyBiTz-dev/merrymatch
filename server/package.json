@@ -13,6 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "@supabase/ssr": "^0.1.0",
+    "@stripe/react-stripe-js": "^2.5.0",
+    "@stripe/stripe-js": "^3.0.3",
     "@supabase/supabase-js": "^2.39.3",
     "axios": "^1.6.7",
     "body-parser": "^1.20.2",
@@ -26,6 +28,8 @@
     "postgres": "^3.4.3",
     "react-tinder-card": "^1.6.4",
     "socket.io": "^4.7.4",
-    "uuid": "^9.0.1"
+    "stripe": "^14.17.0",
+    "uuid": "^9.0.1",
+    "uuidv4": "^6.2.13"
   }
 }
