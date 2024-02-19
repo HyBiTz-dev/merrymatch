@@ -8,6 +8,7 @@ import { useStripe } from "@stripe/react-stripe-js";
 
 export default function Payment1Page() {
   const stripeKey = import.meta.env.VITE_APP_STRIPE_KEY;
+  const stripPKey = import.meta.env.VITE_APP_STRIPE_P_KEY;
   const stripe = loadStripe(stripeKey);
 
   return (
