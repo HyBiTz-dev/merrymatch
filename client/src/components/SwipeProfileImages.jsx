@@ -5,7 +5,7 @@ import "swiper/css/navigation";
 
 import { Mousewheel, Navigation } from "swiper/modules";
 
-export default function SwipeProfileImages() {
+export default function SwipeProfileImages({ user }) {
   return (
     <div className="absolute  w-[38.75rem] h-[38.75rem]">
       <Swiper
@@ -18,41 +18,15 @@ export default function SwipeProfileImages() {
         modules={[Mousewheel, Navigation]}
         className="mySwiper"
       >
-        <SwiperSlide>
-          <img
-            src="/images/matching-test.png"
-            alt=""
-            className="w-[38.75rem] h-[38.75rem] object-cover"
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="/images/matching-test.png"
-            alt=""
-            className="w-[38.75rem] h-[38.75rem] object-cover"
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="/images/matching-test.png"
-            alt=""
-            className="w-[38.75rem] h-[38.75rem] object-cover"
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="/images/matching-test.png"
-            alt=""
-            className="w-[38.75rem] h-[38.75rem] object-cover"
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="/images/matching-test.png"
-            alt=""
-            className="w-[38.75rem] h-[38.75rem] object-cover"
-          />
-        </SwiperSlide>
+        {user.map((item, index) => (
+          <SwiperSlide key={index}>
+            <img
+              src={item}
+              alt=""
+              className="w-[38.75rem] h-[38.75rem] object-cover"
+            />
+          </SwiperSlide>
+        ))}
       </Swiper>
       <div className="flex justify-between gap-5 absolute z-50 bottom-[4.2rem] right-10">
         <svg

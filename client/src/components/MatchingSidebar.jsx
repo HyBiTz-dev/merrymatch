@@ -6,7 +6,13 @@ import { useNavigate } from "react-router-dom";
 import SwipeMatchsidebar from "./SwipeMatchsidebar";
 
 export default function MatchingSidebar({ Chat }) {
-  const { conversation, setCurrentChat, messages, onlineUser } = useSocket();
+  const {
+    conversation,
+    setCurrentChat,
+    messages,
+    onlineUser,
+    getConversation,
+  } = useSocket();
   const { state } = useAuth();
   const navigate = useNavigate();
 
@@ -14,6 +20,10 @@ export default function MatchingSidebar({ Chat }) {
     setCurrentChat(event);
     navigate(`/messages/${event.id}`);
   };
+
+  useEffect(() => {
+    getConversation();
+  }, [Chat]);
 
   return (
     <div className="border-r border-gray-300">

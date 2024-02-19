@@ -21,6 +21,7 @@ body {
 .swiper-slide {
   background-position: center;
   background-size: cover;
+  /* background-color: #160404; */
   /* width: 620px;
   height: 620px; */
 }

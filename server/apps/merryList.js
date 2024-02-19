@@ -40,17 +40,7 @@ merryListRouter.get("/:user_id", async (req, res) => {
 
     const receivedUserProfile = await supabase
       .from("user_profile_view")
-      .select(
-        `user_id, name, age,
-        city:city_id(name),
-        country:country_id(country_name),
-        gender:gender_id (name),
-        gender_interest_id:gender_interest_id (name),
-        racial:racial_id(name),
-        relation_id:relation_interest(name),
-        image_url:user_image(image_url)
-        `
-      )
+      .select("*")
       .in("user_id", received_ids, matchedUser_ids);
 
     return res.json({
@@ -107,15 +97,18 @@ merryListRouter.delete("/:user_id/delete", async (req, res) => {
   }
 });
 
-merryListRouter.post("/:user_id/merry", async (req, res) => {
-  const { user_id } = req.params;
-  const receivedIds = req.body.params.receivedIds;
+merryListRouter.post("/", async (req, res) => {
+  const { user_id, receivedIds } = req.body;
+
   try {
-    const insert = await supabase.from("like_user").insert({
+    const { data, error } = await supabase.from("like_user").insert({
       user_profile_id_given: user_id,
       user_profile_id_received: receivedIds,
     });
-    return res.json({ message: "Merry Successfully" });
+    if (error) {
+      return res.status(500).json({ message: error.message });
+    }
+    return res.status(200).json({ message: "Merry Successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

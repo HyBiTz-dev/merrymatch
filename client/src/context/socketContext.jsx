@@ -80,6 +80,7 @@ function SocketProvider(props) {
         // notifications,
         // setNotifications,
         conversation,
+        getConversation,
       }}
     >
       {props.children}
