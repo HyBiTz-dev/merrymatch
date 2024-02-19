@@ -11,6 +11,7 @@ import Register from "../pages/RegisterMainPage";
 import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/MessagePage";
 import FilingComplaintPage from "../pages/FilingComplaintPage";
+import MerryListPage from "../pages/MerryListPage";
 import { useAuth } from "../context/authentication";
 import UpdateProfilePage from "../pages/UpdateProfilePage";
 
@@ -25,9 +26,9 @@ export default function Router() {
         <Route path="/package" element={<PackagePage />} />
         <Route path="/matching" element={<MatchingPage />} />
         <Route path="/update/:id" element={<UpdateProfilePage />} />
-        {/* <Route path="/merrylist" element={<MerryListPage/>} /> */}
         <Route path="/messages/:id" element={<Chat />} />
         <Route path="/filing-complaint" element={<FilingComplaintPage />} />
+        <Route path="/merrylist" element={<MerryListPage />} />
 
         {/* ------Admin routes------ */}
         {role === "Admin" && (

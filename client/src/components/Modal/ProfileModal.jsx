@@ -1,4 +1,4 @@
-export default function ProfileModal({ isOpen, onClose }) {
+export default function ProfileModal({ isOpen, onClose, profileData }) {
   if (!isOpen) return null;
 
   return (
@@ -60,12 +60,18 @@ export default function ProfileModal({ isOpen, onClose }) {
           <div className="flex flex-col gap-10 pt-6 pl-14 w-[29.875rem]">
             <div className="flex flex-col gap-2">
               <div className="flex gap-4">
-                <span className="text-headline2 text-gray-900">Daeny</span>
-                <span className="text-headline2 text-gray-700">24</span>
+                <span className="text-headline2 text-gray-900">
+                  {profileData?.name}
+                </span>
+                <span className="text-headline2 text-gray-700">
+                  {profileData?.age}
+                </span>
               </div>
               <div className="flex gap-4">
                 <img src="/images/pin.svg" alt="" />
-                <p className="text-body1 text-gray-700">Bangkok, Thailand</p>
+                <p className="text-body1 text-gray-700">
+                  {profileData?.city},{profileData?.country}
+                </p>
               </div>
             </div>
             <div>
@@ -73,58 +79,55 @@ export default function ProfileModal({ isOpen, onClose }) {
                 <span className="text-body2 text-gray-900 w-48">
                   Sexual identities
                 </span>
-                <span className="text-body1 text-gray-700">Female</span>
+                <span className="text-body1 text-gray-700">
+                  {profileData?.gender}
+                </span>
               </div>
               <div className="flex items-center py-2">
                 <span className="text-body2 text-gray-900 w-48">
                   Sexual preferences
                 </span>
-                <span className="text-body1 text-gray-700">Male</span>
+                <span className="text-body1 text-gray-700">
+                  {profileData?.genderInterests}
+                </span>
               </div>
               <div className="flex items-center py-2">
                 <span className="text-body2 text-gray-900 w-48">
                   Racial preferences
                 </span>
-                <span className="text-body1 text-gray-700">Indefinite</span>
+                <span className="text-body1 text-gray-700">
+                  {profileData?.racial}
+                </span>
               </div>
               <div className="flex items-center py-2">
                 <span className="text-body2 text-gray-900 w-48">
                   Meeting interests
                 </span>
                 <span className="text-body1 text-gray-700">
-                  Long-term commitment
+                  {profileData?.meeting}
                 </span>
               </div>
             </div>
             <div className="flex flex-col gap-4">
               <span className="text-headline4 text-gray-900">About me</span>
               <span className="text-body2 text-gray-900">
-                I know nothing..but you
+                {profileData?.description}
               </span>
             </div>
             <div className="flex flex-col gap-6">
               <span className="text-headline4 text-gray-900">
                 Hobbies and Interests
               </span>
+
               <div className="flex gap-3 flex-wrap">
-                <span className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600">
-                  dragon
-                </span>
-                <span className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600">
-                  romantic relationship
-                </span>
-                <span className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600">
-                  political
-                </span>
-                <span className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600">
-                  black hair
-                </span>
-                <span className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600">
-                  friendly
-                </span>
-                <span className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600">
-                  fire
-                </span>
+                {profileData?.hobbiesInterests.map((text, index) => (
+                  <span
+                    className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600"
+                    key={index}
+                  >
+                    {text}
+                  </span>
+                ))}
               </div>
             </div>
           </div>

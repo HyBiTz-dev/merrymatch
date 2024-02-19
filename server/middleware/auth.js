@@ -1,9 +1,8 @@
-import express from "express";
 import jwt from "jsonwebtoken";
 
 export const auth = async (req, res, next) => {
   try {
-    //const token = req.header('Authorization')?.replace('Bearer ', '');
+    // const token = req.header("Authorization")?.replace("Bearer ", "");
     const token = req.header("Authorization")?.split(" ")[1];
 
     const supabaseSecret = `${process.env.SUPABASE_JWT_SECRET}`;
@@ -11,7 +10,6 @@ export const auth = async (req, res, next) => {
     if (token) {
       //throw new Error();
       //const checkJwt = jwt.decode(token, { complete: true, json: true });
-
       jwt.verify(token, supabaseSecret);
     } else {
       res.status(401).json({ msg: "No token, auth denied!" });
