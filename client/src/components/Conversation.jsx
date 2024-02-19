@@ -31,7 +31,7 @@ function Conversation({ conversation, currentUser, Chat, newMessages }) {
         const res = await axios.get(
           `http://localhost:3000/user?userId=${macthId}`
         );
-        setUser(res.data.user_profile[0]);
+        setUser(res.data[0]);
       } catch (error) {
         console.log(error);
       }
@@ -50,7 +50,11 @@ function Conversation({ conversation, currentUser, Chat, newMessages }) {
     >
       {/* <div className="indicator relative"> */}
       {/* <span className="indicator-item badge bg-green-400 border-green-400 absolute top-2 right-2"></span> */}
-      <img src="/images/avatar-chat.png" alt="" />
+      <img
+        src={user?.image_url[0]}
+        alt=""
+        className="w-[3.75rem] h-[3.75rem] rounded-full object-cover"
+      />
       {/* </div> */}
       <div className="truncate">
         <div className="text-body2 text-gray-900">{user?.name}</div>

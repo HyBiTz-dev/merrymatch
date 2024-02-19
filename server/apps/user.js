@@ -11,17 +11,24 @@ const upload = multer({ storage: storage });
 
 userRouter.get("/", async (req, res) => {
   const userQuery = req.query.userId;
-
-  const { data: user_profile, error } = await supabase
-    .from("user_profile")
-    .select("*")
-    .eq("user_id", userQuery);
-
-  if (error) {
-    return res.status(500).json(error);
+  if (userQuery) {
+    const { data: user_profile, error } = await supabase
+      .from("user_profile_view")
+      .select("*")
+      .eq("user_id", userQuery);
+    if (error) {
+      return res.status(500).json(error);
+    }
+    return res.status(200).json(user_profile);
+  } else {
+    const { data: user_profile, error } = await supabase
+      .from("user_profile_view")
+      .select("*");
+    if (error) {
+      return res.status(500).json(error);
+    }
+    return res.status(200).json(user_profile);
   }
-
-  return res.status(200).json({ user_profile });
 });
 
 userRouter.get("/data", async (req, res) => {

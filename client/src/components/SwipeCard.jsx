@@ -1,5 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import axios from "axios";
 
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -9,14 +10,22 @@ import { EffectCoverflow } from "swiper/modules";
 import Button from "./Button";
 import ProfileModal from "../components/Modal/ProfileModal";
 import SwipeProfileImages from "./SwipeProfileImages";
+import { useAuth } from "../context/authentication";
+import { useNavigate } from "react-router-dom";
 
 export default function SwipeCard() {
-  const mockdata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const [match, setMatch] = useState(false);
+  const swiperRef = useRef();
+  const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+  const [match, setMatch] = useState([]);
+  const [profileData, setProfileData] = useState({});
+
+  const { state, setCurrentChat } = useAuth();
 
   const [showModal, setShowModal] = useState(false);
 
-  const openModal = () => {
+  const openModal = (item) => {
+    setProfileData(item);
     setShowModal(true);
   };
 
@@ -24,12 +33,75 @@ export default function SwipeCard() {
     setShowModal(false);
   };
 
+  const handleClickChat = async (userId) => {
+    const result = await axios.get(
+      `http://localhost:3000/conversation/${userId}`
+    );
+    if (result.data.conversation.length === 0) {
+      const data = await axios.post(`http://localhost:3000/conversation/`, {
+        sender_id: state?.id,
+        receiver_id: userId,
+      });
+      setCurrentChat(data.data.data[0]);
+      navigate(`/messages/${data.data.data[0].id}`);
+    } else {
+      setCurrentChat(result.data.conversation[0]);
+      navigate(`/messages/${result.data.conversation[0].id}`);
+    }
+  };
+
+  const handleHeartButton = async (receivedIds) => {
+    await axios.post("http://localhost:3000/merrylist", {
+      user_id: state?.id,
+      receivedIds,
+    });
+
+    const result = await axios.get(
+      `http://localhost:3000/merrylist/${state?.id}`
+    );
+    // const isMatch = result.data.matchedUser_ids.includes(receivedIds);
+    const isMatch = result.data.receivedUserProfile.data.filter(
+      (item) => item.user_id === receivedIds
+    );
+
+    if (isMatch) {
+      setMatch(isMatch);
+    } else {
+      const result = users.filter((item) => item.user_id !== receivedIds);
+      setUsers(result);
+    }
+  };
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const result = await axios.get("http://localhost:3000/user");
+      const matchUser = await axios.get(
+        `http://localhost:3000/merrylist/${state?.id}`
+      );
+      const unMatchUser = result.data.filter(
+        (item) =>
+          item.role_name !== "Admin" &&
+          state.id !== item.user_id &&
+          !matchUser.data.received_ids.includes(item.user_id)
+      );
+      setUsers(unMatchUser);
+    };
+    getUsers();
+  }, []);
+
   return (
-    <div className="flex flex-col items-center gap-16">
-      <ProfileModal isOpen={showModal} onClose={closeModal} />
-      {!match ? (
+    <div className="flex flex-col items-center gap-16 ">
+      <ProfileModal
+        isOpen={showModal}
+        onClose={closeModal}
+        profileData={profileData}
+      />
+      {match.length === 0 ? (
         <>
           <Swiper
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
             effect={"coverflow"}
             grabCursor={false}
             loop={true}
@@ -45,17 +117,17 @@ export default function SwipeCard() {
             modules={[EffectCoverflow]}
             className="mySwiper pb-10 pt-10"
           >
-            {mockdata.map((item, index) => (
+            {users.map((item, index) => (
               <SwiperSlide key={index}>
-                <div className="swiper-zoom-container relative ">
+                <div className="swiper-zoom-container relative">
                   <div className="w-[38.75rem] h-[38.75rem] overflow-hidden rounded-[2rem] bg-cover flex flex-col justify-end relative">
-                    <SwipeProfileImages />
+                    <SwipeProfileImages user={item.image_url} />
                     <div className="flex justify-between items-center py-14 pr-8 pl-10 bg-gradient-to-t from-[#390741] to-transparent rounded-b-[2rem] z-10">
                       <div className="flex justify-center items-center gap-4">
                         <span className="text-white text-headline3">
-                          Danny{" "}
+                          {item.name}{" "}
                           <span className="text-gray-400 text-headline3">
-                            24
+                            {item.age}
                           </span>
                         </span>
                         <img
@@ -63,7 +135,7 @@ export default function SwipeCard() {
                           className="w-8 h-8 p-2 bg-white bg-opacity-20 shadow-nav rounded-full"
                           alt=""
                           role="button"
-                          onClick={openModal}
+                          onClick={() => openModal(item)}
                         />
                       </div>
                     </div>
@@ -75,6 +147,7 @@ export default function SwipeCard() {
                       width={110}
                       role="button"
                       alt=""
+                      onClick={() => swiperRef.current.slideNext()}
                     />
                     <img
                       src="/images/match-button.svg"
@@ -82,7 +155,7 @@ export default function SwipeCard() {
                       width={110}
                       role="button"
                       alt=""
-                      onClick={() => setMatch(true)}
+                      onClick={() => handleHeartButton(item?.user_id, index)}
                     />
                   </div>
                 </div>
@@ -113,15 +186,22 @@ export default function SwipeCard() {
           modules={[EffectCoverflow]}
           className="mySwiper"
         >
-          {mockdata.map((item, index) => (
+          {match.map((item, index) => (
             <SwiperSlide key={index}>
               <div className="swiper-zoom-container">
-                <div className="bg-[url('/images/matching-test.png')] w-[44.75rem] h-[44.75rem]  rounded-[2rem] bg-cover flex flex-col justify-end relative">
-                  <div className="flex justify-between items-center py-14 pr-8 pl-10 bg-gradient-to-t from-[#390741] to-transparent rounded-b-[2rem]">
+                <div className="w-[44.75rem] h-[44.75rem] rounded-[2rem] bg-cover flex flex-col justify-end relative overflow-hidden">
+                  <img
+                    src={item.image_url[0]}
+                    className="absolute object-cover w-[44.75rem] h-[44.75rem]"
+                  />
+                  <div className="flex justify-between items-center py-14 pr-8 pl-10 bg-gradient-to-t from-[#390741] to-transparent rounded-b-[2rem] z-10">
                     <div className="flex flex-col justify-center items-center gap-14 absolute left-56 top-[22rem]">
                       <img src="/images/MerryMatch-Frame.png" alt="" />
                       <div>
-                        <Button secondary onClick={() => setMatch(false)}>
+                        <Button
+                          secondary
+                          onClick={() => handleClickChat(item.user_id)}
+                        >
                           Start Conversation
                         </Button>
                       </div>
