@@ -1,7 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 function SideBarAdmin() {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex h-screen w-[15rem] border-r border-r-gray-400 flex-col">
-      <div className="">
+    <div className="flex h-screen w-[15rem] bg-white border-r border-r-gray-400 flex-col">
+      <div>
         <div className="mx-6 my-6 flex flex-col items-center">
           <img
             src="/images/logo(merry-match-admin).svg"
@@ -14,7 +18,9 @@ function SideBarAdmin() {
           <div className=" hover:bg-gray-100 active:bg-gray-200">
             <div className="flex mx-6 py-6">
               <img src="/images/package.svg" alt="" className="pr-4" />
-              <span>Merry Package</span>
+              <span onClick={() => navigate("/admin/package")}>
+                Merry Package
+              </span>
             </div>
           </div>
           <div className=" hover:bg-gray-100 active:bg-gray-200">

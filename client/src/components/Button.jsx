@@ -1,5 +1,6 @@
 export default function Button({
   props,
+  type,
   primary,
   secondary,
   ghost,
@@ -35,6 +36,7 @@ export default function Button({
 
     return (
       <button
+        type={type}
         className={className + " " + classes}
         onClick={onClick}
         disabled={disabled}
@@ -49,6 +51,7 @@ export default function Button({
 
     return (
       <button
+        type={type}
         className={className + " " + classes}
         onClick={onClick}
         disabled={disabled}
@@ -63,6 +66,7 @@ export default function Button({
 
     return (
       <button
+        type={type}
         className={className + " " + classes}
         onClick={onClick}
         disabled={disabled}

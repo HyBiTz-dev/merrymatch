@@ -1,8 +1,11 @@
 import SideBarAdmin from "../components/SidebarAdmin";
 import { useRef } from "react";
 import { useState } from "react";
-// import classNames from "classnames";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import classNames from "classnames";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 
 function AdminPackageEdit() {
   const inputRef = useRef(null);
@@ -39,15 +42,16 @@ function AdminPackageEdit() {
             Edit ‘Premium’
           </span>
           <div className="flex ">
-            <button
+            <Button
+              secondary
               onClick={() => navigate("/admin/package")}
-              className="btn bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-600 rounded-[6rem] w-[6rem]"
+              className=" text-red-600 rounded-[6rem] w-[6rem]"
             >
               Cancel
-            </button>
-            <button className="btn bg-red-500 hover:bg-red-400 active:bg-red-600 text-white rounded-[6rem] w-[6rem]">
+            </Button>
+            <Button primary className=" text-white rounded-[6rem] w-[6rem]">
               Edit
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -66,7 +70,17 @@ function AdminPackageEdit() {
                   />
                 </label>
                 <label className="form-control">
-                  <div className="">
+                  <div>
+                    <span className="">Price</span>
+                    <span className=" text-red-500"> *</span>
+                  </div>
+                  <input
+                    type="text"
+                    className="input input-bordered input-md "
+                  />
+                </label>
+                <label className="form-control">
+                  <div>
                     <span className="">Merry limit</span>
                     <span className=" text-red-500"> *</span>
                   </div>

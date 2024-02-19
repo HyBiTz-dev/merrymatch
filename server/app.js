@@ -42,8 +42,80 @@ async function init() {
   app.use("/filing-complaint", complaintRouter);
   app.use("/merrylist", merryListRouter);
 
+
   app.get("/", (req, res) => {
     res.send("Hello World!");
+  });
+
+  app.get("/login", async (req, res) => {
+    try {
+      const { data, error } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          console.log(event, session);
+        }
+      );
+      return res.send({ data });
+    } catch (error) {
+      console.log({ error });
+      return res.send({ error });
+    }
+  });
+
+  app.post("/package", async (req, res) => {
+    const { packageName, price, merryLimit, packageIcon, details } = req.body;
+    if (!packageName || price < 1 || !merryLimit || !packageIcon || !details) {
+      res.status(400).json({ error: "Please fill all fields" });
+      return;
+    }
+    try {
+      const data = {
+        name: packageName,
+        price,
+        package_icon: packageIcon,
+        merry_limit: merryLimit,
+        details,
+      };
+      const { error } = await supabase.from("packages").insert(data);
+      if (error) {
+        throw error;
+      } else {
+        res
+          .status(201)
+          .json({ message: "package has been created successfully" });
+      }
+    } catch (error) {
+      console.error("Error creating package:", error.message);
+      res
+        .status(500)
+        .json({ error: "Internal server error", message: error.message });
+    }
+  });
+
+  app.delete("/package/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+      const { error } = await supabase.from("packages").delete().eq("id", id);
+      if (error) throw error;
+      res.json({ message: "Package has deleted" });
+    } catch (error) {
+      console.error("Error deleting package:", error.message);
+      res
+        .status(500)
+        .json({ error: "Internal server error", message: error.message });
+    }
+  });
+
+  app.get("/package", async (req, res) => {
+    try {
+      const { data, error } = await supabase.from("packages").select("*");
+      if (error) throw error;
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+      res
+        .status(500)
+        .json({ error: "Internal server error", message: error.message });
+    }
   });
 
   let users = [];

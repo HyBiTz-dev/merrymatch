@@ -2,7 +2,6 @@ import { Router } from "express";
 import { supabase } from "../utils/supabaseClient.js";
 import jwt from "jsonwebtoken";
 import { jwtDecode } from "jwt-decode";
-
 const authRouter = Router();
 
 authRouter.post("/", async (req, res) => {
