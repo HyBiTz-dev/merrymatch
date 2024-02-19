@@ -12,6 +12,8 @@ export default function Button({
   view,
   match,
   type,
+  actionRed,
+  actionGray,
 }) {
   if (primary) {
     const classes =

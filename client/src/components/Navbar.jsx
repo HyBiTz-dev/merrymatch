@@ -99,8 +99,8 @@ function Navbar({ username }) {
                     </a>
                   </li>
                   <li>
-                    <a href="" className="text-gray-700">
-                      <img src="/images/member-list.svg" alt="" />
+                    <a href="/merrylist" className="text-gray-700">
+                      <img src="images/member-list.svg" alt="" />
                       Merry List
                     </a>
                   </li>

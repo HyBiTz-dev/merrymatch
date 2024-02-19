@@ -61,16 +61,16 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
             <div className="flex flex-col gap-2">
               <div className="flex gap-4">
                 <span className="text-headline2 text-gray-900">
-                  {profileData.name}
+                  {profileData?.name}
                 </span>
                 <span className="text-headline2 text-gray-700">
-                  {profileData.age}
+                  {profileData?.age}
                 </span>
               </div>
               <div className="flex gap-4">
                 <img src="/images/pin.svg" alt="" />
                 <p className="text-body1 text-gray-700">
-                  {profileData.city},{profileData.country}
+                  {profileData?.city},{profileData?.country}
                 </p>
               </div>
             </div>
@@ -80,7 +80,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
                   Sexual identities
                 </span>
                 <span className="text-body1 text-gray-700">
-                  {profileData.gender}
+                  {profileData?.gender}
                 </span>
               </div>
               <div className="flex items-center py-2">
@@ -88,7 +88,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
                   Sexual preferences
                 </span>
                 <span className="text-body1 text-gray-700">
-                  {profileData.genderInterests}
+                  {profileData?.genderInterests}
                 </span>
               </div>
               <div className="flex items-center py-2">
@@ -96,7 +96,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
                   Racial preferences
                 </span>
                 <span className="text-body1 text-gray-700">
-                  {profileData.racial}
+                  {profileData?.racial}
                 </span>
               </div>
               <div className="flex items-center py-2">
@@ -104,14 +104,14 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
                   Meeting interests
                 </span>
                 <span className="text-body1 text-gray-700">
-                  {profileData.meeting}
+                  {profileData?.meeting}
                 </span>
               </div>
             </div>
             <div className="flex flex-col gap-4">
               <span className="text-headline4 text-gray-900">About me</span>
               <span className="text-body2 text-gray-900">
-                {profileData.description}
+                {profileData?.description}
               </span>
             </div>
             <div className="flex flex-col gap-6">
@@ -120,7 +120,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
               </span>
 
               <div className="flex gap-3 flex-wrap">
-                {profileData.hobbiesInterests.map((text, index) => (
+                {profileData?.hobbiesInterests.map((text, index) => (
                   <span
                     className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600"
                     key={index}
