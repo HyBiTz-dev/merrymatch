@@ -26,7 +26,6 @@ export default function Router() {
         <Route path="/package" element={<PackagePage />} />
         <Route path="/matching" element={<MatchingPage />} />
         <Route path="/update/:id" element={<UpdateProfilePage />} />
-        {/* <Route path="/merrylist" element={<MerryListPage/>} /> */}
         <Route path="/messages/:id" element={<Chat />} />
         <Route path="/filing-complaint" element={<FilingComplaintPage />} />
         <Route path="/merrylist" element={<MerryListPage />} />
