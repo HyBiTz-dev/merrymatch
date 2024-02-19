@@ -32,7 +32,7 @@ const getState = () => {
 function AuthProvider(props) {
   const navigate = useNavigate();
   const [state, setState] = useState(getState());
-  //   console.log(state);
+  // console.log(state);
 
   const login = async (data) => {
     if (data.email && data.password) {
@@ -43,9 +43,13 @@ function AuthProvider(props) {
 
       const token = result.data.token;
       localStorage.setItem("token", token);
-      // const userDataFromToken = jwtDecode(token);
+      const userDataFromToken = jwtDecode(token);
       setState(getState());
-      navigate("/");
+      if (userDataFromToken.role === "Admin") {
+        navigate("/admin/package");
+      } else {
+        navigate("/");
+      }
     }
   };
 

@@ -3,6 +3,7 @@ import { useAuth } from "../context/authentication";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../context/socketContext";
 import ProfileModal from "../components/Modal/ProfileModal";
 
 function MerryCard() {
@@ -12,10 +13,13 @@ function MerryCard() {
   const [matchedUserList, setMatchedUserList] = useState(null);
   // const [merryUser, setMerryUser] = useState(null);
   const [merryUserList, setMerryUserList] = useState();
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [profileData, setProfileData] = useState({});
+  const navigate = useNavigate();
+  const { setCurrentChat } = useSocket();
 
-  const openModal = () => {
+  const openModal = (item) => {
+    setProfileData(item);
     setShowModal(true);
   };
 
@@ -51,10 +55,10 @@ function MerryCard() {
   const toggleMerry = async (receivedIds) => {
     try {
       if (!merryUserList.includes(receivedIds)) {
-        const response = await axios.post(
-          `http://localhost:3000/merrylist/${user_id}/merry`,
-          { params: { receivedIds } }
-        );
+        const response = await axios.post(`http://localhost:3000/merrylist/`, {
+          user_id: state?.id,
+          receivedIds,
+        });
         if (response.status === 200) {
           setMerryUserList([...merryUserList, receivedIds]);
         }
@@ -72,6 +76,23 @@ function MerryCard() {
     }
   };
 
+  const handleClickChat = async (userId) => {
+    const result = await axios.get(
+      `http://localhost:3000/conversation/${userId}`
+    );
+    if (result.data.conversation.length === 0) {
+      const data = await axios.post(`http://localhost:3000/conversation/`, {
+        sender_id: state?.id,
+        receiver_id: userId,
+      });
+      setCurrentChat(data.data.data[0]);
+      navigate(`/messages/${data.data.data[0].id}`);
+    } else {
+      setCurrentChat(result.data.conversation[0]);
+      navigate(`/messages/${result.data.conversation[0].id}`);
+    }
+  };
+
   //---------------fetchData---------------
 
   const renderList = merryList
@@ -83,15 +104,19 @@ function MerryCard() {
           <div className="flex flex-col items-center " key={index}>
             <div className="w-[62.5rem] h-[15.625rem] bg-main flex items-center justify-around border-b-2 border-gray-300">
               <div className="flex gap-10">
-                <ProfileModal isOpen={showModal} onClose={closeModal} />
+                <ProfileModal
+                  isOpen={showModal}
+                  onClose={closeModal}
+                  profileData={profileData}
+                />
                 <div className="relative h-fit">
                   <img
-                    src={user.image_url[0].image_url[0]}
+                    src={user.image_url[0]}
                     className="w-[200px] h-[200px] rounded-3xl object-cover"
                   ></img>
                   {/* <p className="absolute bottom-0 left-0 bg-purple-100 text-purple-600 rounded-bl-3xl rounded-tr-3xl text-body5 w-20 text-center">
-                    Merry today
-                  </p> */}
+                  Merry today
+                </p> */}
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-6">
@@ -106,7 +131,7 @@ function MerryCard() {
                       className="inline w-[4%] ml-2"
                     ></img>
                     <p className="text-body4 inline text-gray-700">
-                      {user.city.name}, {user.country.country_name}
+                      {user.city_name}, {user.country_name}
                     </p>
                   </div>
                   <div className="grid  grid-cols-[170px_minmax(160px,_1fr)_80px] gap-3">
@@ -114,28 +139,28 @@ function MerryCard() {
                       Sexual identities
                     </span>
                     <span className="text-body2 text-gray-700 ">
-                      {user.gender.name}
+                      {user.gender_name}
                     </span>
                     <br />
                     <span className="text-body2 text-gray-900 ">
                       Sexual preferences
                     </span>
                     <span className="text-body2 text-gray-700 ">
-                      {user.gender_interest_id.name}
+                      {user.gender_interest_name}
                     </span>
                     <br />
                     <span className="text-body2 text-gray-900 ">
                       Racial preferences
                     </span>
                     <span className="text-body2 text-gray-700 ">
-                      {user.racial.name}
+                      {user.racial_name}
                     </span>
                     <br />
                     <span className="text-body2 text-gray-900 ">
                       Meeting interests
                     </span>
                     <span className="text-body2 text-gray-700 ">
-                      {user.relation_interest_id.name}
+                      {user.relation_interest_name}
                     </span>
                   </div>
                 </div>
@@ -161,13 +186,22 @@ function MerryCard() {
                 )}
                 <div className="flex gap-4">
                   {isMatched ? (
-                    <Tooltip gray text="Go to chat" img="/images/chat.svg" />
+                    <Tooltip
+                      gray
+                      text="Go to chat"
+                      img="/images/chat.svg"
+                      onClick={() => {
+                        handleClickChat(user.user_id);
+                      }}
+                    />
                   ) : null}
                   <Tooltip
                     gray
                     text="See profile"
                     img="/images/Frame.svg"
-                    onClick={openModal}
+                    onClick={() => {
+                      openModal(user);
+                    }}
                   />
                   {isMerry && (
                     <Tooltip
