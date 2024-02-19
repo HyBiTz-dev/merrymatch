@@ -106,7 +106,7 @@ function Navbar() {
                   </li>
                   <li>
                     <a href="/merrylist" className="text-gray-700">
-                      <img src="images/member-list.svg" alt="" />
+                      <img src="/images/member-list.svg" alt="" />
                       Merry List
                     </a>
                   </li>
