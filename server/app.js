@@ -13,13 +13,8 @@ import registerRouter from "./apps/register.js";
 import conversationRouter from "./apps/conversation.js";
 import userRouter from "./apps/user.js";
 import complaintRouter from "./apps/complaint.js";
-<<<<<<< HEAD
 import merryListRouter from "./apps/merryList.js";
-
-=======
-import payment1 from "./apps/payment1.js";
 import payment1Router from "./apps/payment1.js";
->>>>>>> 7374db5 (feat/park(payment1):add feature payment only successfully status)
 async function init() {
   const app = express();
   const port = 3000;
