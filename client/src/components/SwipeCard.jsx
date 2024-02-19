@@ -59,13 +59,15 @@ export default function SwipeCard() {
     const result = await axios.get(
       `http://localhost:3000/merrylist/${state?.id}`
     );
-    // const isMatch = result.data.matchedUser_ids.includes(receivedIds);
-    const isMatch = result.data.receivedUserProfile.data.filter(
-      (item) => item.user_id === receivedIds
-    );
+
+    const isMatch = result.data.matchedUser_ids.includes(receivedIds);
 
     if (isMatch) {
-      setMatch(isMatch);
+      setMatch(
+        result.data.receivedUserProfile.data.filter(
+          (item) => item.user_id === receivedIds
+        )
+      );
     } else {
       const result = users.filter((item) => item.user_id !== receivedIds);
       setUsers(result);
@@ -105,6 +107,7 @@ export default function SwipeCard() {
             effect={"coverflow"}
             grabCursor={false}
             loop={true}
+            allowSlidePrev={false}
             centeredSlides={true}
             slidesPerView={"auto"}
             coverflowEffect={{
@@ -112,7 +115,7 @@ export default function SwipeCard() {
               stretch: 150,
               depth: 200,
               modifier: 1,
-              slideShadows: true,
+              slideShadows: false,
             }}
             modules={[EffectCoverflow]}
             className="mySwiper pb-10 pt-10"
