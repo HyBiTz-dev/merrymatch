@@ -76,7 +76,6 @@ function UpdateProfilePage() {
   const getCity = async () => {
     const countryId = formik.values.country;
     if (!countryId) {
-      console.error("No country_id provided");
       SetCity([]);
       return;
     }
@@ -245,7 +244,7 @@ function UpdateProfilePage() {
         gender: userData.gender_id || null,
         genderInterests: userData.gender_interest_id || null,
         racial: userData.racial_id || null,
-        meeting: userData.relation_interest_id || null,
+        meeting: userData.relation_id || null,
         hobbiesInterests: userData.hobbie_interest_array || [],
         description: userData.description || "",
         profilePictures: [],

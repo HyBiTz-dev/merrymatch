@@ -8,7 +8,6 @@ import AdminPackageList from "../pages/AdminPackageList";
 import AdminPackageCreate from "../pages/AdminPackageCreate";
 import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
-import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/MessagePage";
 import FilingComplaintPage from "../pages/FilingComplaintPage";
 import MerryListPage from "../pages/MerryListPage";
@@ -35,7 +34,6 @@ export default function Router() {
           <>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/admintest" element={<AdminPage />} />
             <Route path="/admin/package" element={<AdminPackageList />} />
             <Route
               path="/admin/createpackage"

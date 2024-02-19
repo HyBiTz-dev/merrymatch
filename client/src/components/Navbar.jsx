@@ -120,7 +120,10 @@ function Navbar() {
                   )}
 
                   <li>
-                    <a href="" className="text-gray-700 w-full">
+                    <a
+                      href="/filing-complaint"
+                      className="text-gray-700 w-full"
+                    >
                       <img src="/images/compliant.svg" alt="" />
                       Compliant
                     </a>

@@ -39,7 +39,7 @@ merryListRouter.get("/:user_id", async (req, res) => {
     );
 
     const receivedUserProfile = await supabase
-      .from("user_complete_profile")
+      .from("user_profile_view")
       .select(
         `user_id, name, age,
         city:city_id(name),
@@ -47,7 +47,7 @@ merryListRouter.get("/:user_id", async (req, res) => {
         gender:gender_id (name),
         gender_interest_id:gender_interest_id (name),
         racial:racial_id(name),
-        relation_interest_id:relation_interest(name),
+        relation_id:relation_interest(name),
         image_url:user_image(image_url)
         `
       )

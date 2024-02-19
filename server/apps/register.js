@@ -109,7 +109,7 @@ registerRouter.post(
       }
       const { data: racialData, error: racialDataError } = await supabase
         .from("racial_user_profile")
-        .insert([{ user_profile_id: userProfile[0].id, racial_id: racial }])
+        .insert([{ user_profile_id: user.user.id, racial_id: racial }])
         .select();
       if (racialDataError) {
         return res.status(400).json({ message: racialDataError.message });
@@ -118,8 +118,8 @@ registerRouter.post(
         .from("relation_interest_user_profile")
         .insert([
           {
-            user_profile_id: userProfile[0].id,
-            relation_interest_id: meeting,
+            user_profile_id: user.user.id,
+            relation_id: meeting,
           },
         ])
         .select();
@@ -130,7 +130,7 @@ registerRouter.post(
         .from("hobbie_interest")
         .insert([
           {
-            user_profile_id: userProfile[0].id,
+            user_profile_id: user.user.id,
             hobbie_interest_array: hobbiesInterestsArray,
           },
         ])
@@ -159,7 +159,7 @@ registerRouter.post(
       }
       const { data: userImage, error: userImageError } = await supabase
         .from("user_image")
-        .insert([{ user_profile_id: userProfile[0].id, image_url: urlArray }])
+        .insert([{ user_profile_id: user.user.id, image_url: urlArray }])
         .select();
       if (userImageError) {
         return res.status(400).json({ message: userImageError.message });
