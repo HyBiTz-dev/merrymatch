@@ -1,35 +1,31 @@
-export default function ComplaintStatus({
-  isNew,
-  isPending,
-  isResolved,
-  isCancel,
-}) {
-  if (isNew) {
-    return (
-      <div className="bg-beige-100 rounded-lg py-1 px-2.5 text-body5 text-beige-700 h-[1.625rem] w-[2.875rem]">
-        New
-      </div>
-    );
+function ComplaintStatus({ status }) {
+  let statusText;
+  let statusColor;
+
+  if (status === "New") {
+    statusText = status;
+    statusColor = "bg-beige-100 text-beige-700";
+  } else if (status === "Pending") {
+    statusText = status;
+    statusColor = "bg-yellow-100 text-yellow-500";
+  } else if (status === "Resolved") {
+    statusText = status;
+    statusColor = "bg-green-100 text-green-500";
+  } else if (status === "Cancel") {
+    statusText = status;
+    statusColor = "bg-gray-200 text-gray-700";
+  } else {
+    statusText = "Unknown";
+    statusColor = "bg-red-200 text-red-700";
   }
-  if (isPending) {
-    return (
-      <div className="bg-yellow-100 rounded-lg py-1 px-2.5 text-body5 text-yellow-500 h-[1.625rem] w-[4.063rem]">
-        Pending
-      </div>
-    );
-  }
-  if (isResolved) {
-    return (
-      <div className="bg-green-100 rounded-lg py-1 px-2.5 text-body5 text-green-500 h-[1.625rem] w-[4.375rem]">
-        Resolved
-      </div>
-    );
-  }
-  if (isCancel) {
-    return (
-      <div className="bg-gray-200 rounded-lg py-1 px-2.5 text-body5 text-gray-700 h-[1.625rem] w-[3.563rem]">
-        Cancel
-      </div>
-    );
-  }
+
+  return (
+    <div
+      className={`rounded-lg py-1 px-2.5 text-body5 h-[1.625rem] w-fit ${statusColor}`}
+    >
+      {statusText}
+    </div>
+  );
 }
+
+export default ComplaintStatus;

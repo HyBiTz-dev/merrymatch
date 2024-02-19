@@ -29,4 +29,19 @@ complaintRouter.post("/submit", async (req, res) => {
   }
 });
 
+complaintRouter.get("/admin/complaint-list", async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("user_complaint").select("*");
+
+    if (error) {
+      throw error;
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching data from Supabase:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 export default complaintRouter;
