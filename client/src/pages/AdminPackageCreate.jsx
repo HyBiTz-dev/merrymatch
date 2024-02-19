@@ -112,21 +112,17 @@ function AdminPackageCreate() {
                       />
                     </label>
                   </div>
-                  <label className="form-control">
-                    <div className="">
+                  <label className="form-control pb-10">
+                    <div>
                       <span className="">Merry limit</span>
                       <span className=" text-red-500"> *</span>
                     </div>
                     <Field
-                      as="select"
+                      as="input"
+                      type="number"
                       name="merryLimit"
-                      className="select select-bordered "
-                    >
-                      <option></option>
-                      <option value="25">25</option>
-                      <option value="50">45</option>
-                      <option value="70">70</option>
-                    </Field>
+                      className="input input-bordered input-md"
+                    />
                   </label>
 
                   <div className="pb-10">
