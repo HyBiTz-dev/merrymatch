@@ -47,7 +47,7 @@ export default function SwipeCard() {
           >
             {mockdata.map((item, index) => (
               <SwiperSlide key={index}>
-                <div className="swiper-zoom-container relative">
+                <div className="swiper-zoom-container relative ">
                   <div className="w-[38.75rem] h-[38.75rem] overflow-hidden rounded-[2rem] bg-cover flex flex-col justify-end relative">
                     <SwipeProfileImages />
                     <div className="flex justify-between items-center py-14 pr-8 pl-10 bg-gradient-to-t from-[#390741] to-transparent rounded-b-[2rem] z-10">

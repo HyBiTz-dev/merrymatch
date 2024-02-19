@@ -12,7 +12,6 @@ export default function Button({
   chat,
   view,
   match,
-  type,
   actionRed,
   actionGray,
 }) {

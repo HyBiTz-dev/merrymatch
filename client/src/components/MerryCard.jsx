@@ -80,7 +80,7 @@ function MerryCard() {
         // const isMerry = merryUser.includes(user.user_id);
         const isMerry = merryUserList.includes(user.user_id);
         return (
-          <div className="flex flex-col items-center" key={index}>
+          <div className="flex flex-col items-center " key={index}>
             <div className="w-[62.5rem] h-[15.625rem] bg-main flex items-center justify-around border-b-2 border-gray-300">
               <div className="flex gap-10">
                 <ProfileModal isOpen={showModal} onClose={closeModal} />
