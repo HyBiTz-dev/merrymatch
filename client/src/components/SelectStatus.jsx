@@ -15,10 +15,10 @@ function SelectStatus() {
             className="border bg-white rounded-lg p-3 w-[12.5rem] text-gray-400 focus:border-purple-500 outline-none border-gray-400"
           >
             <option value="" label="All Status" />
-            <option value="new" label="New" />
-            <option value="pending" label="Pending" />
-            <option value="resolved" label="Resolved" />
-            <option value="cancel" label="Cancel" />
+            <option value="New" label="New" />
+            <option value="Pending" label="Pending" />
+            <option value="Resolved" label="Resolved" />
+            <option value="Cancel" label="Cancel" />
           </Field>
 
           <ErrorMessage name="status" component="div" />

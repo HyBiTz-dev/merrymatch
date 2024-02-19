@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import ComplaintStatus from "./ComplaintStatus";
 
 const ComplaintTable = () => {
   const [complaints, setComplaints] = useState([]);
@@ -36,11 +37,11 @@ const ComplaintTable = () => {
   }, []);
 
   const handleRowClick = async (complaintId, complaintStatus) => {
-    if (complaintStatus === "new") {
+    if (complaintStatus === "New") {
       try {
         await supabase
           .from("user_complaint")
-          .update({ complaint_status: "pending" })
+          .update({ complaint_status: "Pending" })
           .eq("id", complaintId);
       } catch (error) {
         console.error("Error updating status:", error.message);
@@ -88,7 +89,9 @@ const ComplaintTable = () => {
                       : complaint.complaint_description}
                   </td>
                   <td>{complaint.created_at}</td>
-                  <td>{complaint.complaint_status}</td>
+                  <td>
+                    <ComplaintStatus status={complaint.complaint_status} />
+                  </td>
                 </tr>
               ))}
             </tbody>
