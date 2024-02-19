@@ -1,61 +1,24 @@
+import SwipeProfileImagesModal from "./SwipeProfileImagesModal";
+
 export default function ProfileModal({ isOpen, onClose, profileData }) {
   if (!isOpen) return null;
 
   return (
-    <dialog className="modal bg-black/20" open>
+    <dialog className="modal bg-black/20 rounded-[32px]" open>
       <div className="modal-box w-[71.25rem] max-w-[71.25rem] h-[46.25rem] bg-white">
-        <div className="modal-action">
+        <div className="modal-action h-4">
           <form method="dialog">
             <button
-              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-lg text-gray-500"
               onClick={onClose}
             >
               ✕
             </button>
           </form>
         </div>
-        <div className="flex justify-between items-center ml-10 w-[61.25rem]">
+        <div className="flex justify-between ml-10 w-[61.25rem]">
           <div className="w-[29.875rem] relative">
-            <img
-              src="/images/matching-test.png"
-              className=" rounded-[2rem]"
-              alt=""
-            />
-            <div className="flex justify-between items-center">
-              <p className="text-body2 py-3 px-6 ">1/2</p>
-              <div className="flex">
-                <svg
-                  className="w-12 fill-gray-600"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M14.7915 7.00498H3.62148L8.50148 2.12498C8.89148 1.73498 8.89148 1.09498 8.50148 0.704976C8.11148 0.314976 7.48148 0.314976 7.09148 0.704976L0.501484 7.29498C0.111484 7.68498 0.111484 8.31498 0.501484 8.70498L7.09148 15.295C7.48148 15.685 8.11148 15.685 8.50148 15.295C8.89148 14.905 8.89148 14.275 8.50148 13.885L3.62148 9.00498H14.7915C15.3415 9.00498 15.7915 8.55498 15.7915 8.00498C15.7915 7.45498 15.3415 7.00498 14.7915 7.00498Z"
-                    fill="#9AA1B9"
-                  />
-                </svg>
-                <svg
-                  className="rotate-180 w-12 fill-gray-600"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M14.7915 7.00498H3.62148L8.50148 2.12498C8.89148 1.73498 8.89148 1.09498 8.50148 0.704976C8.11148 0.314976 7.48148 0.314976 7.09148 0.704976L0.501484 7.29498C0.111484 7.68498 0.111484 8.31498 0.501484 8.70498L7.09148 15.295C7.48148 15.685 8.11148 15.685 8.50148 15.295C8.89148 14.905 8.89148 14.275 8.50148 13.885L3.62148 9.00498H14.7915C15.3415 9.00498 15.7915 8.55498 15.7915 8.00498C15.7915 7.45498 15.3415 7.00498 14.7915 7.00498Z"
-                    fill="#9AA1B9"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div className="flex absolute bottom-1 left-40">
-              <img src="/images/cross-button.svg" role="button" alt="" />
-              <img src="/images/match-button.svg" role="button" alt="" />
-            </div>
+            <SwipeProfileImagesModal user={profileData.image_url} />
           </div>
           <div className="flex flex-col gap-10 pt-6 pl-14 w-[29.875rem]">
             <div className="flex flex-col gap-2">
@@ -70,7 +33,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
               <div className="flex gap-4">
                 <img src="/images/pin.svg" alt="" />
                 <p className="text-body1 text-gray-700">
-                  {profileData?.city},{profileData?.country}
+                  {profileData?.city_name},{profileData?.country_name}
                 </p>
               </div>
             </div>
@@ -80,7 +43,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
                   Sexual identities
                 </span>
                 <span className="text-body1 text-gray-700">
-                  {profileData?.gender}
+                  {profileData?.gender_name}
                 </span>
               </div>
               <div className="flex items-center py-2">
@@ -88,7 +51,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
                   Sexual preferences
                 </span>
                 <span className="text-body1 text-gray-700">
-                  {profileData?.genderInterests}
+                  {profileData?.gender_interest_name}
                 </span>
               </div>
               <div className="flex items-center py-2">
@@ -96,7 +59,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
                   Racial preferences
                 </span>
                 <span className="text-body1 text-gray-700">
-                  {profileData?.racial}
+                  {profileData?.racial_name}
                 </span>
               </div>
               <div className="flex items-center py-2">
@@ -104,7 +67,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
                   Meeting interests
                 </span>
                 <span className="text-body1 text-gray-700">
-                  {profileData?.meeting}
+                  {profileData?.relation_interest_name}
                 </span>
               </div>
             </div>
@@ -120,7 +83,7 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
               </span>
 
               <div className="flex gap-3 flex-wrap">
-                {profileData?.hobbiesInterests.map((text, index) => (
+                {profileData?.hobbie_interest_array.map((text, index) => (
                   <span
                     className="border border-purple-300 rounded-xl py-2 px-4 bg-white text-body2 text-purple-600"
                     key={index}

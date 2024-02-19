@@ -8,12 +8,13 @@ import AdminPackageList from "../pages/AdminPackageList";
 import AdminPackageCreate from "../pages/AdminPackageCreate";
 import AdminPackageEdit from "../pages/AdminPackageEdit";
 import Register from "../pages/RegisterMainPage";
-import AdminPage from "../pages/AdminTestPage";
 import Chat from "../pages/MessagePage";
 import FilingComplaintPage from "../pages/FilingComplaintPage";
 import MerryListPage from "../pages/MerryListPage";
+import AdminComplaintListPage from "../pages/AdminComplaintListPage";
 import { useAuth } from "../context/authentication";
 import UpdateProfilePage from "../pages/UpdateProfilePage";
+import AdminComplaintDetailPage from "../pages/AdminComplaintDetailPage";
 
 export default function Router() {
   const { state } = useAuth();
@@ -35,14 +36,20 @@ export default function Router() {
           <>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/admintest" element={<AdminPage />} />
             <Route path="/admin/package" element={<AdminPackageList />} />
             <Route
               path="/admin/createpackage"
               element={<AdminPackageCreate />}
             />
             <Route path="/admin/editpackage" element={<AdminPackageEdit />} />
-            {/* <Route path="/admin/complaint" element={<AdminComplaint />} /> */}
+            <Route
+              path="/admin/complaint-list"
+              element={<AdminComplaintListPage />}
+            />
+            <Route
+              path="/admin/complaint-details/:id"
+              element={<AdminComplaintDetailPage />}
+            />
           </>
         )}
       </Routes>

@@ -38,6 +38,7 @@ function UpdateProfilePage() {
   const closeAlert = () => {
     setShowAlert(false);
   };
+  const previewImgArray = [];
   const getUserData = async () => {
     try {
       const result = await axios.get(`http://localhost:3000/user/${param.id}`);
@@ -76,7 +77,6 @@ function UpdateProfilePage() {
   const getCity = async () => {
     const countryId = formik.values.country;
     if (!countryId) {
-      console.error("No country_id provided");
       SetCity([]);
       return;
     }
@@ -245,7 +245,7 @@ function UpdateProfilePage() {
         gender: userData.gender_id || null,
         genderInterests: userData.gender_interest_id || null,
         racial: userData.racial_id || null,
-        meeting: userData.relation_interest_id || null,
+        meeting: userData.relation_id || null,
         hobbiesInterests: userData.hobbie_interest_array || [],
         description: userData.description || "",
         profilePictures: [],
@@ -266,18 +266,28 @@ function UpdateProfilePage() {
     setDeletePictures(newDelPic.concat(delPic));
     setUploadedPictures(newPictures);
   };
+  const imgArray = [];
+  const previewImg = formik.values.profilePictures.map((picture, index) => {
+    imgArray.push(URL.createObjectURL(picture));
+  });
   const previewData = {
     ...formik.values,
-    country: country.find((c) => c.id === formik.values.country)?.country_name,
-    city: city.find((c) => c.value === formik.values.city)?.label,
-    gender: gender.find((g) => g.id === formik.values.gender)?.name,
-    genderInterests: genderInterests.find(
+    country_name: country.find((c) => c.id === formik.values.country)
+      ?.country_name,
+    city_name: city.find((c) => c.value === formik.values.city)?.label,
+    gender_name: gender.find((g) => g.id === formik.values.gender)?.name,
+    gender_interest_name: genderInterests.find(
       (gi) => gi.id === formik.values.genderInterests
     )?.name,
-    racial: racial.find((r) => r.id === formik.values.racial)?.name,
-    meeting: relation.find((m) => m.id === formik.values.meeting)?.name,
+    racial_name: racial.find((r) => r.id === formik.values.racial)?.name,
+    relation_interest_name: relation.find(
+      (m) => m.id === formik.values.meeting
+    )?.name,
     age: calculateAge(formik.values.dateOfBirth),
+    hobbie_interest_array: formik.values.hobbiesInterests,
+    image_url: uploadedPictures.concat(imgArray),
   };
+  console.log(previewData.image_url);
   return (
     <>
       <Navbar auth />

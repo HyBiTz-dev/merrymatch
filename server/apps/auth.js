@@ -21,8 +21,8 @@ authRouter.post("/", async (req, res) => {
         .select("roles")
         .eq("user_id", data.user.id);
 
-      const { data: user_complete_profile } = await supabase
-        .from("user_complete_profile")
+      const { data: user_profile_view } = await supabase
+        .from("user_profile_view")
         .select("*")
         .eq("user_id", data.user.id);
 
@@ -33,17 +33,17 @@ authRouter.post("/", async (req, res) => {
           id: data.user.id,
           email: data.user.email,
           name:
-            user_complete_profile[0]?.name === null
+            user_profile_view[0]?.name === null
               ? null
-              : user_complete_profile[0]?.name,
+              : user_profile_view[0]?.name,
           username:
-            user_complete_profile[0]?.username === null
+            user_profile_view[0]?.username === null
               ? null
-              : user_complete_profile[0]?.username,
+              : user_profile_view[0]?.username,
           proflie_images:
-            user_complete_profile[0]?.image_url === null
+            user_profile_view[0]?.image_url === null
               ? null
-              : user_complete_profile[0]?.image_url[0],
+              : user_profile_view[0]?.image_url[0],
           role: role,
         },
         process.env.SUPABASE_JWT_SECRET,

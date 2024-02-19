@@ -7,13 +7,17 @@ import { useAuth } from "../context/authentication";
 function FilingComplaintPage() {
   const { state } = useAuth();
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const complaintData = {
       userId: state.id,
       userName: state.name,
       issue: values.issue,
       description: values.description,
     };
+
+    if (!values.issue || !values.description) {
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -25,14 +29,15 @@ function FilingComplaintPage() {
 
       if (response.status === 200) {
         console.log("Complaint submitted successfully:", response.data);
+        resetForm();
       } else {
         console.error("Failed to submit complaint:", response.statusText);
       }
     } catch (error) {
       console.error("Error submitting complaint:", error.message);
+    } finally {
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
   };
 
   return (

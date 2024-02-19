@@ -63,13 +63,16 @@ function MerryListPage() {
               <span className="text-body2 text-gray-700">
                 Merry limit today
               </span>
-              <span className="text-body2 text-red-400">2/{packageLimit}</span>
+              <span className="text-body2 text-red-400">
+                2/{packageLimit ? packageLimit : 20}
+              </span>
             </div>
             <p className="text-body5 text-gray-600 flex justify-end mr-10">
               Reset in {timeUntilMidnight}
             </p>
           </div>
         </header>
+        <div className="bg-main h-1"></div>
         <MerryCard />
       </div>
       <div className="bg-main h-40"></div>

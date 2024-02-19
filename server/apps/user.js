@@ -11,17 +11,24 @@ const upload = multer({ storage: storage });
 
 userRouter.get("/", async (req, res) => {
   const userQuery = req.query.userId;
-
-  const { data: user_profile, error } = await supabase
-    .from("user_profile")
-    .select("*")
-    .eq("user_id", userQuery);
-
-  if (error) {
-    return res.status(500).json(error);
+  if (userQuery) {
+    const { data: user_profile, error } = await supabase
+      .from("user_profile_view")
+      .select("*")
+      .eq("user_id", userQuery);
+    if (error) {
+      return res.status(500).json(error);
+    }
+    return res.status(200).json(user_profile);
+  } else {
+    const { data: user_profile, error } = await supabase
+      .from("user_profile_view")
+      .select("*");
+    if (error) {
+      return res.status(500).json(error);
+    }
+    return res.status(200).json(user_profile);
   }
-
-  return res.status(200).json({ user_profile });
 });
 
 userRouter.get("/data", async (req, res) => {
@@ -75,7 +82,7 @@ userRouter.get("/:id", async (req, res) => {
   const userId = req.params.id;
   try {
     const { data: userData, error } = await supabase
-      .from("user_complete_profile")
+      .from("user_profile_view")
       .select("*")
       .eq("user_id", userId);
     if (error) {
@@ -110,11 +117,11 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
     const hobbiesInterestsArray = req.body.hobbiesInterests.split(",");
     let uploadPicArray = JSON.parse(req.body.uploadedPicture);
     const deletePicArray = JSON.parse(req.body.deletePictures);
-    const { data: updateEmail, error: updateEmailError } =
-      await supabase.auth.update({ email: email });
-    if (updateEmailError) {
-      return res.status(400).json({ message: updateEmailError.message });
-    }
+    // const { data: updateEmail, error: updateEmailError } =
+    //   await supabase.auth.update({ email: email });
+    // if (updateEmailError) {
+    //   return res.status(400).json({ message: updateEmailError.message });
+    // }
     const { data: countryCity, error: countryCityError } = await supabase
       .from("country_city")
       .select("id")
@@ -143,7 +150,7 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
     const { data: racialData, error: racialDataError } = await supabase
       .from("racial_user_profile")
       .update([{ racial_id: racial }])
-      .eq("user_profile_id", userId)
+      .eq("user_profile_id", userUUId)
       .select();
     if (racialDataError) {
       return res.status(400).json({ message: racialDataError.message });
@@ -152,10 +159,10 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
       .from("relation_interest_user_profile")
       .update([
         {
-          relation_interest_id: meeting,
+          relation_id: meeting,
         },
       ])
-      .eq("user_profile_id", userId)
+      .eq("user_profile_id", userUUId)
       .select();
     if (relationDataError) {
       return res.status(400).json({ message: relationDataError.message });
@@ -167,7 +174,7 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
           hobbie_interest_array: hobbiesInterestsArray,
         },
       ])
-      .eq("user_profile_id", userId)
+      .eq("user_profile_id", userUUId)
       .select();
     if (hobbieDataError) {
       return res.status(400).json({ message: hobbieDataError.message });
@@ -245,7 +252,7 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
     const { data: userImage, error: userImageError } = await supabase
       .from("user_image")
       .update([{ image_url: uploadPicArray }])
-      .eq("user_profile_id", userId)
+      .eq("user_profile_id", userUUId)
       .select();
     if (userImageError) {
       return res.status(400).json({ message: userImageError.message });
@@ -267,21 +274,21 @@ userRouter.delete("/:id", async (req, res) => {
     const { data: deleteRacial, error: deleteRacialError } = await supabase
       .from("racial_user_profile")
       .delete()
-      .eq("user_profile_id", userId);
+      .eq("user_profile_id", userUUId);
     if (deleteRacialError) {
       return res.status(400).json({ message: deleteRacialError.message });
     }
     const { data: deleteRelation, error: deleteRelationError } = await supabase
       .from("relation_interest_user_profile")
       .delete()
-      .eq("user_profile_id", userId);
+      .eq("user_profile_id", userUUId);
     if (deleteRelationError) {
       return res.status(400).json({ message: deleteRelationError.message });
     }
     const { data: deletehobbie, error: deletehobbieError } = await supabase
       .from("hobbie_interest")
       .delete()
-      .eq("user_profile_id", userId);
+      .eq("user_profile_id", userUUId);
     if (deletehobbieError) {
       return res.status(400).json({ message: deletehobbieError.message });
     }
@@ -302,7 +309,7 @@ userRouter.delete("/:id", async (req, res) => {
     const { error: deleteUserImageError } = await supabase
       .from("user_image")
       .delete()
-      .eq("user_profile_id", userId);
+      .eq("user_profile_id", userUUId);
     if (deleteUserImageError) {
       return res.status(400).json({ message: deleteUserImageError.message });
     }

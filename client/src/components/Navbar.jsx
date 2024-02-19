@@ -106,7 +106,7 @@ function Navbar() {
                   </li>
                   <li>
                     <a href="/merrylist" className="text-gray-700">
-                      <img src="images/member-list.svg" alt="" />
+                      <img src="/images/member-list.svg" alt="" />
                       Merry List
                     </a>
                   </li>
@@ -120,7 +120,10 @@ function Navbar() {
                   )}
 
                   <li>
-                    <a href="" className="text-gray-700 w-full">
+                    <a
+                      href="/filing-complaint"
+                      className="text-gray-700 w-full"
+                    >
                       <img src="/images/compliant.svg" alt="" />
                       Compliant
                     </a>
