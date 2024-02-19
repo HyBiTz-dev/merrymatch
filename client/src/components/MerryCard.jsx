@@ -2,6 +2,8 @@ import Tooltip from "./Tooltip";
 import { useAuth } from "../context/authentication";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import ProfileModal from "../components/Modal/ProfileModal";
 
 function MerryCard() {
   const [merryList, setMerryList] = useState(null);
@@ -10,6 +12,16 @@ function MerryCard() {
   const [matchedUserList, setMatchedUserList] = useState(null);
   // const [merryUser, setMerryUser] = useState(null);
   const [merryUserList, setMerryUserList] = useState();
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   // ---------------fetchData---------------
   const fetchData = async () => {
@@ -71,6 +83,7 @@ function MerryCard() {
           <div className="flex flex-col items-center" key={index}>
             <div className="w-[62.5rem] h-[15.625rem] bg-main flex items-center justify-around border-b-2 border-gray-300">
               <div className="flex gap-10">
+                <ProfileModal isOpen={showModal} onClose={closeModal} />
                 <div className="relative h-fit">
                   <img
                     src={user.image_url[0].image_url[0]}
@@ -127,7 +140,7 @@ function MerryCard() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-6 items-center">
+              <div className="flex flex-col gap-6 items-end">
                 {isMatched && (
                   <div className="w-40 h-8 relative border-red-500 border-2 rounded-full">
                     <img
@@ -147,8 +160,15 @@ function MerryCard() {
                   </div>
                 )}
                 <div className="flex gap-4">
-                  <Tooltip gray text="Go to chat" img="/images/chat.svg" />
-                  <Tooltip gray text="See profile" img="/images/Frame.svg" />
+                  {isMatched ? (
+                    <Tooltip gray text="Go to chat" img="/images/chat.svg" />
+                  ) : null}
+                  <Tooltip
+                    gray
+                    text="See profile"
+                    img="/images/Frame.svg"
+                    onClick={openModal}
+                  />
                   {isMerry && (
                     <Tooltip
                       merryRed
