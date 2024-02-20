@@ -17,8 +17,11 @@ export default function PackagePage() {
   const [packagesdetails, setPackagesdetails] = useState([]);
   const test = async () => {
     try {
-      let { data, error } = await supabase.from("packages").select("*");
-      console.log(data);
+      let { data, error } = await supabase
+        .from("packages")
+        .select("*")
+        .limit(3);
+
       let newArrray = [...data];
       let newObject = {
         package_num: [],
@@ -59,8 +62,6 @@ export default function PackagePage() {
   useEffect(() => {
     test();
   }, []);
-
-  console.log(allPackages);
 
   return (
     <>

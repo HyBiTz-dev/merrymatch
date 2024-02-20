@@ -1,9 +1,12 @@
 import Button from "./Button";
 import { userPackageData } from "../pages/Packagespage";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function PackageCard(props) {
+function PackageCard() {
+  const navigate = useNavigate();
   const context = useContext(userPackageData);
+  const [packageId, setpackageId] = useState([]);
   let cardKey = context.package.package_num;
   let package_id = context.package.package_id;
   let cardIcon = context.package.icon;
@@ -11,6 +14,13 @@ function PackageCard(props) {
   let cardPrice = context.package.price;
   let cardPerDate = context.package.perDate;
   let cardDetails = context.package.details;
+
+  if (Array.isArray(package_id)) {
+    package_id.map((item) => {
+      packageId.push(item);
+    });
+  }
+
   return (
     <>
       {cardIcon ? (
@@ -55,7 +65,16 @@ function PackageCard(props) {
                   );
                 })}
               </div>
-              <Button secondary className="w-full">
+              <Button
+                secondary
+                className="w-full"
+                onClick={() => {
+                  console.log(packageId[index]);
+                  navigate("/payment1", {
+                    state: { package_id: packageId[index] },
+                  });
+                }}
+              >
                 Choose Package
               </Button>
             </div>
