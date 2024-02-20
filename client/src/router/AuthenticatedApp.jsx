@@ -41,7 +41,10 @@ export default function Router() {
               path="/admin/createpackage"
               element={<AdminPackageCreate />}
             />
-            <Route path="/admin/editpackage" element={<AdminPackageEdit />} />
+            <Route
+              path="/admin/editpackage/:id"
+              element={<AdminPackageEdit />}
+            />
             <Route
               path="/admin/complaint-list"
               element={<AdminComplaintListPage />}

@@ -90,8 +90,8 @@ function AdminPackageList() {
             <div className="overflow-x-auto text-gray-800 font-medium">
               <table className="table">
                 <thead className="bg-gray-400">
-                  <tr>
-                    <th></th>
+                  <tr className="">
+                    <th className="rounded-tl-2xl"></th>
                     <th></th>
                     <th>Icon</th>
                     <th>Package name</th>
@@ -100,7 +100,7 @@ function AdminPackageList() {
                     <th>Created date</th>
                     <th>Updated date</th>
                     <th></th>
-                    <th></th>
+                    <th className="rounded-tr-2xl"></th>
                   </tr>
                 </thead>
                 <tbody>

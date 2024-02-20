@@ -42,7 +42,6 @@ async function init() {
   app.use("/filing-complaint", complaintRouter);
   app.use("/merrylist", merryListRouter);
 
-
   app.get("/", (req, res) => {
     res.send("Hello World!");
   });
@@ -91,6 +90,35 @@ async function init() {
     }
   });
 
+  app.put("/package/:id", async (req, res) => {
+    const id = req.params.id;
+    const { packageName, price, merryLimit, packageIcon, details } = req.body;
+    if (!packageName || price < 1 || !merryLimit || !packageIcon || !details) {
+      res.status(400).json({ error: "Please fill all fields" });
+      return;
+    }
+    try {
+      const data = {
+        name: packageName,
+        price,
+        package_icon: packageIcon,
+        merry_limit: merryLimit,
+        details,
+      };
+      const { error } = await supabase
+        .from("packages")
+        .update(data)
+        .eq("id", id);
+      if (error) throw error;
+      res.json({ message: "Package has been updated" });
+    } catch (error) {
+      console.error("Error updating package:", error.message);
+      res
+        .status(500)
+        .json({ error: "Internal server error", message: error.message });
+    }
+  });
+
   app.delete("/package/:id", async (req, res) => {
     const id = req.params.id;
     try {
@@ -108,6 +136,23 @@ async function init() {
   app.get("/package", async (req, res) => {
     try {
       const { data, error } = await supabase.from("packages").select("*");
+      if (error) throw error;
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+      res
+        .status(500)
+        .json({ error: "Internal server error", message: error.message });
+    }
+  });
+
+  app.get("/package/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+      const { data, error } = await supabase
+        .from("packages")
+        .select("*")
+        .match({ id });
       if (error) throw error;
       res.json(data);
     } catch (error) {
