@@ -80,7 +80,11 @@ function MerryCard() {
     const result = await axios.get(
       `http://localhost:3000/conversation/${userId}`
     );
-    if (result.data.conversation.length === 0) {
+    const hasCoversation = result.data.conversation.filter(
+      (item) => item.receiver_id === state?.id || item.sender_id === state?.id
+    );
+
+    if (hasCoversation.length === 0) {
       const data = await axios.post(`http://localhost:3000/conversation/`, {
         sender_id: state?.id,
         receiver_id: userId,
@@ -88,8 +92,8 @@ function MerryCard() {
       setCurrentChat(data.data.data[0]);
       navigate(`/messages/${data.data.data[0].id}`);
     } else {
-      setCurrentChat(result.data.conversation[0]);
-      navigate(`/messages/${result.data.conversation[0].id}`);
+      setCurrentChat(hasCoversation[0]);
+      navigate(`/messages/${hasCoversation[0].id}`);
     }
   };
 

@@ -280,14 +280,13 @@ function UpdateProfilePage() {
       (gi) => gi.id === formik.values.genderInterests
     )?.name,
     racial_name: racial.find((r) => r.id === formik.values.racial)?.name,
-    relation_interest_name: relation.find(
-      (m) => m.id === formik.values.meeting
-    )?.name,
+    relation_interest_name: relation.find((m) => m.id === formik.values.meeting)
+      ?.name,
     age: calculateAge(formik.values.dateOfBirth),
     hobbie_interest_array: formik.values.hobbiesInterests,
     image_url: uploadedPictures.concat(imgArray),
   };
-  console.log(previewData.image_url);
+
   return (
     <>
       <Navbar auth />

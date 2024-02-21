@@ -4,8 +4,10 @@ import MerryCard from "../components/MerryCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/authentication";
+import { useMerryLimit } from "../context/merryLimitContext";
 
 function MerryListPage() {
+  const { dailyLimit, setDailyLimit, maxMerryLimit } = useMerryLimit();
   const [timeUntilMidnight, setTimeUntilMidnight] = useState(null);
   const [packageLimit, setPackageLimit] = useState(null);
   const { state } = useAuth();
@@ -64,7 +66,7 @@ function MerryListPage() {
                 Merry limit today
               </span>
               <span className="text-body2 text-red-400">
-                2/{packageLimit ? packageLimit : 20}
+                {dailyLimit}/{maxMerryLimit}
               </span>
             </div>
             <p className="text-body5 text-gray-600 flex justify-end mr-10">

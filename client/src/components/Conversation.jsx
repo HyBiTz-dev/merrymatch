@@ -48,15 +48,12 @@ function Conversation({ conversation, currentUser, Chat, newMessages }) {
           : "flex items-center max-w-[284px] gap-3 py-4 px-3 hover:bg-gray-100  hover:rounded-2xl cursor-pointer "
       }
     >
-      {/* <div className="indicator relative"> */}
-      {/* <span className="indicator-item badge bg-green-400 border-green-400 absolute top-2 right-2"></span> */}
       <img
         src={user?.image_url[0]}
         alt=""
         className="w-[3.75rem] h-[3.75rem] rounded-full object-cover"
       />
-      {/* </div> */}
-      <div className="truncate">
+      <div className="truncate w-44">
         <div className="text-body2 text-gray-900">{user?.name}</div>
         <div className="text-body4 text-gray-700">
           {messages
