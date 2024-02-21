@@ -332,20 +332,31 @@ userRouter.delete("/:id", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
-// userRouter.post("/", async (req, res) => {
-//   const message = req.body;
 
-//   const { error } = await supabase.from("messages").insert({
-//     conversation_id: message.conversation_id,
-//     sender_id: message.sender_id,
-//     message_text: message.message_text,
-//   });
+userRouter.get("/merry-limit/:id", async (req, res) => {
+  const userId = req.params.id;
+  const { data, error } = await supabase
+    .from("merry_limit")
+    .select("*")
+    .eq("user_id", userId);
 
-//   if (error) {
-//     return res.status(500).json(error);
-//   }
+  if (error) {
+    res.status(401).json({ message: error });
+  }
+  res.status(200).json(data);
+});
 
-//   return res.status(200).json({ message: "Send message Complete" });
-// });
+userRouter.post("/merry-limit/:id", async (req, res) => {
+  const userId = req.params.id;
+  const { data, error } = await supabase
+    .from("merry_limit")
+    .update({ daily_limit: req.body.daily_limit })
+    .eq("user_id", userId);
+
+  if (error) {
+    res.status(401).json({ message: error });
+  }
+  res.status(200).json(data);
+});
 
 export default userRouter;

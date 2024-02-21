@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
+import cron from "node-cron";
 
 //Router API
 import messagesRouter from "./apps/messages.js";
@@ -46,6 +47,21 @@ async function init() {
   app.get("/", (req, res) => {
     res.send("Hello World!");
   });
+
+  cron.schedule(
+    "0 0 * * *",
+    async () => {
+      const { error } = await supabase
+        .from("merry_limit")
+        .update({ daily_limit: 0 })
+        .gt("daily_limit", 0);
+      console.log("reset daily limit");
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Bangkok",
+    }
+  );
 
   app.get("/login", async (req, res) => {
     try {

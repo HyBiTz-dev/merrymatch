@@ -1,26 +1,29 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/zoom";
-
 import { EffectCoverflow } from "swiper/modules";
 import Button from "./Button";
 import ProfileModal from "../components/Modal/ProfileModal";
 import SwipeProfileImages from "./SwipeProfileImages";
 import { useAuth } from "../context/authentication";
 import { useNavigate } from "react-router-dom";
+import { useMerryLimit } from "../context/merryLimitContext";
+import { useSocket } from "../context/socketContext";
+
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/zoom";
 
 export default function SwipeCard() {
+  const { dailyLimit, setDailyLimit, maxMerryLimit } = useMerryLimit();
   const swiperRef = useRef();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [match, setMatch] = useState([]);
   const [profileData, setProfileData] = useState({});
 
-  const { state, setCurrentChat } = useAuth();
+  const { state } = useAuth();
+  const { setCurrentChat } = useSocket();
 
   const [showModal, setShowModal] = useState(false);
 
@@ -37,7 +40,12 @@ export default function SwipeCard() {
     const result = await axios.get(
       `http://localhost:3000/conversation/${userId}`
     );
-    if (result.data.conversation.length === 0) {
+
+    const hasCoversation = result.data.conversation.filter(
+      (item) => item.receiver_id === state?.id || item.sender_id === state?.id
+    );
+
+    if (hasCoversation.length === 0) {
       const data = await axios.post(`http://localhost:3000/conversation/`, {
         sender_id: state?.id,
         receiver_id: userId,
@@ -45,8 +53,8 @@ export default function SwipeCard() {
       setCurrentChat(data.data.data[0]);
       navigate(`/messages/${data.data.data[0].id}`);
     } else {
-      setCurrentChat(result.data.conversation[0]);
-      navigate(`/messages/${result.data.conversation[0].id}`);
+      setCurrentChat(hasCoversation[0]);
+      navigate(`/messages/${hasCoversation[0].id}`);
     }
   };
 
@@ -71,6 +79,10 @@ export default function SwipeCard() {
     } else {
       const result = users.filter((item) => item.user_id !== receivedIds);
       setUsers(result);
+    }
+
+    if (dailyLimit < maxMerryLimit) {
+      setDailyLimit(dailyLimit + 1);
     }
   };
 
@@ -167,7 +179,9 @@ export default function SwipeCard() {
           </Swiper>
           <div className="flex gap-3 py-3 px-6">
             <span className="text-body2 text-gray-700">Merry limit today</span>
-            <span className="text-body2 text-red-400">2/20</span>
+            <span className="text-body2 text-red-400">
+              {dailyLimit}/{maxMerryLimit}
+            </span>
           </div>
         </>
       ) : (
