@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/socketContext";
 import ProfileModal from "../components/Modal/ProfileModal";
+import { useMerryLimit } from "../context/merryLimitContext";
 
 function MerryCard() {
   const [merryList, setMerryList] = useState(null);
@@ -18,6 +19,7 @@ function MerryCard() {
   const navigate = useNavigate();
   const { setCurrentChat } = useSocket();
   const [userLikeDateList, setUserLikeDateList] = useState();
+  const { dailyLimit, setDailyLimit, maxMerryLimit } = useMerryLimit();
 
   const openModal = (item) => {
     setProfileData(item);
@@ -57,12 +59,18 @@ function MerryCard() {
   const toggleMerry = async (receivedIds) => {
     try {
       if (!merryUserList.includes(receivedIds)) {
-        const response = await axios.post(`http://localhost:3000/merrylist/`, {
-          user_id: state?.id,
-          receivedIds,
-        });
-        if (response.status === 200) {
-          setMerryUserList([...merryUserList, receivedIds]);
+        if (dailyLimit < maxMerryLimit) {
+          const response = await axios.post(
+            `http://localhost:3000/merrylist/`,
+            {
+              user_id: state?.id,
+              receivedIds,
+            }
+          );
+          if (response.status === 200) {
+            setMerryUserList([...merryUserList, receivedIds]);
+          }
+          setDailyLimit(dailyLimit + 1);
         }
       } else {
         const response = await axios.delete(
