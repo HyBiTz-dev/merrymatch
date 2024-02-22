@@ -1,19 +1,36 @@
+import { useParams } from "react-router-dom";
 import { Formik, useFormik } from "formik";
-import Footer from "../components/Footer";
+import * as Yup from "yup";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/authentication";
+
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Button from "../components/Button";
 import { InputField, SelectInputField } from "../components/InputField";
 import TagsInput from "../components/TagInput";
-import * as Yup from "yup";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import ProfileModal from "../components/Modal/ProfileModal";
 import AlertModal from "../components/Modal/AlertModal";
-import { useAuth } from "../context/authentication";
+
+import {
+  DndContext,
+  closestCenter,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 function UpdateProfilePage() {
   const { logout } = useAuth();
+  const param = useParams();
   const [userData, setUserData] = useState({});
   const [country, setCountry] = useState([]);
   const [city, SetCity] = useState([]);
@@ -23,22 +40,31 @@ function UpdateProfilePage() {
   const [relation, setRelation] = useState([]);
   const [uploadedPictures, setUploadedPictures] = useState([]);
   const [deletePictures, setDeletePictures] = useState([]);
-  const param = useParams();
   const [showModal, setShowModal] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const imgArray = [];
+
   const openModal = () => {
     setShowModal(true);
   };
   const closeModal = () => {
     setShowModal(false);
   };
-  const [showAlert, setShowAlert] = useState(false);
   const openAlert = () => {
     setShowAlert(true);
   };
   const closeAlert = () => {
     setShowAlert(false);
   };
-  const previewImgArray = [];
+
+  useEffect(() => {
+    getUserData();
+    getData("country");
+    getData("gender");
+    getData("racial");
+    getData("relation");
+  }, [param.id]);
+
   const getUserData = async () => {
     try {
       const result = await axios.get(`http://localhost:3000/user/${param.id}`);
@@ -48,6 +74,7 @@ function UpdateProfilePage() {
       console.error("Error fetching user data:", error);
     }
   };
+
   const getData = async (dataType) => {
     try {
       const result = await axios.get(
@@ -74,6 +101,7 @@ function UpdateProfilePage() {
       console.error(`Error fetching ${dataType}:`, error);
     }
   };
+
   const getCity = async () => {
     const countryId = formik.values.country;
     if (!countryId) {
@@ -93,16 +121,6 @@ function UpdateProfilePage() {
       console.error("Failed to fetch cities:", error);
     }
   };
-  function calculateAge(dob) {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -209,30 +227,6 @@ function UpdateProfilePage() {
     validateOnChange: false,
     validateOnBlur: true,
   });
-  const handleOnDelete = async () => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:3000/user/${param.id}`,
-        {
-          data: {
-            userId: userData.id,
-            uploadedPicture: JSON.stringify(uploadedPictures),
-          },
-        }
-      );
-      logout();
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error:", error.response.data);
-    }
-  };
-  useEffect(() => {
-    getUserData();
-    getData("country");
-    getData("gender");
-    getData("racial");
-    getData("relation");
-  }, [param.id]);
   useEffect(() => {
     if (Object.keys(userData).length > 0) {
       formik.setValues({
@@ -255,21 +249,74 @@ function UpdateProfilePage() {
   useEffect(() => {
     getCity();
   }, [formik.values.country]);
+
+  function calculateAge(dob) {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+  const handleOnDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/user/${param.id}`,
+        {
+          data: {
+            userId: userData.id,
+            uploadedPicture: JSON.stringify(uploadedPictures),
+          },
+        }
+      );
+      logout();
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error:", error.response.data);
+    }
+  };
+
   const totalPictures =
     uploadedPictures.length + formik.values.profilePictures.length;
   const uploadSlots = Math.max(5 - totalPictures, 0);
 
-  const handleRemoveUploadedPicture = (index) => {
-    const newPictures = uploadedPictures.filter((_, i) => i !== index);
-    const delPic = uploadedPictures.filter((_, i) => i == index);
-    const newDelPic = deletePictures;
-    setDeletePictures(newDelPic.concat(delPic));
-    setUploadedPictures(newPictures);
+  const [pictures, setPictures] = useState([
+    ...uploadedPictures.map((picture) => ({
+      id: `uploaded-${picture}`,
+      url: picture,
+      type: "uploaded",
+    })),
+    ...formik.values.profilePictures.map((file) => ({
+      id: file.name,
+      file: file,
+      type: "new",
+    })),
+  ]);
+  useEffect(() => {
+    setPictures([
+      ...uploadedPictures.map((picture) => ({
+        id: `uploaded-${picture}`,
+        url: picture,
+        type: "uploaded",
+      })),
+      ...formik.values.profilePictures.map((file) => ({
+        id: file.name,
+        file: file,
+        type: "new",
+      })),
+    ]);
+  }, [uploadedPictures, formik.values.profilePictures]);
+  const handleRemoveUploadedPicture = (pictureId) => {
+    const newPictures = pictures.filter((picture) => picture.id !== pictureId);
+    setPictures(newPictures);
   };
-  const imgArray = [];
+
   const previewImg = formik.values.profilePictures.map((picture, index) => {
     imgArray.push(URL.createObjectURL(picture));
   });
+  console.log(pictures);
   const previewData = {
     ...formik.values,
     country_name: country.find((c) => c.id === formik.values.country)
@@ -284,7 +331,14 @@ function UpdateProfilePage() {
       ?.name,
     age: calculateAge(formik.values.dateOfBirth),
     hobbie_interest_array: formik.values.hobbiesInterests,
-    image_url: uploadedPictures.concat(imgArray),
+    image_url: pictures.map((picture) => {
+      if (picture.type === "uploaded") {
+        return picture.url;
+      } else if (picture.file) {
+        return URL.createObjectURL(picture.file);
+      }
+      return null;
+    }),
   };
 
   return (
@@ -516,7 +570,26 @@ function UpdateProfilePage() {
               </div>
             </div>
             <div className="flex gap-6">
-              {uploadedPictures.map((url, index) => (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={pictures.map((picture) => picture.id)}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  {pictures.map((picture, index) => (
+                    <SortableItem
+                      key={picture.id}
+                      id={picture.id}
+                      picture={picture}
+                      index={index}
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
+              {/* {uploadedPictures.map((url, index) => (
                 <div key={index} className="relative">
                   <img
                     src={url}
@@ -531,8 +604,8 @@ function UpdateProfilePage() {
                     x
                   </button>
                 </div>
-              ))}
-              {formik.values.profilePictures.map((picture, index) => (
+              ))} */}
+              {/* {formik.values.profilePictures.map((picture, index) => (
                 <div key={index} className="relative">
                   <img
                     src={URL.createObjectURL(picture)}
@@ -551,7 +624,7 @@ function UpdateProfilePage() {
                     x
                   </button>
                 </div>
-              ))}
+              ))} */}
               {[...Array(uploadSlots)].map((_, index) => (
                 <div
                   key={index}

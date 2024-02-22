@@ -10,6 +10,7 @@ import axios from "axios";
 function RegisterMainPage() {
   const navigate = useNavigate("");
   const [currentStep, setCurrentStep] = useState(1);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -80,7 +81,6 @@ function RegisterMainPage() {
         .min(1, "Must be at least 2 picture")
         .required("Required"),
     }),
-
     onSubmit: async (values) => {
       const currentDate = new Date();
       const userDate = new Date(values.dateOfBirth);

@@ -2,6 +2,20 @@ import { useEffect, useState } from "react";
 import { InputField, SelectInputField } from "./InputField";
 import TagsInput from "./TagInput";
 import axios from "axios";
+import {
+  DndContext,
+  closestCenter,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 export const Step1 = ({ formik }) => {
   const [country, setCountry] = useState([]);
   const [city, SetCity] = useState([]);
@@ -250,6 +264,65 @@ export const Step2 = ({ formik }) => {
 };
 
 export const Step3 = ({ formik }) => {
+  const SortableItem = ({ id, picture, index }) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    };
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className={`relative ${isDragging}`}
+      >
+        <img
+          src={URL.createObjectURL(picture)}
+          alt={`Picture ${index + 1}`}
+          className="relative w-[10.5rem] h-[10.5rem] object-cover rounded-lg"
+        />
+        <button
+          type="button"
+          className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 z-50"
+          onClick={() => {
+            const newPictures = [...formik.values.profilePictures];
+            newPictures.splice(index, 1);
+            formik.setFieldValue("profilePictures", newPictures);
+          }}
+        >
+          x
+        </button>
+      </div>
+    );
+  };
+  const sensors = useSensors(useSensor(PointerSensor));
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = formik.values.profilePictures.findIndex(
+        (picture) => picture.name === active.id
+      );
+      const newIndex = formik.values.profilePictures.findIndex(
+        (picture) => picture.name === over.id
+      );
+      if (oldIndex !== -1 && newIndex !== -1) {
+        formik.setFieldValue(
+          "profilePictures",
+          arrayMove(formik.values.profilePictures, oldIndex, newIndex)
+        );
+      }
+    }
+  };
   return (
     <form
       className="flex flex-wrap justify-between gap-6 pb-10"
@@ -259,26 +332,25 @@ export const Step3 = ({ formik }) => {
         Profile pictures
         <div className="text-gray-800 text-base">Upload at least 2 photos</div>
       </div>
-      {formik.values.profilePictures.map((picture, index) => (
-        <div key={index} className="relative">
-          <img
-            src={URL.createObjectURL(picture)}
-            alt={`Picture ${index + 1}`}
-            className=" w-[10.5rem] h-[10.5rem] object-cover rounded-lg"
-          />
-          <button
-            type="button"
-            className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 "
-            onClick={() => {
-              const newPictures = [...formik.values.profilePictures];
-              newPictures.splice(index, 1);
-              formik.setFieldValue("profilePictures", newPictures);
-            }}
-          >
-            x
-          </button>
-        </div>
-      ))}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={formik.values.profilePictures.map((picture) => picture.name)}
+          strategy={horizontalListSortingStrategy}
+        >
+          {formik.values.profilePictures.map((picture, index) => (
+            <SortableItem
+              key={picture.name}
+              id={picture.name}
+              picture={picture}
+              index={index}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
       {[...Array(5 - formik.values.profilePictures.length)].map((_, index) => (
         <div
           key={index}
