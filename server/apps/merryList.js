@@ -16,7 +16,7 @@ merryListRouter.get("/:user_id", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("like_user")
-      .select("user_profile_id_received")
+      .select("user_profile_id_received, created_at")
       .eq("user_profile_id_given", user_id);
 
     if (error) {
@@ -124,6 +124,29 @@ merryListRouter.post("/", async (req, res) => {
       return res.status(500).json({ message: error.message });
     }
     return res.status(200).json({ message: "Merry Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+merryListRouter.post("/:user_id/merrytoday", async (req, res) => {
+  const { user_id } = req.params;
+  const { today } = req.body;
+  try {
+    let { data: merryTodayListArray, error } = await supabase
+      .from("like_user")
+      .select("user_profile_id_received")
+      .eq("user_profile_id_given", user_id)
+      .gte("created_at", today);
+
+    const merryTodayList = merryTodayListArray.map(
+      (item) => item.user_profile_id_received
+    );
+
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+    return res.json({ merryTodayList });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
