@@ -198,9 +198,10 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
     const hobbiesInterestsArray = req.body.hobbiesInterests.split(",");
     let uploadPicArray = JSON.parse(req.body.uploadedPicture);
     const deletePicArray = JSON.parse(req.body.deletePictures);
-    // const { data: updateEmail, error: updateEmailError } =
-    //   await supabase.auth.update({ email: email });
-    // if (updateEmailError) {
+    // const { data, error : updateEmailError } = await supabase.auth.updateUser({
+    //   email: "new@email.com",
+    // })
+    // if(updateEmailError){
     //   return res.status(400).json({ message: updateEmailError.message });
     // }
     const { data: countryCity, error: countryCityError } = await supabase
@@ -281,7 +282,6 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
         uploadPicArray.push(data.publicUrl);
       }
     } else if (deletePicArray.length !== 0 && req.files.length !== 0) {
-      console.log("hello");
       for (let i = 0; i < req.files.length; i++) {
         const file = req.files[i];
         const fileExtension = file.originalname.split(".").pop();
