@@ -9,25 +9,25 @@ import { useMerryLimit } from "../context/merryLimitContext";
 function MerryListPage() {
   const { dailyLimit, setDailyLimit, maxMerryLimit } = useMerryLimit();
   const [timeUntilMidnight, setTimeUntilMidnight] = useState(null);
-  const [packageLimit, setPackageLimit] = useState(null);
+  // const [packageLimit, setPackageLimit] = useState(null);
   const { state } = useAuth();
   const user_id = state.id;
 
-  const fetchUserPackage = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/merrylist/${user_id}/package`
-      );
-      const userPackage = response.data.packageLimit.packages.merry_limit;
-      setPackageLimit(userPackage);
-    } catch (error) {
-      console.log("Error fetching data", error);
-    }
-  };
+  // const fetchUserPackage = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:3000/merrylist/${user_id}/package`
+  //     );
+  //     const userPackage = response.data.packageLimit.packages.merry_limit;
+  //     setPackageLimit(userPackage);
+  //   } catch (error) {
+  //     console.log("Error fetching data", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchUserPackage();
-  }, []);
+  // useEffect(() => {
+  //   fetchUserPackage();
+  // }, []);
 
   useEffect(() => {
     const calTime = () => {

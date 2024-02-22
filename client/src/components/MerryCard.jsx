@@ -5,11 +5,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/socketContext";
 import ProfileModal from "../components/Modal/ProfileModal";
+import { useMerryLimit } from "../context/merryLimitContext";
 
 function MerryCard() {
   const [merryList, setMerryList] = useState(null);
   const { state } = useAuth();
-  const user_id = state.id;
+  const user_id = state?.id;
   const [matchedUserList, setMatchedUserList] = useState(null);
   // const [merryUser, setMerryUser] = useState(null);
   const [merryUserList, setMerryUserList] = useState();
@@ -17,6 +18,8 @@ function MerryCard() {
   const [profileData, setProfileData] = useState({});
   const navigate = useNavigate();
   const { setCurrentChat } = useSocket();
+  const [userLikeDateList, setUserLikeDateList] = useState();
+  const { dailyLimit, setDailyLimit, maxMerryLimit } = useMerryLimit();
 
   const openModal = (item) => {
     setProfileData(item);
@@ -36,6 +39,7 @@ function MerryCard() {
       const receivedUserData = response.data.receivedUserProfile.data;
       const matchedUserData = response.data.matchedUser_ids;
       const likeUserData = response.data.received_ids;
+      const likeTimestampData = response.data.received_idsWithTimestamp;
       // console.log(receivedUserData);
       // console.log(matchedUserData);
       // console.log(likeUserData);
@@ -55,12 +59,18 @@ function MerryCard() {
   const toggleMerry = async (receivedIds) => {
     try {
       if (!merryUserList.includes(receivedIds)) {
-        const response = await axios.post(`http://localhost:3000/merrylist/`, {
-          user_id: state?.id,
-          receivedIds,
-        });
-        if (response.status === 200) {
-          setMerryUserList([...merryUserList, receivedIds]);
+        if (dailyLimit < maxMerryLimit) {
+          const response = await axios.post(
+            `http://localhost:3000/merrylist/`,
+            {
+              user_id: state?.id,
+              receivedIds,
+            }
+          );
+          if (response.status === 200) {
+            setMerryUserList([...merryUserList, receivedIds]);
+          }
+          setDailyLimit(dailyLimit + 1);
         }
       } else {
         const response = await axios.delete(
@@ -97,16 +107,36 @@ function MerryCard() {
     }
   };
 
+  useEffect(() => {
+    const now = new Date().toISOString();
+    const date = now.split("T")[0];
+    const fetchMerryToday = async (date) => {
+      try {
+        const response = await axios.post(
+          `http://localhost:3000/merrylist/${user_id}/merrytoday`,
+          {
+            today: date,
+          }
+        );
+        setUserLikeDateList(response.data.merryTodayList);
+      } catch (error) {
+        console.log("Error fetching data", error);
+      }
+    };
+    fetchMerryToday(date);
+  }, []);
+
   //---------------fetchData---------------
 
   const renderList = merryList
     ? merryList.map((user, index) => {
         const isMatched = matchedUserList.includes(user.user_id);
-        // const isMerry = merryUser.includes(user.user_id);
         const isMerry = merryUserList.includes(user.user_id);
+        const isMerryToday = userLikeDateList.includes(user.user_id);
+
         return (
           <div className="flex flex-col items-center " key={index}>
-            <div className="w-[62.5rem] h-[15.625rem] bg-main flex items-center justify-around border-b-2 border-gray-300">
+            <div className="w-[62.5rem] h-[15.625rem] bg-main flex items-center justify-between border-b-2 border-gray-300">
               <div className="flex gap-10">
                 <ProfileModal
                   isOpen={showModal}
@@ -118,9 +148,11 @@ function MerryCard() {
                     src={user.image_url[0]}
                     className="w-[200px] h-[200px] rounded-3xl object-cover"
                   ></img>
-                  {/* <p className="absolute bottom-0 left-0 bg-purple-100 text-purple-600 rounded-bl-3xl rounded-tr-3xl text-body5 w-20 text-center">
-                  Merry today
-                </p> */}
+                  {isMerryToday && (
+                    <p className="absolute bottom-0 left-0 bg-purple-100 text-purple-600 rounded-bl-3xl rounded-tr-3xl text-body5 w-20 text-center">
+                      Merry today
+                    </p>
+                  )}
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-6">

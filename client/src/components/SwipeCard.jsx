@@ -59,29 +59,28 @@ export default function SwipeCard() {
   };
 
   const handleHeartButton = async (receivedIds) => {
-    await axios.post("http://localhost:3000/merrylist", {
-      user_id: state?.id,
-      receivedIds,
-    });
-
-    const result = await axios.get(
-      `http://localhost:3000/merrylist/${state?.id}`
-    );
-
-    const isMatch = result.data.matchedUser_ids.includes(receivedIds);
-
-    if (isMatch) {
-      setMatch(
-        result.data.receivedUserProfile.data.filter(
-          (item) => item.user_id === receivedIds
-        )
-      );
-    } else {
-      const result = users.filter((item) => item.user_id !== receivedIds);
-      setUsers(result);
-    }
-
     if (dailyLimit < maxMerryLimit) {
+      await axios.post("http://localhost:3000/merrylist", {
+        user_id: state?.id,
+        receivedIds,
+      });
+
+      const result = await axios.get(
+        `http://localhost:3000/merrylist/${state?.id}`
+      );
+
+      const isMatch = result.data.matchedUser_ids.includes(receivedIds);
+
+      if (isMatch) {
+        setMatch(
+          result.data.receivedUserProfile.data.filter(
+            (item) => item.user_id === receivedIds
+          )
+        );
+      } else {
+        const result = users.filter((item) => item.user_id !== receivedIds);
+        setUsers(result);
+      }
       setDailyLimit(dailyLimit + 1);
     }
   };
