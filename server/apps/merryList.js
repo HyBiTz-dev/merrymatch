@@ -17,7 +17,8 @@ merryListRouter.get("/:user_id", async (req, res) => {
     const { data, error } = await supabase
       .from("like_user")
       .select("user_profile_id_received, created_at")
-      .eq("user_profile_id_given", user_id);
+      .eq("user_profile_id_given", user_id)
+      .order("created_at", { ascending: false });
 
     if (error) {
       return res.status(400).json({ message: error.message });

@@ -39,7 +39,6 @@ function MerryCard() {
       const receivedUserData = response.data.receivedUserProfile.data;
       const matchedUserData = response.data.matchedUser_ids;
       const likeUserData = response.data.received_ids;
-      const likeTimestampData = response.data.received_idsWithTimestamp;
       // console.log(receivedUserData);
       // console.log(matchedUserData);
       // console.log(likeUserData);
