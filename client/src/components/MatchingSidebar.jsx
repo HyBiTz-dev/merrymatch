@@ -52,7 +52,7 @@ export default function MatchingSidebar({ Chat }) {
         <div className="text-headline4 text-gray-900">
           Chat with Merry Match
         </div>
-        <div className="flex flex-col h-96 gap-4 overflow-y-scroll scrollbar-hide">
+        <div className="flex flex-col h-80 gap-4 overflow-y-scroll">
           {conversation
             ? conversation.map((item, index) => (
                 <div key={index} onClick={() => handleChat(item)}>
