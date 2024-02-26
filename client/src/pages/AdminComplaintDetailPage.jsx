@@ -4,11 +4,16 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import ComplaintStatus from "../components/ComplaintStatus";
+import Button from "../components/Button";
+import AlertModal from "../components/Modal/AlertModal";
 
 function AdminComplaintDetailPage() {
   const { id } = useParams();
   const [complaint, setComplaint] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [isResolveModalOpen, setIsResolveModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,6 +42,32 @@ function AdminComplaintDetailPage() {
     fetchComplaint();
   }, [id]);
 
+  const handleUpdate = async (status) => {
+    try {
+      const { error } = await supabase
+        .from("user_complaint")
+        .update({
+          complaint_status: status,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", id);
+
+      if (error) {
+        throw error;
+      }
+      window.location.reload();
+      setIsCancelModalOpen(false);
+      setIsResolveModalOpen(false);
+    } catch (error) {
+      console.error("Error updating complaint:", error.message);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsCancelModalOpen(false);
+    setIsResolveModalOpen(false);
+  };
+
   const showFullIssue = () => {
     alert(complaint.complaint_issue);
   };
@@ -57,8 +88,8 @@ function AdminComplaintDetailPage() {
     <div className="flex bg-white w-[90rem] h-[78.5rem]">
       <SideBarAdmin />
       <div className="w-[75rem]">
-        <div className="h-20 flex items-center  border-b border-b-gray-400">
-          <div className="flex pl-14 pr-14 w-full">
+        <div className="h-20 flex items-center border-b border-b-gray-400">
+          <div className="flex items-center pl-14 pr-14 w-[90rem]">
             <img
               className="w-[1.5rem] mr-6"
               src="/images/arrow_back.svg"
@@ -75,6 +106,29 @@ function AdminComplaintDetailPage() {
             <span className="ml-6 ">
               <ComplaintStatus status={complaint.complaint_status} />
             </span>
+            {complaint.complaint_status === "Pending" && (
+              <div className="flex gap-2 ml-auto">
+                <Button
+                  ghost
+                  type="button"
+                  onClick={() => setIsCancelModalOpen(true)}
+                  className="text-red-500 rounded-[6rem] w-fit"
+                >
+                  Cancel Complaint
+                </Button>
+                <Button
+                  primary
+                  type="button"
+                  onClick={() => setIsResolveModalOpen(true)}
+                  className=" text-white rounded-[6rem] w-fit shadow-md"
+                  style={{
+                    boxShadow: "2px 2px 12px 0px rgba(64, 50, 133, 0.41)",
+                  }}
+                >
+                  Resolve Complaint
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-gray-100 flex h-[73.5rem]">
@@ -112,12 +166,56 @@ function AdminComplaintDetailPage() {
                       {new Date(complaint.created_at).toLocaleDateString()}
                     </p>
                   </div>
+                  {complaint.complaint_status === "Cancel" ? (
+                    <div className="flex flex-col w-[55rem] gap-2 border-t border-solid border-gray-300 pt-10">
+                      <span className="text-body1 text-20px font-semibold leading-30px tracking-normal text-left text-gray-700">{`Canceled Date`}</span>
+                      <p className="text-16px font-normal text-black">
+                        {`${new Date(
+                          complaint.updated_at
+                        ).toLocaleDateString()} ${new Date(
+                          complaint.updated_at
+                        ).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}`}
+                      </p>
+                    </div>
+                  ) : complaint.complaint_status === "Resolved" ? (
+                    <div className="flex flex-col w-[55rem] gap-2 border-t border-solid border-gray-300 pt-10">
+                      <span className="text-body1 text-20px font-semibold leading-30px tracking-normal text-left text-gray-700">{`Resolved Date`}</span>
+                      <p className="text-16px font-normal text-black">
+                        {`${new Date(
+                          complaint.updated_at
+                        ).toLocaleDateString()} ${new Date(
+                          complaint.updated_at
+                        ).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}`}
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <AlertModal
+        isOpen={isCancelModalOpen}
+        onClose={handleCloseModal}
+        isConfirm={() => handleUpdate("Cancel")}
+        CancelResolveModal={true}
+      ></AlertModal>
+
+      <AlertModal
+        isOpen={isResolveModalOpen}
+        onClose={handleCloseModal}
+        isConfirm={() => handleUpdate("Resolved")}
+        ResolveModal={true}
+      ></AlertModal>
     </div>
   );
 }

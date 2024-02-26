@@ -3,12 +3,12 @@ import Button from "../Button";
 export default function AlertModal({
   isOpen,
   onClose,
-  isConfrim,
+  isConfirm,
   children,
   DeleteModal,
   CancleModal,
   ResolveModal,
-  CancleResolveModal,
+  CancelResolveModal,
 }) {
   if (!isOpen) return null;
 
@@ -31,7 +31,7 @@ export default function AlertModal({
           <div className="flex flex-col gap-6 pt-6 px-6">
             <h3 className="text-body2 text-gray-700">{children}</h3>
             <div className="flex gap-4">
-              <Button secondary onClick={isConfrim}>
+              <Button secondary onClick={isConfirm}>
                 Yes, I want to delete
               </Button>
               <Button primary onClick={onClose}>
@@ -64,7 +64,7 @@ export default function AlertModal({
               Do you sure to cancel Membership to get more Merry?
             </h3>
             <div className="flex gap-4">
-              <Button secondary onClick={isConfrim}>
+              <Button secondary onClick={isConfirm}>
                 Yes, I want to cancel
               </Button>
               <Button primary onClick={onClose}>
@@ -97,10 +97,10 @@ export default function AlertModal({
               This complaint is resolved?
             </h3>
             <div className="flex gap-4">
-              <Button secondary onClick={isConfrim}>
+              <Button primary onClick={isConfirm}>
                 Yes, it has been resolved
               </Button>
-              <Button primary onClick={onClose}>
+              <Button secondary onClick={onClose}>
                 No, it’s not
               </Button>
             </div>
@@ -109,7 +109,7 @@ export default function AlertModal({
       </dialog>
     );
   }
-  if (CancleResolveModal) {
+  if (CancelResolveModal) {
     return (
       <dialog className="modal  bg-black/10" open>
         <div className="modal-box bg-white h-[12.5rem] max-w-[33rem] p-0 py-2 rounded-3xl">
@@ -127,10 +127,10 @@ export default function AlertModal({
           </form>
           <div className="flex flex-col gap-6 pt-6 px-6">
             <h3 className="text-body2 text-gray-700">
-              Do you sure to cancel this conplaint?
+              Are you sure you want to cancel this complaint?
             </h3>
             <div className="flex gap-4">
-              <Button secondary onClick={isConfrim}>
+              <Button secondary onClick={isConfirm}>
                 Yes, cancel this complaint
               </Button>
               <Button primary onClick={onClose}>
