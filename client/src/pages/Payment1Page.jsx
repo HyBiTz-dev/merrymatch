@@ -43,14 +43,20 @@ export default function Payment1Page() {
         price: package_price,
       },
     };
-    //let result = await axios.post(`http://localhost:3000/payment1`, "test");
-    let result = await axios.post(
-      `http://localhost:3000/payment1/create-payment1`,
-      data
-    );
-    console.log(result.data.status);
-    if (result.data === "succeeded") {
-      //done
+    let result = "no payment";
+    try {
+      result = await axios.post(
+        `http://localhost:3000/payment1/create-payment1`,
+        data
+      );
+      console.log(result.request);
+      if (result.request.statusText === "OK") {
+        navigate("/payment2");
+      }
+    } catch (error) {
+      console.log(result);
+      console.log(error);
+      alert(`can't buy the package : ${package_name}`);
     }
   };
   useEffect(() => {}, []);

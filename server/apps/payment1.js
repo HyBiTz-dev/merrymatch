@@ -24,6 +24,7 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
     "pm_card_visa_debit",
     "pm_card_mastercard",
     "pm_card_mastercard_debit",
+    "pm_card_visa_chargeDeclined",
   ];
 
   const haveUserProfileId = async () => {
@@ -87,10 +88,14 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
       });
       paymentData = paymentIntent;
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error);
     }
     console.log(paymentData);
-    return res.json(paymentData);
+    if (paymentData.status === "succeeded") {
+      return res.json(paymentData.status);
+    } else {
+      return res.json("");
+    }
   };
 
   const addCustomerId = async (newCustomer) => {
