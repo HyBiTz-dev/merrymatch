@@ -71,7 +71,11 @@ function PackageCard() {
                 onClick={() => {
                   console.log(packageId[index]);
                   navigate("/payment1", {
-                    state: { package_id: packageId[index] },
+                    state: {
+                      package_id: packageId[index],
+                      package_name: cardName[index],
+                      package_price: cardPrice[index],
+                    },
                   });
                 }}
               >
