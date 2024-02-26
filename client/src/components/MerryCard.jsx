@@ -73,12 +73,31 @@ function MerryCard() {
           setDailyLimit(dailyLimit + 1);
         }
       } else {
-        const response = await axios.delete(
-          `http://localhost:3000/merrylist/${user_id}/delete`,
-          { params: { receivedIds } }
+        const result = await axios.get(
+          `http://localhost:3000/conversation/${receivedIds}`
         );
-        if (response.status === 200) {
-          setMerryUserList(merryUserList.filter((id) => id !== receivedIds));
+        const hasConversation = result.data.conversation.filter(
+          (item) =>
+            item.receiver_id === state?.id || item.sender_id === state?.id
+        );
+        console.log(hasConversation);
+        if (hasConversation.length !== 0) {
+          const chatId = hasConversation[0].id;
+          const response = await axios.delete(
+            `http://localhost:3000/merrylist/${user_id}/delete`,
+            { params: { receivedIds, chatId } }
+          );
+          if (response.status === 200) {
+            setMerryUserList(merryUserList.filter((id) => id !== receivedIds));
+          }
+        } else {
+          const response = await axios.delete(
+            `http://localhost:3000/merrylist/${user_id}/delete`,
+            { params: { receivedIds } }
+          );
+          if (response.status === 200) {
+            setMerryUserList(merryUserList.filter((id) => id !== receivedIds));
+          }
         }
       }
     } catch (error) {
@@ -90,11 +109,11 @@ function MerryCard() {
     const result = await axios.get(
       `http://localhost:3000/conversation/${userId}`
     );
-    const hasCoversation = result.data.conversation.filter(
+    const hasConversation = result.data.conversation.filter(
       (item) => item.receiver_id === state?.id || item.sender_id === state?.id
     );
 
-    if (hasCoversation.length === 0) {
+    if (hasConversation.length === 0) {
       const data = await axios.post(`http://localhost:3000/conversation/`, {
         sender_id: state?.id,
         receiver_id: userId,
@@ -103,7 +122,7 @@ function MerryCard() {
       navigate(`/messages/${data.data.data[0].id}`);
     } else {
       setCurrentChat(hasCoversation[0]);
-      navigate(`/messages/${hasCoversation[0].id}`);
+      navigate(`/messages/${hasConversation[0].id}`);
     }
   };
 
@@ -130,9 +149,9 @@ function MerryCard() {
 
   const renderList = merryList
     ? merryList.map((user, index) => {
-        const isMatched = matchedUserList.includes(user.user_id);
-        const isMerry = merryUserList.includes(user.user_id);
-        const isMerryToday = userLikeDateList.includes(user.user_id);
+        const isMatched = matchedUserList.includes(user?.user_id);
+        const isMerry = merryUserList.includes(user?.user_id);
+        const isMerryToday = userLikeDateList.includes(user?.user_id);
 
         return (
           <div className="flex flex-col items-center " key={index}>

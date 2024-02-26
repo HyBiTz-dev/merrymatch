@@ -1,5 +1,7 @@
 import Button from "./Button";
 import { useAuth } from "../context/authentication";
+import Notification from "./Notification";
+import { useSocket } from "../context/socketContext";
 
 function Navbar() {
   const { logout, isAuthenticated, state } = useAuth();
@@ -42,6 +44,7 @@ function Navbar() {
     );
   };
   const auth = () => {
+    const { notifications } = useSocket();
     return (
       <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[28rem] bg-white relative z-50 shadow-nav">
         <div>
@@ -66,13 +69,21 @@ function Navbar() {
               Merry Membership
             </a>
           </li>
-          <li className="flex justify-center items-center gap-3">
+          <div className="dropdown dropdown-end w-12 h-12">
             <img
+              tabIndex={0}
               src="/images/bell.svg"
+              role="button"
               width={48}
               height={48}
-              className="bg-gray-100 rounded-3xl p-3"
+              className="bg-gray-100 rounded-3xl p-3 relative"
             />
+            {notifications.length ? (
+              <div className="bg-red-400 w-3 h-3 rounded-full absolute top-2 left-7"></div>
+            ) : null}
+            <Notification />
+          </div>
+          <li className="flex justify-center items-center gap-3 ">
             <div className="dropdown dropdown-end w-12 h-12">
               <img
                 tabIndex={0}

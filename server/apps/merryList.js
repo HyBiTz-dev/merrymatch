@@ -93,6 +93,7 @@ merryListRouter.get("/:user_id/package", async (req, res) => {
 merryListRouter.delete("/:user_id/delete", async (req, res) => {
   const { user_id } = req.params;
   const receivedIds = req.query.receivedIds;
+  const chatId = req.query.chatId;
 
   try {
     const { data } = await supabase
@@ -107,40 +108,10 @@ merryListRouter.delete("/:user_id/delete", async (req, res) => {
     const deleteId = data[0].id;
     await supabase.from("like_user").delete().eq("id", deleteId);
 
-    // const conversationId = await supabase
-    //   .from("conversation")
-    //   .select("id")
-    //   .eq("sender_id", user_id)
-    //   .eq("receiver_id", receivedIds);
-    // const messagesByConversationId = await supabase
-    //   .from("messages")
-    //   .select("id")
-    //   .eq("conversation_id", conversationId);
-    // await supabase
-    //   .from("conversation")
-    //   .delete()
-    //   .eq("sender_id", user_id)
-    //   .eq("receiver_id", receivedIds);
-    // await supabase
-    //   .from("messages")
-    //   .delete()
-    //   .eq("conversation_id", messagesByConversationId);
-
-    const conversationIdData = await supabase
-      .from("conversation")
-      .select("id")
-      .eq("sender_id", user_id)
-      .eq("receiver_id", receivedIds);
-    const conversationId = conversationIdData.data[0].id;
-    await supabase
-      .from("messages")
-      .delete()
-      .eq("conversation_id", conversationId);
-    await supabase
-      .from("conversation")
-      .delete()
-      .eq("sender_id", user_id)
-      .eq("receiver_id", receivedIds);
+    if (chatId) {
+      await supabase.from("messages").delete().eq("conversation_id", chatId);
+      await supabase.from("conversation").delete().eq("id", chatId);
+    }
 
     return res.json({ message: "Unmerry Successfully" });
   } catch (error) {

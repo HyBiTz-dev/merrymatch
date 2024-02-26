@@ -23,7 +23,8 @@ export default function SwipeCard() {
   const [profileData, setProfileData] = useState({});
 
   const { state } = useAuth();
-  const { setCurrentChat } = useSocket();
+  const { socket, notifications, setNotifications, setCurrentChat } =
+    useSocket();
 
   const [showModal, setShowModal] = useState(false);
 
@@ -41,11 +42,11 @@ export default function SwipeCard() {
       `http://localhost:3000/conversation/${userId}`
     );
 
-    const hasCoversation = result.data.conversation.filter(
+    const hasConversation = result.data.conversation.filter(
       (item) => item.receiver_id === state?.id || item.sender_id === state?.id
     );
 
-    if (hasCoversation.length === 0) {
+    if (hasConversation.length === 0) {
       const data = await axios.post(`http://localhost:3000/conversation/`, {
         sender_id: state?.id,
         receiver_id: userId,
@@ -53,8 +54,8 @@ export default function SwipeCard() {
       setCurrentChat(data.data.data[0]);
       navigate(`/messages/${data.data.data[0].id}`);
     } else {
-      setCurrentChat(hasCoversation[0]);
-      navigate(`/messages/${hasCoversation[0].id}`);
+      setCurrentChat(hasConversation[0]);
+      navigate(`/messages/${hasConversation[0].id}`);
     }
   };
 
@@ -72,11 +73,16 @@ export default function SwipeCard() {
       const isMatch = result.data.matchedUser_ids.includes(receivedIds);
 
       if (isMatch) {
-        setMatch(
-          result.data.receivedUserProfile.data.filter(
-            (item) => item.user_id === receivedIds
-          )
+        const matchData = result.data.receivedUserProfile.data.filter(
+          (item) => item.user_id === receivedIds
         );
+        setMatch(matchData);
+        socket.current.emit("merryMatch", {
+          matchId: receivedIds,
+          senderMatchId: state?.id,
+          name: state?.name,
+          img: state?.proflie_images,
+        });
       } else {
         const result = users.filter((item) => item.user_id !== receivedIds);
         setUsers(result);
