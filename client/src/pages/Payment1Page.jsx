@@ -6,23 +6,54 @@ import Button from "../components/Button";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authentication";
 
 export default function Payment1Page() {
+  const { state } = useAuth();
+  console.log(state);
+  const userId = state.id;
+  const userEmail = state.email;
+  const navigate = useNavigate();
   const [packageDetails, setPackageDetails] = useState("");
   const location = useLocation();
-  console.log(location);
-  const state = location.state;
-  console.log(state);
-  const package_id = state.package_id;
-  console.log(package_id);
 
-  const getPackageFromID = async () => {
-    const result = await axios.get(`http://localhost:3000/packages/`, 9);
-    console.log(result);
+  const statePackage = location.state;
+  console.log(statePackage);
+  const package_id = statePackage.package_id;
+  const package_name = statePackage.package_name;
+  const package_price_show = statePackage.package_price;
+  const package_price = statePackage.package_price
+    .toString()
+    .replaceAll(".", "");
+
+  const eventHandleCancle = () => {
+    navigate(-1);
   };
-  useEffect(() => {
-    getPackageFromID();
-  }, []);
+  const evenetHandleConfirm = async () => {
+    console.log("try to send payment to server");
+    let data = {
+      user: {
+        id: userId,
+        name: "Latte",
+        email: userEmail,
+      },
+      product: {
+        name: package_name,
+        price: package_price,
+      },
+    };
+    //let result = await axios.post(`http://localhost:3000/payment1`, "test");
+    let result = await axios.post(
+      `http://localhost:3000/payment1/create-payment1`,
+      data
+    );
+    console.log(result.data.status);
+    if (result.data === "succeeded") {
+      //done
+    }
+  };
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -46,10 +77,10 @@ export default function Payment1Page() {
                 </div>
                 <div className="package-box-details-package w-full h-[4.875rem] py-[1.5rem] flex justify-between">
                   <span className="text-body1 text-gray-900 w-[10.438rem] h-[1.875rem]">
-                    Premium
+                    {package_name}
                   </span>
                   <span className="text-body1 text-gray-900 w-[10.438rem] h-[1.875rem] text-right">
-                    THB 59.00
+                    THB {package_price_show}
                   </span>
                 </div>
               </div>
@@ -118,10 +149,16 @@ export default function Payment1Page() {
                 <Button
                   ghost
                   className="w-[4.125] h-[2rem] font-[700] text-[1rem] rounded-[1rem]"
+                  onClick={eventHandleCancle}
                 >
                   Cancel
                 </Button>
-                <Button primary className="w-[11.063rem] h-[3rem]">
+                {}
+                <Button
+                  primary
+                  className="w-[11.063rem] h-[3rem]"
+                  onClick={evenetHandleConfirm}
+                >
                   Payment Confirm
                 </Button>
               </div>

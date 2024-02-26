@@ -2,7 +2,6 @@ import React from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import PackageCard from "../components/PackageCard";
-import { createContext } from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
@@ -11,11 +10,7 @@ export const userPackageData = React.createContext();
 
 export default function PackagePage() {
   const [allPackages, setAllPackages] = useState({});
-  const [packagesName, setPackagesName] = useState([]);
-  const [packagesPrice, setPackagesPrice] = useState([]);
-  const [packagesPerdate, setPackagesPerdate] = useState([]);
-  const [packagesdetails, setPackagesdetails] = useState([]);
-  const test = async () => {
+  const getDataPackages = async () => {
     try {
       let { data, error } = await supabase
         .from("packages")
@@ -60,7 +55,7 @@ export default function PackagePage() {
   // };
 
   useEffect(() => {
-    test();
+    getDataPackages();
   }, []);
 
   return (

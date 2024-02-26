@@ -13,8 +13,11 @@ payment1Router.get("/", (req, res) => {
 payment1Router.post("/create-payment1", express.json(), async (req, res) => {
   const { user, product } = req.body;
   const userProfileId = user.id;
+  const userProfileName = user.name;
+  const userProfileEmail = user.email;
+  const productName = product.name;
+  const productPrice = product.price;
   let newCustomer;
-  let queryData;
   let paymentData;
   const card = [
     "pm_card_visa",
@@ -29,21 +32,27 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
       const { data, error } = await supabase
         .from("customer")
         .select("*")
-        .eq("user_profile_id", userProfileId);
-      queryData = data[0];
-      newCustomer = queryData.customer_id;
-      alreadyProfileId = Object.keys(queryData).length;
+        .eq("user_profile_id", userProfileId)
+        .limit(1);
+      console.log(data);
+      console.log(Array.isArray(data));
+      console.log(data.length);
+      alreadyProfileId = data.length == 0 ? false : true;
+
+      //alreadyProfileId = Object.keys(queryData).length;
       if (alreadyProfileId) {
-        console.log("user_profile_id has been already in custom table");
+        console.log(
+          `user_profile_id : ${userProfileId}  has been already in custom table`
+        );
         const { data, error } = await supabase
           .from("customer")
           .select("customer_id")
           .eq("user_profile_id", userProfileId);
-        queryData = data[0].customer_id;
+        let queryData = data[0].customer_id;
         if (queryData == null) {
           const customer = await stripe.customers.create({
-            name: `${user.name}`,
-            email: `${user.email}`,
+            name: `${userProfileName}`,
+            email: `${userProfileEmail}`,
           });
           newCustomer = customer.id;
           addCustomerId(newCustomer);
@@ -70,16 +79,17 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
       const paymentIntent = await stripe.paymentIntents.create({
         payment_method: `${card[2]}`,
         confirm: true,
-        amount: `${product.price}`,
+        amount: `${productPrice}`,
         currency: "thb",
         payment_method_types: ["card"],
-        description: `${product.name}`,
+        description: `${productName}`,
         customer: `${newCustomer}`,
       });
       paymentData = paymentIntent;
     } catch (error) {
-      console.log(error);
+      return res.json(error);
     }
+    console.log(paymentData);
     return res.json(paymentData);
   };
 
@@ -89,7 +99,7 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
       .update({ customer_id: newCustomer })
       .eq("user_profile_id", userProfileId)
       .select();
-    console.log(data);
+    console.log(`Add customer :`, data);
   };
 
   haveUserProfileId();
