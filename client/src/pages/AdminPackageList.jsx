@@ -15,7 +15,7 @@ function AdminPackageList() {
     const fetchPackageData = async () => {
       try {
         const { data, error } = await axios.get(
-          "http://localhost:3000/package"
+          "http://localhost:3000/packages"
         );
         if (error) throw error;
         setAllPackages(data);
@@ -28,7 +28,7 @@ function AdminPackageList() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/package/${deletePackageId}`);
+      await axios.delete(`http://localhost:3000/packages/${deletePackageId}`);
       setAllPackages(
         allPackages.filter((packageItem) => packageItem.id !== deletePackageId)
       );
@@ -47,9 +47,10 @@ function AdminPackageList() {
     setShowModal(false);
   };
 
-  const filteredAllPackages = allPackages.filter((packageItem) =>
-    packageItem.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredAllPackages = allPackages.filter((packageItem) => {
+    // console.log(packageItem.name);
+    return packageItem.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   return (
     <div className="flex bg-white ">

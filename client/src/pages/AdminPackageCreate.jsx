@@ -28,7 +28,7 @@ function AdminPackageCreate() {
       values;
     try {
       const { data, error } = await axios.post(
-        "http://localhost:3000/package",
+        "http://localhost:3000/packages",
         {
           packageName,
           price,
