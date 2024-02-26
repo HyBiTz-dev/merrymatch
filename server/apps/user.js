@@ -198,12 +198,6 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
     const hobbiesInterestsArray = req.body.hobbiesInterests.split(",");
     let uploadPicArray = JSON.parse(req.body.uploadedPicture);
     const deletePicArray = JSON.parse(req.body.deletePictures);
-    // const { data, error : updateEmailError } = await supabase.auth.updateUser({
-    //   email: "new@email.com",
-    // })
-    // if(updateEmailError){
-    //   return res.status(400).json({ message: updateEmailError.message });
-    // }
     const { data: countryCity, error: countryCityError } = await supabase
       .from("country_city")
       .select("id")
