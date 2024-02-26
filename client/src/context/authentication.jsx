@@ -32,7 +32,6 @@ const getState = () => {
 function AuthProvider(props) {
   const navigate = useNavigate();
   const [state, setState] = useState(getState());
-  // console.log(state);
 
   const login = async (data) => {
     if (data.email && data.password) {

@@ -212,6 +212,14 @@ async function init() {
       }
     });
 
+    socket.on("merryMatch", ({ matchId, senderMatchId, name, img }) => {
+      const user = getUser(matchId);
+      if (user) {
+        const data = { matchId, senderMatchId, name, img };
+        io.to(user.socketId).emit("notification", data);
+      }
+    });
+
     socket.on("disconnect", () => {
       console.log("a user disconnected!");
       removeUser(socket.id);

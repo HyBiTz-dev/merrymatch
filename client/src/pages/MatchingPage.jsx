@@ -53,7 +53,7 @@ function MatchingPage() {
                     className="checkbox border border-gray-400 checked:border-purple-300 [--chkbg:theme(colors.purple.500)] [--chkfg:white]"
                   />
                   <span className="text-base font-medium">
-                    Non-bunary people
+                    Non-binary people
                   </span>
                 </label>
               </div>

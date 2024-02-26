@@ -14,6 +14,7 @@ function SocketProvider(props) {
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [arrCurrentChat, setArrCurrentChat] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     socket.current = io("http://localhost:3000");
@@ -68,6 +69,12 @@ function SocketProvider(props) {
       setMessages([...messages, newMessages]);
   }, [newMessages, currentChat]);
 
+  useEffect(() => {
+    socket.current.on("notification", (data) => {
+      setNotifications((prevNotifications) => [...prevNotifications, data]);
+    });
+  }, []);
+
   return (
     <SocketContext.Provider
       value={{
@@ -77,8 +84,8 @@ function SocketProvider(props) {
         currentChat,
         setCurrentChat,
         onlineUser,
-        // notifications,
-        // setNotifications,
+        notifications,
+        setNotifications,
         conversation,
         getConversation,
       }}
