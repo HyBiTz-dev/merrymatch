@@ -113,7 +113,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className=" bg-main h-screen">
+    <div className=" bg-main h-screen overflow-hidden">
       <Navbar auth />
       <main className="flex justify-center bg-main h-[91%]">
         <MatchingSidebar Chat={currentChat} />

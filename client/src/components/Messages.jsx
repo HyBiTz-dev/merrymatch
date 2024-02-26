@@ -5,7 +5,7 @@ export default function Messages({ messages, user, profile }) {
         <ul className="flex flex-col w-full">
           <li className="bg-purple-600 px-6 py-4 text-body2 text-white rounded-l-3xl rounded-tr-3xl self-end">
             {messages.message_text.match(/\.(jpeg|jpg|webp|png)$/) != null ? (
-              <img src={messages.message_text} className="h-60 h-60" />
+              <img src={messages.message_text} className="h-60" />
             ) : (
               messages.message_text
             )}
@@ -20,7 +20,7 @@ export default function Messages({ messages, user, profile }) {
           />
           <li className="bg-purple-200 border border-gray-200 px-6 py-4 text-body2 text-black rounded-r-3xl rounded-tl-3xl">
             {messages.message_text.match(/\.(jpeg|jpg|webp|png)$/) != null ? (
-              <img src={messages.message_text} className="h-60 h-60" />
+              <img src={messages.message_text} className="h-60" />
             ) : (
               messages.message_text
             )}

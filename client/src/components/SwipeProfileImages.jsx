@@ -7,7 +7,7 @@ import { Mousewheel, Navigation } from "swiper/modules";
 
 export default function SwipeProfileImages({ user }) {
   return (
-    <div className="absolute  w-[38.75rem] h-[38.75rem]">
+    <div className="absolute w-[38.75rem] h-[38.75rem]">
       <Swiper
         allowTouchMove={false}
         mousewheel={true}
