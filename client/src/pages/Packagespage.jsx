@@ -10,6 +10,7 @@ export const userPackageData = React.createContext();
 
 export default function PackagePage() {
   const [allPackages, setAllPackages] = useState({});
+<<<<<<< HEAD
   const getDataPackages = async () => {
     try {
       let { data, error } = await supabase
@@ -17,6 +18,16 @@ export default function PackagePage() {
         .select("*")
         .limit(3);
 
+=======
+  const [packagesName, setPackagesName] = useState([]);
+  const [packagesPrice, setPackagesPrice] = useState([]);
+  const [packagesPerdate, setPackagesPerdate] = useState([]);
+  const [packagesdetails, setPackagesdetails] = useState([]);
+  const test = async () => {
+    try {
+      let { data, error } = await supabase.from("packages").select("*");
+      console.log(data);
+>>>>>>> a2f780ae40c4587fde0701df308d33f506965c2b
       let newArrray = [...data];
       let newObject = {
         package_num: [],
@@ -55,9 +66,17 @@ export default function PackagePage() {
   // };
 
   useEffect(() => {
+<<<<<<< HEAD
     getDataPackages();
   }, []);
 
+=======
+    test();
+  }, []);
+
+  console.log(allPackages);
+
+>>>>>>> a2f780ae40c4587fde0701df308d33f506965c2b
   return (
     <>
       <Navbar auth />
