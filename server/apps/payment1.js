@@ -17,6 +17,7 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
   const userProfileEmail = user.email;
   const productName = product.name;
   const productPrice = product.price;
+  const productId = product.id;
   let newCustomer;
   let paymentData;
   const card = [
@@ -92,7 +93,17 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
     }
     console.log(paymentData);
     if (paymentData.status === "succeeded") {
-      return res.json(paymentData.status);
+      try {
+        const { data, error } = await supabase
+          .from("user_profile")
+          .update({ package_id: productId })
+          .eq("user_id", userProfileId)
+          .select();
+        console.log(data);
+        return res.json(paymentData.status);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       return res.json("");
     }

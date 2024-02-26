@@ -16,6 +16,7 @@ export default function Payment1Page() {
   const userEmail = state.email;
   const navigate = useNavigate();
   const [packageDetails, setPackageDetails] = useState("");
+
   const location = useLocation();
 
   const statePackage = location.state;
@@ -26,6 +27,11 @@ export default function Payment1Page() {
   const package_price = statePackage.package_price
     .toString()
     .replaceAll(".", "");
+
+  const package_icon = statePackage.package_icon;
+  console.log(package_icon);
+  const package_details = statePackage.package_details;
+  const package_perdate = statePackage.package_perdate;
 
   const eventHandleCancle = () => {
     navigate(-1);
@@ -39,8 +45,12 @@ export default function Payment1Page() {
         email: userEmail,
       },
       product: {
+        id: package_id,
+        icon: package_icon,
         name: package_name,
         price: package_price,
+        details: package_details,
+        perdate: package_perdate,
       },
     };
     let result = "no payment";
@@ -51,7 +61,11 @@ export default function Payment1Page() {
       );
       console.log(result.request);
       if (result.request.statusText === "OK") {
-        navigate("/payment2");
+        navigate("/payment2", {
+          state: {
+            data,
+          },
+        });
       }
     } catch (error) {
       console.log(result);
