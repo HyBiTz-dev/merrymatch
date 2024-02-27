@@ -67,7 +67,7 @@ function AdminPackageList() {
                 placeholder="Search..."
                 onChange={(e) => setSearchTerm(e.target.value)}
                 value={searchTerm}
-                className="input input-bordered focus:border-purple-500 w-80 max-w-xs pl-12"
+                className="input input-bordered bg-white focus:border-purple-500 w-80 max-w-xs pl-12"
               />
               <img
                 src="/images/search.svg"
@@ -90,8 +90,8 @@ function AdminPackageList() {
           <div className="pl-14 pr-14 pt-12 w-full">
             <div className="overflow-x-auto text-gray-800 font-medium">
               <table className="table">
-                <thead className="bg-gray-400">
-                  <tr className="">
+                <thead className="bg-gray-400 border border-gray-100">
+                  <tr>
                     <th className="rounded-tl-2xl"></th>
                     <th></th>
                     <th>Icon</th>
@@ -107,8 +107,11 @@ function AdminPackageList() {
                 <tbody>
                   {Array.isArray(filteredAllPackages) &&
                     filteredAllPackages.map((packageItem, index) => (
-                      <tr key={packageItem.id} className="bg-white">
-                        <td>
+                      <tr
+                        key={packageItem.id}
+                        className="bg-white  border border-gray-100"
+                      >
+                        <td className="rounded-bl-2xl">
                           <img src="/images/drag.svg" />
                         </td>
                         <td>{index + 1}</td>
@@ -165,7 +168,7 @@ function AdminPackageList() {
                             </dialog>
                           )}
                         </td>
-                        <td>
+                        <td className="rounded-br-2xl">
                           <button
                             onClick={() =>
                               navigate(`/admin/editpackage/${packageItem.id}`)

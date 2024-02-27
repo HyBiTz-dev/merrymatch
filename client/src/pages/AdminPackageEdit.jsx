@@ -122,7 +122,7 @@ function AdminPackageEdit() {
         <Form>
           <div className="flex">
             <SideBarAdmin />
-            <div className="w-full">
+            <div className="w-full bg-white">
               <div className="h-20 flex items-center  pl-14 pr-14">
                 <button onClick={() => navigate("/admin/package")}>
                   <img
@@ -166,7 +166,7 @@ function AdminPackageEdit() {
                           type="text"
                           as="input"
                           name="packageName"
-                          className="input input-bordered input-md"
+                          className="input input-bordered input-md bg-white"
                         />
                       </label>
                       <label className="form-control">
@@ -178,7 +178,7 @@ function AdminPackageEdit() {
                           as="input"
                           type="number"
                           name="price"
-                          className="input input-bordered input-md "
+                          className="input input-bordered input-md bg-white"
                         />
                       </label>
                     </div>
@@ -191,7 +191,7 @@ function AdminPackageEdit() {
                         as="input"
                         type="number"
                         name="merryLimit"
-                        className="input input-bordered input-md"
+                        className="input input-bordered input-md bg-white"
                       />
                     </label>
                     <div className="pb-10">
@@ -254,7 +254,7 @@ function AdminPackageEdit() {
                                       name={`packageDetails.${index}`}
                                       as="input"
                                       type="text"
-                                      className="input input-bordered input-md"
+                                      className="input input-bordered input-md bg-white"
                                     />
                                   </label>
                                 </div>

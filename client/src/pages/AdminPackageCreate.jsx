@@ -60,7 +60,7 @@ function AdminPackageCreate() {
         <Form>
           <div className="flex">
             <SideBarAdmin />
-            <div className="w-full">
+            <div className="w-full bg-white">
               <div className="h-20 flex items-center  pl-14 pr-14">
                 <span className="font-bold text-2xl text-gray-900 w-full">
                   Add Package
@@ -96,7 +96,7 @@ function AdminPackageCreate() {
                         type="text"
                         as="input"
                         name="packageName"
-                        className="input input-bordered input-md"
+                        className="input input-bordered input-md bg-white"
                       />
                     </label>
                     <label className="form-control">
@@ -108,7 +108,7 @@ function AdminPackageCreate() {
                         as="input"
                         type="number"
                         name="price"
-                        className="input input-bordered input-md "
+                        className="input input-bordered input-md bg-white"
                       />
                     </label>
                   </div>
@@ -121,7 +121,7 @@ function AdminPackageCreate() {
                       as="input"
                       type="number"
                       name="merryLimit"
-                      className="input input-bordered input-md"
+                      className="input input-bordered input-md bg-white"
                     />
                   </label>
 
@@ -177,7 +177,7 @@ function AdminPackageCreate() {
                               />
                               <div className="flex-1">
                                 <label className="form-control w-full mr-10">
-                                  <div className="">
+                                  <div>
                                     <span>Detail</span>
                                     <span className="text-red-500"> *</span>
                                   </div>
@@ -185,7 +185,7 @@ function AdminPackageCreate() {
                                     name={`packageDetails.${index}`}
                                     as="input"
                                     type="text"
-                                    className="input input-bordered input-md"
+                                    className="input input-bordered input-md bg-white"
                                   />
                                 </label>
                               </div>
