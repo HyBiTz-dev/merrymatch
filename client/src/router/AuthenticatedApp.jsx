@@ -17,20 +17,25 @@ import UpdateProfilePage from "../pages/UpdateProfilePage";
 import AdminComplaintDetailPage from "../pages/AdminComplaintDetailPage";
 
 import Payment1Page from "../pages/Payment1Page";
+import Payment2Page from "../pages/Payment2Page";
 export default function Router() {
   const { state } = useAuth();
   const role = state ? state.role : null;
   return (
-    <Routes>
-      {/* ------Common routes for both User and Admin------ */}
-      <Route path="/" element={<Home />} />
-      <Route path="/packages" element={<PackagePages />} />
-      <Route path="/payment1" element={<Payment1Page />} />
-      <Route path="/matching" element={<MatchingPage />} />
-      <Route path="/update/:id" element={<UpdateProfilePage />} />
-      <Route path="/messages/:id" element={<Chat />} />
-      <Route path="/filing-complaint" element={<FilingComplaintPage />} />
-      <Route path="/merrylist" element={<MerryListPage />} />
+
+    <div>
+      <Routes>
+        {/* ------Common routes for both User and Admin------ */}
+        <Route path="/" element={<Home />} />
+        <Route path="/packages" element={<PackagePages />} />
+        <Route path="/payment1" element={<Payment1Page />} />
+        <Route path="/payment2" element={<Payment2Page />} />
+        <Route path="/matching" element={<MatchingPage />} />
+        <Route path="/update/:id" element={<UpdateProfilePage />} />
+        <Route path="/messages/:id" element={<Chat />} />
+        <Route path="/filing-complaint" element={<FilingComplaintPage />} />
+        <Route path="/merrylist" element={<MerryListPage />} />
+
 
       {/* ------Admin routes------ */}
       {role === "Admin" && (

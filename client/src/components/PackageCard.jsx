@@ -75,6 +75,9 @@ function PackageCard() {
                       package_id: packageId[index],
                       package_name: cardName[index],
                       package_price: cardPrice[index],
+                      package_icon: cardIcon[index],
+                      package_details: cardDetails[index],
+                      package_perdate: cardPerDate[index],
                     },
                   });
                 }}
