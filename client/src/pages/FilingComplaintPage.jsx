@@ -15,10 +15,6 @@ function FilingComplaintPage() {
       description: values.description,
     };
 
-    if (!values.issue || !values.description) {
-      return;
-    }
-
     try {
       const response = await axios.post(
         "http://localhost:3000/filing-complaint/submit",

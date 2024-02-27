@@ -22,7 +22,6 @@ export default function Router() {
   const { state } = useAuth();
   const role = state ? state.role : null;
   return (
-
     <div>
       <Routes>
         {/* ------Common routes for both User and Admin------ */}
@@ -36,25 +35,31 @@ export default function Router() {
         <Route path="/filing-complaint" element={<FilingComplaintPage />} />
         <Route path="/merrylist" element={<MerryListPage />} />
 
-
-      {/* ------Admin routes------ */}
-      {role === "Admin" && (
-        <>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin/package" element={<AdminPackageList />} />
-          <Route path="/admin/createpackage" element={<AdminPackageCreate />} />
-          <Route path="/admin/editpackage/:id" element={<AdminPackageEdit />} />
-          <Route
-            path="/admin/complaint-list"
-            element={<AdminComplaintListPage />}
-          />
-          <Route
-            path="/admin/complaint-details/:id"
-            element={<AdminComplaintDetailPage />}
-          />
-        </>
-      )}
-    </Routes>
+        {/* ------Admin routes------ */}
+        {role === "Admin" && (
+          <>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/admin/package" element={<AdminPackageList />} />
+            <Route
+              path="/admin/createpackage"
+              element={<AdminPackageCreate />}
+            />
+            <Route
+              path="/admin/editpackage/:id"
+              element={<AdminPackageEdit />}
+            />
+            <Route
+              path="/admin/complaint-list"
+              element={<AdminComplaintListPage />}
+            />
+            <Route
+              path="/admin/complaint-details/:id"
+              element={<AdminComplaintDetailPage />}
+            />
+          </>
+        )}
+      </Routes>
+    </div>
   );
 }
