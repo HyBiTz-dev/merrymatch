@@ -1,8 +1,17 @@
+import { useState } from "react";
 import SideBarAdmin from "../components/SidebarAdmin";
 import SelectStatus from "../components/SelectStatus";
 import ComplaintTable from "../components/ComplaintTable";
 
 function AdminComplaintListPage() {
+  const [filterOptions, setFilterOptions] = useState({
+    selectedStatus: "",
+  });
+
+  const handleFilterChange = (selectedStatus) => {
+    setFilterOptions({ selectedStatus });
+  };
+
   return (
     <div className="flex bg-white w-[90rem] h-[78.5rem]">
       <SideBarAdmin />
@@ -24,10 +33,13 @@ function AdminComplaintListPage() {
                 className="absolute flex items-center inset-y-3 left-0 pl-4"
               />
             </div>
-            <SelectStatus />
+            <SelectStatus
+              selectedStatus={filterOptions.selectedStatus}
+              onSelectStatus={handleFilterChange}
+            />
           </div>
         </div>
-        <ComplaintTable />
+        <ComplaintTable selectedStatus={filterOptions.selectedStatus} />
       </div>
     </div>
   );
