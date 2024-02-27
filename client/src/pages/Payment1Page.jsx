@@ -50,6 +50,7 @@ export default function Payment1Page() {
         price: package_price,
         details: package_details,
         perdate: package_perdate,
+        priceShow: package_price_show,
       },
     };
     let result = "no payment";
@@ -58,11 +59,12 @@ export default function Payment1Page() {
         `http://localhost:3000/payment1/create-payment1`,
         data
       );
-      console.log(result.request);
+      console.log(result);
       if (result.request.statusText === "OK") {
         navigate("/payment2", {
           state: {
             data,
+            date: result.data.date,
           },
         });
       }

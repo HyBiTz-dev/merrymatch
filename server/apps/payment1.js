@@ -102,9 +102,16 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
 
         if (paymentData.status === "succeeded") {
           console.log(newCustomer);
-          const resultRecord = addTransaction(data[0], newCustomer, product);
+          const resultRecord = await addTransaction(
+            data[0],
+            newCustomer,
+            product
+          );
           console.log(resultRecord);
-          return res.json(paymentData.status);
+          return res.json({
+            status: paymentData.status,
+            date: resultRecord.created_at,
+          });
         }
         return res.json(paymentData.status);
       } catch (error) {
@@ -146,8 +153,8 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
           package_price: parseFloat(product.price).toFixed(2),
         })
         .select();
-      resultRecord = data.data;
-      return resultRecord;
+      resultRecord = data;
+      return resultRecord[0];
     } catch (error) {
       console.log(error);
     }

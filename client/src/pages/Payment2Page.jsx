@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import axios from "axios";
 
 export default function Payment2Page() {
   const navigate = useNavigate();
@@ -12,30 +13,47 @@ export default function Payment2Page() {
   const cardIcon = statePackage.data.product.icon;
   const cardName = statePackage.data.product.name;
   const cardPrice = statePackage.data.product.price;
+  const cardPriceShow = statePackage.data.product.priceShow;
   const cardPerDate = statePackage.data.product.perdate;
   const cardDetails = statePackage.data.product.details;
+  const dateStart = new Date(statePackage.date);
+  let year = dateStart.getFullYear();
+  let monthStart = dateStart.getMonth() + 1;
+  let monthEnd = monthStart + 1;
+  let day = dateStart.getDate();
+  if (monthStart < 10) {
+    monthStart = "0" + monthStart;
+  }
+  if (monthEnd < 10) {
+    monthEnd = "0" + monthEnd;
+  }
+  let stringDateStart = `${day}/${monthStart}/${year}`;
+  let stringDateEnd = `${day}/${monthEnd}/${year}`;
 
   const handleBackToHome = () => {
     navigate("/");
+  };
+  const getDateStartMember = async () => {
+    let getdate = await axios.get();
   };
   return (
     <>
       <Navbar auth />
       <div>Hello</div>
-      <div className="package-card flex flex-col w-[22.3125rem] h-auto p-10 items-start gap-6 rounded-[2rem] border-[1px] border-solid border-gray-400 bg-white">
+      <div className="package-card flex flex-col w-[22.3125rem] h-auto p-10 items-start gap-6 rounded-[2rem] border-[1px] border-solid border-gray-400 bg-gradient-to-r from-[#742138] to-[#A878BF]">
         <img
           className="flex justify-center items-center w-[3.75rem] h-[3.75rem] p-3 rounded-2xl bg-gray-100"
           src={cardIcon}
         ></img>
         <div className="package-title flex flex-col items-start gap-[0.5rem] self-stretch">
-          <h3 className="package-name text-headline3 w-full h-auto text-[2rem] font-[700] leading-10 tracking-[-0.02rem] text-purple-800">
+          <h3 className="package-name text-headline3 w-full h-auto text-[2rem] font-[700] leading-10 tracking-[-0.02rem] text-white">
             {cardName}
           </h3>
           <div className="package-price-per-date flex items-baseline gap-[0.375rem] self-stretch">
-            <p className="package-price text-body1 text-gray-900 text-xl font-[600] leading-[1.875rem] ">
-              THB {cardPrice}
+            <p className="package-price text-body1 text-purple-100 text-xl font-[600] leading-[1.875rem] ">
+              THB {cardPriceShow}
             </p>
-            <p className="package-per-date text-body2 text-gray-600 text-base font-[400] leading-6">
+            <p className="package-per-date text-body2 text-purple-100 text-base font-[400] leading-6">
               /{cardPerDate}
             </p>
           </div>
@@ -51,12 +69,22 @@ export default function Payment2Page() {
                   className="package-circle-checkbox w-6 h-6"
                   src="../../public/images/checkbox-circle-fill.svg"
                 ></img>
-                <p className="details-text text-gray-800 text-base font-[400] leading-[1.5rem]">
+                <p className="details-text text-purple-100 text-base font-[400] leading-[1.5rem]">
                   {items}
                 </p>
               </div>
             );
           })}
+        </div>
+        <div className="package-show-start-end flex flex-col w-[17.313rem] h-[4rem]">
+          <div className="package-start-date w-[17.313rem] h-[2rem] flex justify-between py-[0.25rem]">
+            <p className="text-body2 text-[#EFC4E2]">Start Membership</p>
+            <p className="text-body2 text-[#FFFFFF]">{stringDateStart}</p>
+          </div>
+          <div className="package-end-date w-[17.313rem] h-[2rem] flex justify-between py-[0.25rem]">
+            <p className="text-body2 text-[#EFC4E2]">Next billing</p>
+            <p className="text-body2 text-[#FFFFFF]">{stringDateEnd}</p>
+          </div>
         </div>
       </div>
       <Button secondary onClick={handleBackToHome}>
