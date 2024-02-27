@@ -34,7 +34,7 @@ export default function PackagePage() {
         newObject.name.push(items.name);
         newObject.price.push(parseFloat(items.price).toFixed(2));
         newObject.details.push(items.details);
-        newObject.perDate[index] = "mouth";
+        newObject.perDate[index] = "Mouth";
       });
       setAllPackages(newObject);
     } catch (error) {

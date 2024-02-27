@@ -101,7 +101,7 @@ function Navbar() {
               >
                 <li>
                   <a
-                    href="/package"
+                    href="/packages"
                     className="bg-gradient-to-r from-[#742138] to-[#A878BF] text-body4 text-white rounded-btn px-6 mx-2 "
                   >
                     <img src="/images/more-limit.svg" alt="" />
