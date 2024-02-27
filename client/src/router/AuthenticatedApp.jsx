@@ -18,6 +18,7 @@ import AdminComplaintDetailPage from "../pages/AdminComplaintDetailPage";
 
 import Payment1Page from "../pages/Payment1Page";
 import Payment2Page from "../pages/Payment2Page";
+import MerryMembershipPage from "../pages/MerryMembershipPage";
 export default function Router() {
   const { state } = useAuth();
   const role = state ? state.role : null;
@@ -29,6 +30,7 @@ export default function Router() {
         <Route path="/packages" element={<PackagePages />} />
         <Route path="/payment1" element={<Payment1Page />} />
         <Route path="/payment2" element={<Payment2Page />} />
+        <Route path="/merry-membership" element={<MerryMembershipPage />} />
         <Route path="/matching" element={<MatchingPage />} />
         <Route path="/update/:id" element={<UpdateProfilePage />} />
         <Route path="/messages/:id" element={<Chat />} />
