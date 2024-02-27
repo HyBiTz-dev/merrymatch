@@ -6,10 +6,16 @@ import ComplaintTable from "../components/ComplaintTable";
 function AdminComplaintListPage() {
   const [filterOptions, setFilterOptions] = useState({
     selectedStatus: "",
+    searchText: "",
   });
 
   const handleFilterChange = (selectedStatus) => {
-    setFilterOptions({ selectedStatus });
+    setFilterOptions({ ...filterOptions, selectedStatus });
+  };
+
+  const handleSearchChange = (event) => {
+    const searchText = event.target.value;
+    setFilterOptions({ ...filterOptions, searchText });
   };
 
   return (
@@ -26,6 +32,8 @@ function AdminComplaintListPage() {
                 type="text"
                 placeholder="Search..."
                 className="input input-bordered focus:border-purple-500 w-80 max-w-xs pl-12 bg-inherit border-gray-400"
+                onChange={handleSearchChange}
+                value={filterOptions.searchText}
               />
               <img
                 src="/images/search.svg"
@@ -39,7 +47,10 @@ function AdminComplaintListPage() {
             />
           </div>
         </div>
-        <ComplaintTable selectedStatus={filterOptions.selectedStatus} />
+        <ComplaintTable
+          selectedStatus={filterOptions.selectedStatus}
+          searchText={filterOptions.searchText}
+        />
       </div>
     </div>
   );

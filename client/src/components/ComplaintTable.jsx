@@ -3,7 +3,7 @@ import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import ComplaintStatus from "./ComplaintStatus";
 
-const ComplaintTable = ({ selectedStatus }) => {
+const ComplaintTable = ({ selectedStatus, searchText }) => {
   const [complaints, setComplaints] = useState([]);
   const navigate = useNavigate();
 
@@ -68,10 +68,25 @@ const ComplaintTable = ({ selectedStatus }) => {
             </thead>
             <tbody className="font-normal">
               {complaints
-                .filter((complaint) =>
-                  selectedStatus
-                    ? complaint.complaint_status === selectedStatus
-                    : true
+                .filter(
+                  (complaint) =>
+                    (selectedStatus
+                      ? complaint.complaint_status === selectedStatus
+                      : true) &&
+                    (searchText
+                      ? complaint.user_name
+                          .toLowerCase()
+                          .includes(searchText.toLowerCase()) ||
+                        complaint.complaint_issue
+                          .toLowerCase()
+                          .includes(searchText.toLowerCase()) ||
+                        complaint.complaint_description
+                          .toLowerCase()
+                          .includes(searchText.toLowerCase()) ||
+                        complaint.created_at
+                          .toLowerCase()
+                          .includes(searchText.toLowerCase())
+                      : true)
                 )
                 .map((complaint) => (
                   <tr
