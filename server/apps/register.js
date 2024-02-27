@@ -173,6 +173,14 @@ registerRouter.post(
       if (roleError) {
         return res.status(400).json({ message: roleError.message });
       }
+      const { data: merryLimtitData, error: merryLimtitDataError } =
+        await supabase
+          .from("merry_limit")
+          .insert([{ user_id: user.user.id }])
+          .select();
+      if (merryLimtitDataError) {
+        return res.status(400).json({ message: merryLimtitDataError.message });
+      }
       return res.json({
         message: "SignUp complete",
       });

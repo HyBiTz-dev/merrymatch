@@ -1,19 +1,36 @@
+import { useParams } from "react-router-dom";
 import { Formik, useFormik } from "formik";
-import Footer from "../components/Footer";
+import * as Yup from "yup";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/authentication";
+
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Button from "../components/Button";
 import { InputField, SelectInputField } from "../components/InputField";
 import TagsInput from "../components/TagInput";
-import * as Yup from "yup";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import ProfileModal from "../components/Modal/ProfileModal";
 import AlertModal from "../components/Modal/AlertModal";
-import { useAuth } from "../context/authentication";
+
+import {
+  DndContext,
+  closestCenter,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 function UpdateProfilePage() {
   const { logout } = useAuth();
+  const param = useParams();
   const [userData, setUserData] = useState({});
   const [country, setCountry] = useState([]);
   const [city, SetCity] = useState([]);
@@ -23,86 +40,10 @@ function UpdateProfilePage() {
   const [relation, setRelation] = useState([]);
   const [uploadedPictures, setUploadedPictures] = useState([]);
   const [deletePictures, setDeletePictures] = useState([]);
-  const param = useParams();
   const [showModal, setShowModal] = useState(false);
-  const openModal = () => {
-    setShowModal(true);
-  };
-  const closeModal = () => {
-    setShowModal(false);
-  };
   const [showAlert, setShowAlert] = useState(false);
-  const openAlert = () => {
-    setShowAlert(true);
-  };
-  const closeAlert = () => {
-    setShowAlert(false);
-  };
-  const previewImgArray = [];
-  const getUserData = async () => {
-    try {
-      const result = await axios.get(`http://localhost:3000/user/${param.id}`);
-      setUserData(result.data.userData[0]);
-      setUploadedPictures(result.data.userData[0].image_url);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-  const getData = async (dataType) => {
-    try {
-      const result = await axios.get(
-        `http://localhost:3000/user/data?dataType=${dataType}`
-      );
-      switch (dataType) {
-        case "country":
-          setCountry(result.data[dataType]);
-          break;
-        case "gender":
-          setGender(result.data[dataType]);
-          setGenderInterests(result.data[dataType]);
-          break;
-        case "racial":
-          setRacial(result.data[dataType]);
-          break;
-        case "relation":
-          setRelation(result.data[dataType]);
-          break;
-        default:
-          console.error("Invalid dataType");
-      }
-    } catch (error) {
-      console.error(`Error fetching ${dataType}:`, error);
-    }
-  };
-  const getCity = async () => {
-    const countryId = formik.values.country;
-    if (!countryId) {
-      SetCity([]);
-      return;
-    }
-    try {
-      const result = await axios.get(
-        `http://localhost:3000/user/data?dataType=city&country_id=${formik.values.country}`
-      );
-      const dataCity = result.data.city[0].city_id.map((id, index) => ({
-        value: id,
-        label: result.data.city[0].city_name[index],
-      }));
-      SetCity(dataCity);
-    } catch (error) {
-      console.error("Failed to fetch cities:", error);
-    }
-  };
-  function calculateAge(dob) {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
+  const imgArray = [];
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -191,6 +132,7 @@ function UpdateProfilePage() {
       values.profilePictures.forEach((file) => {
         formData.append("profilePictures", file, file.name);
       });
+      formData.append("reorderedPictures", JSON.stringify(pictures));
       try {
         const response = await axios.put(
           `http://localhost:3000/user/${param.id}`,
@@ -209,23 +151,32 @@ function UpdateProfilePage() {
     validateOnChange: false,
     validateOnBlur: true,
   });
-  const handleOnDelete = async () => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:3000/user/${param.id}`,
-        {
-          data: {
-            userId: userData.id,
-            uploadedPicture: JSON.stringify(uploadedPictures),
-          },
-        }
-      );
-      logout();
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error:", error.response.data);
-    }
+  const [pictures, setPictures] = useState([
+    ...uploadedPictures.map((picture) => ({
+      id: `uploaded-${picture}`,
+      url: picture,
+      type: "uploaded",
+    })),
+    ...formik.values.profilePictures.map((file) => ({
+      id: file.name,
+      file: file,
+      type: "file",
+    })),
+  ]);
+
+  const openModal = () => {
+    setShowModal(true);
   };
+  const closeModal = () => {
+    setShowModal(false);
+  };
+  const openAlert = () => {
+    setShowAlert(true);
+  };
+  const closeAlert = () => {
+    setShowAlert(false);
+  };
+
   useEffect(() => {
     getUserData();
     getData("country");
@@ -255,18 +206,124 @@ function UpdateProfilePage() {
   useEffect(() => {
     getCity();
   }, [formik.values.country]);
-  const totalPictures =
-    uploadedPictures.length + formik.values.profilePictures.length;
+  useEffect(() => {
+    setPictures([
+      ...uploadedPictures.map((picture) => ({
+        id: `uploaded-${picture}`,
+        url: picture,
+        type: "uploaded",
+      })),
+      ...formik.values.profilePictures.map((file) => ({
+        id: file.name,
+        file: file,
+        type: "file",
+      })),
+    ]);
+  }, [uploadedPictures, formik.values.profilePictures]);
+
+  const getUserData = async () => {
+    try {
+      const result = await axios.get(`http://localhost:3000/user/${param.id}`);
+      setUserData(result.data.userData[0]);
+      setUploadedPictures(result.data.userData[0].image_url);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  const getData = async (dataType) => {
+    try {
+      const result = await axios.get(
+        `http://localhost:3000/user/data?dataType=${dataType}`
+      );
+      switch (dataType) {
+        case "country":
+          setCountry(result.data[dataType]);
+          break;
+        case "gender":
+          setGender(result.data[dataType]);
+          setGenderInterests(result.data[dataType]);
+          break;
+        case "racial":
+          setRacial(result.data[dataType]);
+          break;
+        case "relation":
+          setRelation(result.data[dataType]);
+          break;
+        default:
+          console.error("Invalid dataType");
+      }
+    } catch (error) {
+      console.error(`Error fetching ${dataType}:`, error);
+    }
+  };
+
+  const getCity = async () => {
+    const countryId = formik.values.country;
+    if (!countryId) {
+      SetCity([]);
+      return;
+    }
+    try {
+      const result = await axios.get(
+        `http://localhost:3000/user/data?dataType=city&country_id=${formik.values.country}`
+      );
+      const dataCity = result.data.city[0].city_id.map((id, index) => ({
+        value: id,
+        label: result.data.city[0].city_name[index],
+      }));
+      SetCity(dataCity);
+    } catch (error) {
+      console.error("Failed to fetch cities:", error);
+    }
+  };
+
+  function calculateAge(dob) {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+  const handleOnDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/user/${param.id}`,
+        {
+          data: {
+            userId: userData.id,
+            uploadedPicture: JSON.stringify(uploadedPictures),
+          },
+        }
+      );
+      logout();
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error:", error.response.data);
+    }
+  };
+
+  const totalPictures = pictures.length;
   const uploadSlots = Math.max(5 - totalPictures, 0);
 
-  const handleRemoveUploadedPicture = (index) => {
-    const newPictures = uploadedPictures.filter((_, i) => i !== index);
-    const delPic = uploadedPictures.filter((_, i) => i == index);
-    const newDelPic = deletePictures;
-    setDeletePictures(newDelPic.concat(delPic));
-    setUploadedPictures(newPictures);
+  const handleRemoveUploadedPicture = (picture, index) => {
+    if (picture.type === "uploaded") {
+      const newPictures = uploadedPictures.filter((_, i) => i !== index);
+      const delPic = uploadedPictures.filter((_, i) => i === index);
+      setDeletePictures([...deletePictures, ...delPic]);
+      setUploadedPictures(newPictures);
+    } else {
+      const adjustedIndex = index - uploadedPictures.length;
+      const newProfilePictures = formik.values.profilePictures.filter(
+        (_, i) => i !== adjustedIndex
+      );
+      formik.setFieldValue("profilePictures", newProfilePictures);
+    }
   };
-  const imgArray = [];
+
   const previewImg = formik.values.profilePictures.map((picture, index) => {
     imgArray.push(URL.createObjectURL(picture));
   });
@@ -284,7 +341,65 @@ function UpdateProfilePage() {
       ?.name,
     age: calculateAge(formik.values.dateOfBirth),
     hobbie_interest_array: formik.values.hobbiesInterests,
-    image_url: uploadedPictures.concat(imgArray),
+    image_url: pictures.map((picture) => {
+      if (picture.type === "uploaded") {
+        return picture.url;
+      } else if (picture.file) {
+        return URL.createObjectURL(picture.file);
+      }
+      return null;
+    }),
+  };
+
+  const SortableItem = ({ id, picture, index }) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
+    const style = { transform: CSS.Transform.toString(transform), transition };
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className={`relative ${isDragging}`}
+      >
+        <img
+          src={
+            picture.type === "uploaded"
+              ? picture.url
+              : URL.createObjectURL(picture.file)
+          }
+          alt={`Picture ${index + 1}`}
+          className="relative w-[10.5rem] h-[10.5rem] object-cover rounded-lg"
+        />
+        <button
+          type="button"
+          className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 z-50"
+          onMouseDown={() => handleRemoveUploadedPicture(picture, index)}
+        >
+          x
+        </button>
+      </div>
+    );
+  };
+  const sensors = useSensors(useSensor(PointerSensor));
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = pictures.findIndex(
+        (picture) => picture.id === active.id
+      );
+      const newIndex = pictures.findIndex((picture) => picture.id === over.id);
+      const newArray = arrayMove(pictures, oldIndex, newIndex);
+      setPictures(newArray);
+    }
   };
 
   return (
@@ -516,42 +631,25 @@ function UpdateProfilePage() {
               </div>
             </div>
             <div className="flex gap-6">
-              {uploadedPictures.map((url, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={url}
-                    alt={`Uploaded Picture ${index}`}
-                    className="w-[10.5rem] h-[10.5rem] object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6"
-                    onClick={() => handleRemoveUploadedPicture(index)}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
-              {formik.values.profilePictures.map((picture, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={URL.createObjectURL(picture)}
-                    alt={`Picture ${index + 1}`}
-                    className=" w-[10.5rem] h-[10.5rem] object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 "
-                    onClick={() => {
-                      const newPictures = [...formik.values.profilePictures];
-                      newPictures.splice(index, 1);
-                      formik.setFieldValue("profilePictures", newPictures);
-                    }}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={pictures.map((picture) => picture.id)}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  {pictures.map((picture, index) => (
+                    <SortableItem
+                      key={picture.id}
+                      id={picture.id}
+                      picture={picture}
+                      index={index}
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
               {[...Array(uploadSlots)].map((_, index) => (
                 <div
                   key={index}
