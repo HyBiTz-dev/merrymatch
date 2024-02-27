@@ -11,8 +11,9 @@ function AdminPackageEdit() {
   const inputRef = useRef(null);
   const params = useParams();
   const [packages, setPackages] = useState(null);
-  // const [showModal, setShowModal] = useState(false);
-  // const [deletePackageId, setDeletePackageId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [allPackages, setAllPackages] = useState([]);
+  const [deletePackageId, setDeletePackageId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -21,21 +22,28 @@ function AdminPackageEdit() {
 
     if (!packageId) {
       navigate("/admin/package");
+      return;
     }
 
     const fetchPackageData = async () => {
       try {
         const resp = await axios.get(
-          `http://localhost:3000/package/${packageId}`
+          `http://localhost:3000/packages/${packageId}`
         );
         const packageData = resp.data;
-        setPackages(packageData[0]);
+        if (packageData.length > 0) {
+          setPackages(packageData[0]);
+        } else {
+          console.error("Package not found");
+          navigate("/admin/package");
+        }
       } catch (error) {
         console.error("Error fetching package data:", error);
+        navigate("/admin/package");
       }
     };
     fetchPackageData();
-  }, [params.id]);
+  }, [params.id, navigate]);
 
   const handleFileChange = (e, setFieldValue) => {
     const file = e.target.files[0];
@@ -55,7 +63,7 @@ function AdminPackageEdit() {
     const packageId = params.id;
     try {
       const { data, error } = await axios.put(
-        `http://localhost:3000/package/${packageId}`,
+        `http://localhost:3000/packages/${packageId}`,
         {
           packageName,
           price,
@@ -66,7 +74,6 @@ function AdminPackageEdit() {
       );
       console.log(data);
       if (error) throw error;
-      navigate("/admin/package");
     } catch (error) {
       alert("Error edit package: " + error.message);
     }
@@ -75,6 +82,30 @@ function AdminPackageEdit() {
   if (!packages) {
     return null;
   }
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/packages/${deletePackageId}`);
+      const updatePackages = allPackages.filter(
+        (packageItem) => packageItem.id !== deletePackageId
+      );
+      setAllPackages(updatePackages);
+      setShowModal(false);
+      navigate("/admin/package");
+    } catch (error) {
+      console.error("Error deleting package:", error);
+    }
+    setShowModal(false);
+  };
+
+  const openModal = (packageId) => () => {
+    setShowModal(true);
+    setDeletePackageId(packageId);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <Formik
@@ -93,11 +124,13 @@ function AdminPackageEdit() {
             <SideBarAdmin />
             <div className="w-full">
               <div className="h-20 flex items-center  pl-14 pr-14">
-                <img
-                  className="pr-4"
-                  src="/images/arrow_back.svg"
-                  alt="arrow icon"
-                />
+                <button onClick={() => navigate("/admin/package")}>
+                  <img
+                    className="pr-4"
+                    src="/images/arrow_back.svg"
+                    alt="arrow icon"
+                  />
+                </button>
                 <span className="font-bold text-2xl text-gray-900 w-full">
                   Edit ‘Premium’
                 </span>
@@ -261,7 +294,40 @@ function AdminPackageEdit() {
                     />
                   </div>
                   <div className="mt-5 text-right">
-                    <button>Delete Package</button>
+                    <button onClick={openModal(packages.id)}>
+                      Delete Package
+                    </button>
+                    {showModal && (
+                      <dialog
+                        id="my_modal_5"
+                        className="modal modal-bottom sm:modal-middle bg-black/20"
+                        open
+                      >
+                        <div className="modal-box p-0 shadow-2xl">
+                          <div className="px-6 py-2 border-b border-b-gray-200 flex">
+                            <h3 className="font-bold text-lg ">
+                              Delete Confirmation
+                            </h3>
+                            <button onClick={closeModal} className="ml-auto">
+                              <img src="/images/close.svg" alt="close icon" />
+                            </button>
+                          </div>
+                          <p className="p-6 text-gray-700 flex">
+                            Do you sure to delete this Package?
+                          </p>
+                          <div className="modal-action justify-start px-6 pb-6">
+                            <form method="dialog" className="flex gap-4">
+                              <Button secondary onClick={handleDelete}>
+                                Yes, I want to delete
+                              </Button>
+                              <Button primary onClick={closeModal}>
+                                No, I don’t want
+                              </Button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    )}
                   </div>
                 </div>
               </div>

@@ -31,6 +31,87 @@ userRouter.get("/", async (req, res) => {
   }
 });
 
+userRouter.get("/matching/:id", async (req, res) => {
+  const { id } = req.params;
+  const search = req.query;
+  const { data: all_profile, error } = await supabase
+    .from("user_profile_view")
+    .select("*")
+    .neq("role_name", "Admin");
+
+  const { data: received_ids, error: error_like } = await supabase
+    .from("like_user")
+    .select("user_profile_id_received")
+    .eq("user_profile_id_given", id);
+
+  const matchUser = received_ids.map((item) => item.user_profile_id_received);
+
+  const user_profile = all_profile.filter((item) => item.user_id !== id);
+
+  const currentUser = all_profile.filter((item) => item.user_id === id);
+
+  const result = user_profile.filter((item) => {
+    if (
+      search.default === "true" &&
+      search.gender_interest_1 === "true" &&
+      search.gender_interest_2 === "true"
+    ) {
+      return (
+        !matchUser.includes(item.user_id) &&
+        Number(search.age_range[0]) <= item.age &&
+        item.age <= Number(search.age_range[1])
+      );
+    } else if (
+      search.default === "true" &&
+      search.gender_interest_1 === "true"
+    ) {
+      return (
+        !matchUser.includes(item.user_id) &&
+        item.gender_name !== "Non-binary" &&
+        Number(search.age_range[0]) <= item.age &&
+        item.age <= Number(search.age_range[1])
+      );
+    } else if (
+      search.default === "true" &&
+      search.gender_interest_2 === "true"
+    ) {
+      return (
+        !matchUser.includes(item.user_id) &&
+        item.gender_name !== currentUser[0].gender_name &&
+        Number(search.age_range[0]) <= item.age &&
+        item.age <= Number(search.age_range[1])
+      );
+    } else if (
+      search.gender_interest_1 === "true" &&
+      search.gender_interest_2 === "true"
+    ) {
+      return (
+        !matchUser.includes(item.user_id) &&
+        item.gender_name !== currentUser[0].gender_interest_name &&
+        Number(search.age_range[0]) <= item.age &&
+        item.age <= Number(search.age_range[1])
+      );
+    } else if (Object.keys(search).length !== 0) {
+      return (
+        !matchUser.includes(item.user_id) &&
+        item.gender_name === currentUser[0].gender_interest_name &&
+        Number(search.age_range[0]) <= item.age &&
+        item.age <= Number(search.age_range[1])
+      );
+    } else {
+      return (
+        !matchUser.includes(item.user_id) &&
+        item.gender_name === currentUser[0].gender_interest_name
+      );
+    }
+  });
+
+  if (error) {
+    return res.status(500).json(error);
+  }
+  return res.status(200).json({ result });
+});
+
 userRouter.get("/data", async (req, res) => {
   const { dataType, country_id } = req.query;
 
@@ -117,11 +198,6 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
     const hobbiesInterestsArray = req.body.hobbiesInterests.split(",");
     let uploadPicArray = JSON.parse(req.body.uploadedPicture);
     const deletePicArray = JSON.parse(req.body.deletePictures);
-    // const { data: updateEmail, error: updateEmailError } =
-    //   await supabase.auth.update({ email: email });
-    // if (updateEmailError) {
-    //   return res.status(400).json({ message: updateEmailError.message });
-    // }
     const { data: countryCity, error: countryCityError } = await supabase
       .from("country_city")
       .select("id")
@@ -200,7 +276,6 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
         uploadPicArray.push(data.publicUrl);
       }
     } else if (deletePicArray.length !== 0 && req.files.length !== 0) {
-      console.log("hello");
       for (let i = 0; i < req.files.length; i++) {
         const file = req.files[i];
         const fileExtension = file.originalname.split(".").pop();

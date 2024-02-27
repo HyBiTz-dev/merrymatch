@@ -1,26 +1,10 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/helper/supabaseClient";
 import { useAuth } from "../context/authentication";
 
 export default function Home() {
   const { state } = useAuth();
-
-  // const [user, setUser] = useState(null);
-
-  // const checkUser = async () => {
-  //   const {
-  //     data: { user },
-  //   } = await supabase.auth.getUser();
-
-  //   setUser(user);
-  // };
-
-  // useEffect(() => {
-  //   checkUser();
-  // }, []);
 
   return (
     <>

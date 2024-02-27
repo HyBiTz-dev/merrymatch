@@ -14,7 +14,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/zoom";
 
-export default function SwipeCard() {
+export default function SwipeCard({ search }) {
   const { dailyLimit, setDailyLimit, maxMerryLimit } = useMerryLimit();
   const swiperRef = useRef();
   const navigate = useNavigate();
@@ -93,20 +93,14 @@ export default function SwipeCard() {
 
   useEffect(() => {
     const getUsers = async () => {
-      const result = await axios.get("http://localhost:3000/user");
-      const matchUser = await axios.get(
-        `http://localhost:3000/merrylist/${state?.id}`
+      const data = await axios.get(
+        `http://localhost:3000/user/matching/${state?.id}`,
+        { params: search }
       );
-      const unMatchUser = result.data.filter(
-        (item) =>
-          item.role_name !== "Admin" &&
-          state.id !== item.user_id &&
-          !matchUser.data.received_ids.includes(item.user_id)
-      );
-      setUsers(unMatchUser);
+      setUsers(data.data.result);
     };
     getUsers();
-  }, []);
+  }, [search]);
 
   return (
     <div className="flex flex-col items-center gap-16 ">
