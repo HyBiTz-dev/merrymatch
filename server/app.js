@@ -17,6 +17,7 @@ import complaintRouter from "./apps/complaint.js";
 import merryListRouter from "./apps/merryList.js";
 import payment1Router from "./apps/payment1.js";
 import transactionRouter from "./apps/transaction.js";
+import membershipRouter from "./apps/membership.js";
 
 async function init() {
   const app = express();
@@ -40,6 +41,7 @@ async function init() {
   app.use("/packages", packagesRouter);
   app.use("/payment1", payment1Router);
   app.use("/transaction", transactionRouter);
+  app.use("/membership", membershipRouter);
   app.use("/login", authRouter);
   app.use("/register", registerRouter);
   app.use("/conversation", conversationRouter);

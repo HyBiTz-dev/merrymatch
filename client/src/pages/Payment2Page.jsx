@@ -33,6 +33,9 @@ export default function Payment2Page() {
   const handleBackToHome = () => {
     navigate("/");
   };
+  const handleGoMembership = () => {
+    navigate("/merry-membership");
+  };
 
   return (
     <>
@@ -60,7 +63,9 @@ export default function Payment2Page() {
             <Button secondary onClick={handleBackToHome}>
               Back to home{" "}
             </Button>
-            <Button primary>Check Membership</Button>
+            <Button primary onClick={handleGoMembership}>
+              Check Membership
+            </Button>
           </div>
         </section>
         <section className="package-card flex flex-col w-[22.3125rem] h-[28.375rem] mt-[5.5rem] ml-[7.125rem] p-10 items-start gap-6 rounded-[2rem] border-[1px] border-solid border-gray-400 bg-gradient-to-r from-[#742138] to-[#A878BF]">
