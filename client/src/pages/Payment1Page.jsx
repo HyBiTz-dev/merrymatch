@@ -29,7 +29,6 @@ export default function Payment1Page() {
     .replaceAll(".", "");
 
   const package_icon = statePackage.package_icon;
-  console.log(package_icon);
   const package_details = statePackage.package_details;
   const package_perdate = statePackage.package_perdate;
 

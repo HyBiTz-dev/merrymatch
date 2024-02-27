@@ -13,6 +13,7 @@ export default function Payment2Page() {
   const cardName = statePackage.data.product.name;
   const cardPrice = statePackage.data.product.price;
   const cardPerDate = statePackage.data.product.perdate;
+  const cardDetails = statePackage.data.product.details;
 
   const handleBackToHome = () => {
     navigate("/");
@@ -40,7 +41,7 @@ export default function Payment2Page() {
           </div>
         </div>
         <div className="package-details flex flex-col items-start pb-9 gap-4 self-stretch border-b-[1px] border-solid border-gray-300">
-          {/* {cardDetails.map((items, index) => {
+          {cardDetails.map((items, index) => {
             return (
               <div
                 key={index}
@@ -55,7 +56,7 @@ export default function Payment2Page() {
                 </p>
               </div>
             );
-          })} */}
+          })}
         </div>
       </div>
       <Button secondary onClick={handleBackToHome}>
