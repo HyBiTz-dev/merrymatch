@@ -53,7 +53,7 @@ const ComplaintTable = ({ selectedStatus, searchText }) => {
   };
 
   return (
-    <div className="bg-gray-100 flex h-[73.5rem]">
+    <div className="bg-gray-100 flex justify-center  h-[73.5rem]">
       <div className="pl-14 pr-14 pt-12 w-[75rem]">
         <div className="overflow-auto text-black font-medium rounded-2xl h-[58.813rem] scrollbar-hide">
           <table className="table">

@@ -1,7 +1,15 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function SideBarAdmin() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState("");
+
+  const handleItemClick = (item) => {
+    setActiveItem(item);
+    navigate(`/admin/${item}`);
+  };
 
   return (
     <div className="flex h-screen w-[15rem] bg-white border-r border-r-gray-400 flex-col">
@@ -15,15 +23,28 @@ function SideBarAdmin() {
           <span className="text-base text-gray-700">Admin Panel Control</span>
         </div>
         <div className="h-[34rem] my-10 text-base font-extrabold text-gray-800">
-          <div className=" hover:bg-gray-100 active:bg-gray-200">
+          <div
+            className={`hover:bg-gray-100 ${
+              activeItem === "package" || location.pathname === "/admin/package"
+                ? "bg-gray-200"
+                : ""
+            }`}
+            onClick={() => handleItemClick("package")}
+          >
             <div className="flex mx-6 py-6">
               <img src="/images/package.svg" alt="" className="pr-4" />
-              <span onClick={() => navigate("/admin/package")}>
-                Merry Package
-              </span>
+              <span>Merry Package</span>
             </div>
           </div>
-          <div className=" hover:bg-gray-100 active:bg-gray-200">
+          <div
+            className={`hover:bg-gray-100 ${
+              activeItem === "complaint-list" ||
+              location.pathname === "/admin/complaint-list"
+                ? "bg-gray-200"
+                : ""
+            }`}
+            onClick={() => handleItemClick("complaint-list")}
+          >
             <div className="flex mx-6 py-6 ">
               <img src="/images/complaint.svg" alt="" className="pr-4" />
               <span>Complaint</span>
