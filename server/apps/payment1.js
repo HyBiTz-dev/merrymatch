@@ -87,6 +87,10 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
         customer: `${newCustomer}`,
       });
       paymentData = paymentIntent;
+      const { error } = await supabase
+        .from("customer")
+        .update({ payment_method: card[2] })
+        .eq("customer_id", newCustomer);
     } catch (error) {
       return res.status(400).json(error);
     }
@@ -99,20 +103,18 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
           .eq("user_id", userProfileId)
           .select();
         console.log(data[0]);
+        console.log(newCustomer);
+        const resultRecord = await addTransaction(
+          data[0],
+          newCustomer,
+          product
+        );
+        console.log(resultRecord);
+        return res.json({
+          status: paymentData.status,
+          date: resultRecord.created_at,
+        });
 
-        if (paymentData.status === "succeeded") {
-          console.log(newCustomer);
-          const resultRecord = await addTransaction(
-            data[0],
-            newCustomer,
-            product
-          );
-          console.log(resultRecord);
-          return res.json({
-            status: paymentData.status,
-            date: resultRecord.created_at,
-          });
-        }
         return res.json(paymentData.status);
       } catch (error) {
         console.log(error);
