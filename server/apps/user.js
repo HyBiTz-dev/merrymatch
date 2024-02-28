@@ -395,6 +395,13 @@ userRouter.delete("/:id", async (req, res) => {
     if (deleteRoleError) {
       return res.status(400).json({ message: deleteRoleError.message });
     }
+    const { error: deleteMerryMatchError } = await supabase
+      .from("merry_limit")
+      .delete()
+      .eq("user_id", userUUId);
+    if (deleteMerryMatchError) {
+      return res.status(400).json({ message: deleteMerryMatchError.message });
+    }
     const { data: deleteUserProfile, error: deleteUserProfileError } =
       await supabase.from("user_profile").delete().eq("id", userId);
     if (deleteUserProfileError) {

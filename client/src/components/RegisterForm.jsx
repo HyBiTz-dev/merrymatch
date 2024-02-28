@@ -383,7 +383,7 @@ export const Step3 = ({ formik }) => {
         </div>
       ))}
       {formik.errors && formik.errors.profilePictures && (
-        <p>{formik.errors.profilePictures}</p>
+        <p className=" text-red-500">{formik.errors.profilePictures}</p>
       )}
     </form>
   );

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import { InputField, SelectInputField } from "../components/InputField";
 import TagsInput from "../components/TagInput";
 import ProfileModal from "../components/Modal/ProfileModal";
 import AlertModal from "../components/Modal/AlertModal";
+import Toast from "../components/Toast";
 
 import {
   DndContext,
@@ -42,6 +43,9 @@ function UpdateProfilePage() {
   const [deletePictures, setDeletePictures] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [showToastError, setShowToastError] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
   const imgArray = [];
 
   const formik = useFormik({
@@ -143,6 +147,10 @@ function UpdateProfilePage() {
             },
           }
         );
+        setShowToast(true);
+        setTimeout(() => {
+          setShowToast(false);
+        }, 1000);
         console.log(response.data);
       } catch (error) {
         console.error("Error:", error.response.data);
@@ -220,6 +228,15 @@ function UpdateProfilePage() {
       })),
     ]);
   }, [uploadedPictures, formik.values.profilePictures]);
+  useEffect(() => {
+    if (Object.keys(formik.errors).length > 0) {
+      setShowToastError(true);
+      const timer = setTimeout(() => {
+        setShowToastError(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [formik.errors]);
 
   const getUserData = async () => {
     try {
@@ -416,7 +433,7 @@ function UpdateProfilePage() {
             DeleteModal
             isOpen={showAlert}
             onClose={closeAlert}
-            isConfrim={handleOnDelete}
+            isConfirm={handleOnDelete}
           >
             Do you sure to delete accouct?
           </AlertModal>
@@ -682,7 +699,7 @@ function UpdateProfilePage() {
               ))}
             </div>
             {formik.errors && formik.errors.profilePictures && (
-              <p>{formik.errors.profilePictures}</p>
+              <p className=" text-red-500">{formik.errors.profilePictures}</p>
             )}
           </div>
           <div className="flex justify-end">
@@ -697,6 +714,10 @@ function UpdateProfilePage() {
         </form>
       </div>
       <Footer />
+      {showToastError && (
+        <Toast error text="Please fill in the complete information." />
+      )}
+      {showToast && <Toast success text="Update complete!!!" />}
     </>
   );
 }
