@@ -19,10 +19,10 @@ function AdminComplaintListPage() {
   };
 
   return (
-    <div className="flex bg-white w-[90rem] h-[78.5rem]">
+    <div className="flex bg-white w-full h-[78.5rem]">
       <SideBarAdmin />
-      <div className="w-[75rem]">
-        <div className="h-20 flex items-center  border-b border-b-gray-400">
+      <div className="w-full">
+        <div className="h-20 flex items-center border-b border-b-gray-400">
           <span className="font-bold text-2xl text-gray-900 pl-14 pr-14 w-full">
             Complaint List
           </span>
