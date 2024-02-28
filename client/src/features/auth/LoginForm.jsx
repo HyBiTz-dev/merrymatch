@@ -11,7 +11,6 @@ function LoginForm() {
       email: data.email,
       password: data.password,
     });
-    console.log("Login successful");
   };
 
   const formik = useFormik({

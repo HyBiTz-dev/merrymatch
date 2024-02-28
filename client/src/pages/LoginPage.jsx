@@ -2,12 +2,23 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import BeigeVector from "../components/BeigeVector";
 import LoginForm from "../features/auth/LoginForm";
+import Toast from "../components/Toast";
+import { useAuth } from "../context/authentication";
+import { useState, useEffect } from "react";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { loginError } = useAuth();
+  const [showToast, setShowToast] = useState(false);
+
+  if (loginError) {
+    setTimeout(() => {
+      setShowToast(!false);
+    }, 0);
+  }
 
   return (
-    <div>
+    <div className="bg-main w-full h-screen">
       <Navbar unauth />
       <main className="bg-main flex justify-center content-center w-full h-[53.5rem] relative">
         <BeigeVector />
@@ -33,6 +44,9 @@ function LoginPage() {
             </div>
           </div>
         </div>
+        {showToast && (
+          <Toast error text="The email address or password is incorrect." />
+        )}
       </main>
     </div>
   );

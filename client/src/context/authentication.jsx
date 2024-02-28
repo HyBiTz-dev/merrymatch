@@ -32,40 +32,32 @@ const getState = () => {
 function AuthProvider(props) {
   const navigate = useNavigate();
   const [state, setState] = useState(getState());
+  const [loginError, setLoginError] = useState();
 
   const login = async (data) => {
-    if (data.email && data.password) {
-      const result = await axios.post("http://localhost:3000/login", {
-        email: data.email,
-        password: data.password,
-      });
+    try {
+      if (data.email && data.password) {
+        const result = await axios.post("http://localhost:3000/login", {
+          email: data.email,
+          password: data.password,
+        });
 
-      const token = result.data.token;
-      localStorage.setItem("token", token);
-      const userDataFromToken = jwtDecode(token);
-      setState(getState());
-      if (userDataFromToken.role === "Admin") {
-        navigate("/admin/package");
-      } else {
-        navigate("/");
+        const token = result.data.token;
+        localStorage.setItem("token", token);
+        const userDataFromToken = jwtDecode(token);
+        setState(getState());
+        if (userDataFromToken.role === "Admin") {
+          navigate("/admin/package");
+        } else {
+          navigate("/");
+        }
       }
+    } catch (error) {
+      setLoginError(error);
+      // console.error("Login error:", error);
+      // alert("An error occurred during login. Please try again.");
     }
   };
-
-  //     if (response.status === 200) {
-  //       const data = response.data;
-  //       console.log("Login successful:", data);
-  //     } else {
-  //       console.error("Login error:", response.data.error);
-  //       alert("The email address or password is incorrect.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Unexpected error during login:", error.message);
-  //   }
-  // }
-  //   };
-
-  //   };
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -76,7 +68,15 @@ function AuthProvider(props) {
   const isAuthenticated = Boolean(localStorage.getItem("token"));
 
   return (
-    <AuthContext.Provider value={{ state, login, logout, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{
+        state,
+        login,
+        logout,
+        isAuthenticated,
+        loginError,
+      }}
+    >
       {props.children}
     </AuthContext.Provider>
   );
