@@ -1,15 +1,18 @@
 import Navbar from "../components/Navbar";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Step1, Step2, Step3 } from "../components/RegisterForm";
 import Button from "../components/Button";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Toast from "../components/Toast";
 
 function RegisterMainPage() {
   const navigate = useNavigate("");
   const [currentStep, setCurrentStep] = useState(1);
+  const [showToastError, setShowToastError] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -78,7 +81,7 @@ function RegisterMainPage() {
         .max(10, "Must be 10 hobbies Interests or less")
         .required("Required"),
       profilePictures: Yup.array()
-        .min(1, "Must be at least 2 picture")
+        .min(2, "Must be at least 2 picture")
         .required("Required"),
     }),
     onSubmit: async (values) => {
@@ -119,6 +122,10 @@ function RegisterMainPage() {
             },
           }
         );
+        setShowToast(true);
+        setTimeout(() => {
+          setShowToast(false);
+        }, 1000);
         console.log(response.data);
       } catch (error) {
         console.error("Error:", error.response.data);
@@ -127,6 +134,7 @@ function RegisterMainPage() {
     validateOnChange: false,
     validateOnBlur: true,
   });
+
   const steps = [Step1, Step2, Step3];
 
   const StepComponent = steps[currentStep - 1];
@@ -267,9 +275,17 @@ function RegisterMainPage() {
                 id="confirm-button"
                 type="submit"
                 primary
-                onClick={() => {
-                  formik.handleSubmit();
-                  navigate("/login");
+                onClick={(e) => {
+                  e.preventDefault();
+                  formik.validateForm().then((errors) => {
+                    if (Object.keys(errors).length === 0) {
+                      formik.handleSubmit();
+                      navigate("/login");
+                    } else {
+                      setShowToastError(true);
+                      setTimeout(() => setShowToastError(false), 1000);
+                    }
+                  });
                 }}
               >
                 Confirm
@@ -278,6 +294,10 @@ function RegisterMainPage() {
           </div>
         </div>
       </div>
+      {showToastError && (
+        <Toast error text="Please fill in the complete information." />
+      )}
+      {showToast && <Toast success text="Update complete!!!" />}
     </>
   );
 }
