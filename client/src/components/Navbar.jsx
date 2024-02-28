@@ -63,7 +63,7 @@ function Navbar() {
           </li>
           <li className="px-6">
             <a
-              href=""
+              href="/merry-membership"
               className="text-purple-800 text-base font-bold text-nowrap"
             >
               Merry Membership

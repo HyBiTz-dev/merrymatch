@@ -4,7 +4,9 @@ import axios from "axios";
 import { useAuth } from "../context/authentication";
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
-
+import card_top from "../../public/images/card_top_saction.svg";
+import card_bot from "../../public/images/card_bot_saction.svg";
+import AlertModal from "../components/Modal/AlertModal";
 export default function MerryMembershipPage() {
   const { state } = useAuth();
   const [packageDetails, setPackageDetails] = useState({});
@@ -28,6 +30,23 @@ export default function MerryMembershipPage() {
       perdate: "Month",
     }));
   };
+  const handleCanclePackage = () => {
+    return (
+      <>
+        <AlertModal
+          CancleModal
+          isOpen
+          isConfirm={handleConfirmCancle}
+          onClose={closeModal}
+        />
+      </>
+    );
+  };
+
+  const handleConfirmCancle = () => {};
+
+  const closeModal = () => {};
+
   useEffect(() => {
     getPackageData();
   }, []);
@@ -37,7 +56,7 @@ export default function MerryMembershipPage() {
       <Navbar auth />
       <div className="w-full h-full flex justify-center items-center">
         <section className="membership-section w-[90rem] h-[99.063rem] t-[5.5rem] bg-[#FCFCFE] self-stretch">
-          <section className="membership-container bg-orange-300 w-[58.188rem] h-[87.063rem] mt-[5rem] ml-[15.875rem] flex flex-col gap-[5rem]">
+          <section className="membership-container bg-white w-[58.188rem] h-[87.063rem] mt-[5rem] ml-[15.875rem] flex flex-col gap-[5rem]">
             <section className="membership-header w-[58.125rem] h-[9.063rem] flex flex-col gap-[1rem]">
               <div className="wrapper w-full h-[9.063rem] flex flex-col gap-[0.5rem]">
                 <p className="w-[58.125rem] h-[1.313rem] text-tag text-beige-700">
@@ -107,14 +126,70 @@ export default function MerryMembershipPage() {
                       </div>
                     </div>
                     <div className="flex flex-row justify-end w-full">
-                      <Button ghost className="text-[#FFFFFF] text-[700]">
+                      <Button
+                        ghost
+                        className="text-white text-[700]"
+                        onClick={handleCanclePackage}
+                      >
                         Cancel Package
                       </Button>
                     </div>
                   </section>
                 </section>
-                <section className="payment-method-container"></section>
-                <section className="billing-history-container"></section>
+                <section className="payment-method-container w-[58.188rem] h-[15.5rem] flex flex-col gap-[1.5rem]">
+                  <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
+                    Payment Method
+                  </p>
+                  <div className="payment-details bg-white w-[58.125rem] h-[12.125rem] rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
+                    <div className="w-full h-[5.625rem] border-b-[0.063rem] border-b-gray-300 pb-[1.5rem] flex gap-[1.5rem]">
+                      <div className="w-full h-full flex gap-[1rem]">
+                        <div className="icon-card w-[4.125rem] h-[4.125rem] rounded-[1rem] bg-gray-100">
+                          <div className="w-[2rem] h-[2rem] mt-[1.063rem] ml-[1.063rem] flex flex-col gap-[0.188rem]">
+                            <img src={card_top}></img>
+                            <img src={card_bot}></img>
+                          </div>
+                        </div>
+                        <div className="details-card w-full h-[3.875rem] flex flex-col gap-[0.5rem]">
+                          <p className="w-[49rem] h-[1.875rem] text-headline4 text-purple-600">
+                            Visa ending *9899
+                          </p>
+                          <div className="w-full h-[1.5rem] flex gap-[0.375rem]">
+                            <p className="w-[7rem] h-[1.5rem] text-body2 text-gray-700">
+                              Expire 04/2025
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button ghost className="text-red-500">
+                        Edit Payment Method
+                      </Button>
+                    </div>
+                  </div>
+                </section>
+                <section className="billing-history-container w-[58.188rem] h-[32.75rem] flex flex-col gap-[1.5rem]">
+                  <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
+                    Billing History
+                  </p>
+                  <div className="transaction-card bg-white w-[58.125rem] h-[29.375rem] rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
+                    <div className="transaction-head w-[54.125rem] h-[2.875rem] border-b-[0.063rem] border-b-gray-300 py-[0.5rem] flex gap-[1rem]">
+                      <p className="transaction-next-bill w-[54.125rem] h-[1.875rem] text-body1 text-gray-700 ">
+                        Next billing : 01/09/2022{" "}
+                      </p>
+                    </div>
+                    <div className="transaction-detail w-[54.125rem] h-[19rem] border-b-[0.063rem] border-b-gray-300 pb-[1.5rem]">
+                      <div className="transaction-row w-[54.125rem] h-[3.5rem] p-[1rem] flex gap-[1rem]">
+                        <p className="w-[45.563rem] h-[1.5rem] text-body2 text-gray-700">
+                          01/08/2022
+                        </p>
+                        <p className="w-[5.563rem] h-[1.5rem] text-body2 text-gray-800">
+                          THB 149.00
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
               </section>
             </section>
           </section>
