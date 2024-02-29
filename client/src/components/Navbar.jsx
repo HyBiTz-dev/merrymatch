@@ -3,22 +3,29 @@ import { useAuth } from "../context/authentication";
 import Notification from "./Notification";
 import { useSocket } from "../context/socketContext";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 function Navbar() {
   const { logout, isAuthenticated, state } = useAuth();
+  const [haveMember, setHaveMember] = useState(false);
   const haveMembership = async () => {
     let checkMembership = false;
     let result = await axios.get(
       `http://localhost:3000/membership/${state.id}`
     );
 
-    if (result.data.package.id) {
-      checkMembership = true;
-      return checkMembership;
+    if (Object.keys(result.data).length > 0) {
+      if (result.data.package.id) {
+        checkMembership = true;
+        setHaveMember(checkMembership);
+        return checkMembership;
+      }
     }
+    setHaveMember(checkMembership);
     return checkMembership;
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+    haveMembership();
+  }, []);
   const unauth = () => {
     return (
       <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[30.5rem] bg-white relative z-50 shadow-nav">
@@ -75,7 +82,7 @@ function Navbar() {
             </a>
           </li>
           <li className="px-6">
-            {haveMembership() ? (
+            {haveMember ? (
               <a
                 href="/merry-membership"
                 className="text-purple-800 text-base font-bold text-nowrap"
@@ -143,9 +150,9 @@ function Navbar() {
                       Merry List
                     </a>
                   </li>
-                  {haveMembership() ? (
+                  {haveMember ? (
                     <li>
-                      <a href="" className="text-gray-700">
+                      <a href="merry-membership" className="text-gray-700">
                         <img src="/images/membership.svg" alt="" />
                         Merry Membership
                       </a>

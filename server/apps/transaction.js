@@ -5,7 +5,7 @@ import { supabase } from "../utils/supabaseClient.js";
 
 const transactionRouter = Router();
 
-transactionRouter.get("/", (req, res) => {
+transactionRouter.get("/:id", (req, res) => {
   return res.json("get transaction");
 });
 export default transactionRouter;
