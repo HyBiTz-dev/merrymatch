@@ -15,7 +15,7 @@ const transDate = (date) => {
   let result = `${day}/${month}/${year}`;
   return result;
 };
-const transNextBill = (date, callback) => {
+const transNextBill = (date) => {
   let newDate = new Date(date);
   let day = newDate.getDate();
   let month = newDate.getMonth() + 2;
@@ -42,18 +42,20 @@ const transPrice = (price) => {
 };
 transactionRouter.get("/:id", async (req, res) => {
   const user_profile_id = req.params.id;
-  let result;
+  let result = [];
   const { data, error } = await supabase
     .from("transaction")
     .select("created_at,package_price")
     .eq("user_profile_id", user_profile_id)
     .order("created_at", { ascending: false });
-  result = data;
+  result = [...data];
+
   result.map((item) => {
-    item.nextbill = transNextBill(item.created_at, transDate);
+    item.nextBill = transNextBill(item.created_at);
     item.created_at = transDate(item.created_at);
     item.package_price = transPrice(item.package_price);
   });
+  console.log(result);
 
   return res.json(result);
 });
