@@ -11,17 +11,20 @@ function Notification() {
 
   const handleClickChat = async (userId) => {
     const result = await axios.get(
-      `http://localhost:3000/conversation/${userId}`
+      `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/${userId}`
     );
     const hasConversation = result.data.conversation.filter(
       (item) => item.receiver_id === state?.id || item.sender_id === state?.id
     );
 
     if (hasConversation.length === 0) {
-      const data = await axios.post(`http://localhost:3000/conversation/`, {
-        sender_id: state?.id,
-        receiver_id: userId,
-      });
+      const data = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/`,
+        {
+          sender_id: state?.id,
+          receiver_id: userId,
+        }
+      );
       setCurrentChat(data.data.data[0]);
       navigate(`/messages/${data.data.data[0].id}`);
     } else {

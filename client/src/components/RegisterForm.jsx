@@ -22,7 +22,9 @@ export const Step1 = ({ formik }) => {
   const getCountry = async () => {
     try {
       const result = await axios.get(
-        "http://localhost:3000/register/data?dataType=country"
+        `${
+          import.meta.env.VITE_APP_BASE_ENDPOINT
+        }/register/data?dataType=country`
       );
       setCountry(result.data.country);
     } catch (error) {
@@ -38,7 +40,9 @@ export const Step1 = ({ formik }) => {
     }
     try {
       const result = await axios.get(
-        `http://localhost:3000/user/data?dataType=city&country_id=${formik.values.country}`
+        `${
+          import.meta.env.VITE_APP_BASE_ENDPOINT
+        }/user/data?dataType=city&country_id=${formik.values.country}`
       );
       const dataCity = result.data.city[0].city_id.map((id, index) => ({
         value: id,
@@ -166,7 +170,9 @@ export const Step2 = ({ formik }) => {
   const getData = async (dataType) => {
     try {
       const result = await axios.get(
-        `http://localhost:3000/user/data?dataType=${dataType}`
+        `${
+          import.meta.env.VITE_APP_BASE_ENDPOINT
+        }/user/data?dataType=${dataType}`
       );
       switch (dataType) {
         case "gender":

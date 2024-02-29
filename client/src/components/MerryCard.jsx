@@ -34,7 +34,7 @@ function MerryCard() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/merrylist/${user_id}`
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/merrylist/${user_id}`
       );
       const receivedUserData = response.data.receivedUserProfile.data;
       const matchedUserData = response.data.matchedUser_ids;
@@ -61,7 +61,7 @@ function MerryCard() {
       if (!merryUserList.includes(receivedIds)) {
         if (dailyLimit < maxMerryLimit) {
           const response = await axios.post(
-            `http://localhost:3000/merrylist/`,
+            `${import.meta.env.VITE_APP_BASE_ENDPOINT}/merrylist/`,
             {
               user_id: state?.id,
               receivedIds,
@@ -74,7 +74,9 @@ function MerryCard() {
         }
       } else {
         const result = await axios.get(
-          `http://localhost:3000/conversation/${receivedIds}`
+          `${
+            import.meta.env.VITE_APP_BASE_ENDPOINT
+          }/conversation/${receivedIds}`
         );
         const hasConversation = result.data.conversation.filter(
           (item) =>
@@ -84,7 +86,9 @@ function MerryCard() {
         if (hasConversation.length !== 0) {
           const chatId = hasConversation[0].id;
           const response = await axios.delete(
-            `http://localhost:3000/merrylist/${user_id}/delete`,
+            `${
+              import.meta.env.VITE_APP_BASE_ENDPOINT
+            }/merrylist/${user_id}/delete`,
             { params: { receivedIds, chatId } }
           );
           if (response.status === 200) {
@@ -92,7 +96,9 @@ function MerryCard() {
           }
         } else {
           const response = await axios.delete(
-            `http://localhost:3000/merrylist/${user_id}/delete`,
+            `${
+              import.meta.env.VITE_APP_BASE_ENDPOINT
+            }/merrylist/${user_id}/delete`,
             { params: { receivedIds } }
           );
           if (response.status === 200) {
@@ -107,21 +113,24 @@ function MerryCard() {
 
   const handleClickChat = async (userId) => {
     const result = await axios.get(
-      `http://localhost:3000/conversation/${userId}`
+      `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/${userId}`
     );
     const hasConversation = result.data.conversation.filter(
       (item) => item.receiver_id === state?.id || item.sender_id === state?.id
     );
 
     if (hasConversation.length === 0) {
-      const data = await axios.post(`http://localhost:3000/conversation/`, {
-        sender_id: state?.id,
-        receiver_id: userId,
-      });
+      const data = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/`,
+        {
+          sender_id: state?.id,
+          receiver_id: userId,
+        }
+      );
       setCurrentChat(data.data.data[0]);
       navigate(`/messages/${data.data.data[0].id}`);
     } else {
-      setCurrentChat(hasCoversation[0]);
+      setCurrentChat(hasConversation[0]);
       navigate(`/messages/${hasConversation[0].id}`);
     }
   };
@@ -132,7 +141,9 @@ function MerryCard() {
     const fetchMerryToday = async (date) => {
       try {
         const response = await axios.post(
-          `http://localhost:3000/merrylist/${user_id}/merrytoday`,
+          `${
+            import.meta.env.VITE_APP_BASE_ENDPOINT
+          }/merrylist/${user_id}/merrytoday`,
           {
             today: date,
           }
