@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SideBarAdmin from "../components/SidebarAdmin";
+import SideBarAdmin from "../components/SideBarAdmin";
 import SelectStatus from "../components/SelectStatus";
 import ComplaintTable from "../components/ComplaintTable";
 
