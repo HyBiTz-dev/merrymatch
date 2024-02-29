@@ -29,7 +29,11 @@ async function init() {
 
   const io = new Server(server, {
     cors: {
+<<<<<<< HEAD
       origins: process.env.BASE_URL_CLIENT,
+=======
+      origin: process.env.BASE_URL_CLIENT,
+>>>>>>> 3a3758c (fix:resovle cors allow error)
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     },
