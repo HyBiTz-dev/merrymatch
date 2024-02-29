@@ -40,7 +40,7 @@ function TagsInput({ tags, setTags, error, formik }) {
       />
       {error && (
         <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-          <img src="/public/images/alert_error_icon.svg" />
+          <img src="/images/alert_error_icon.svg" />
         </div>
       )}
     </div>
