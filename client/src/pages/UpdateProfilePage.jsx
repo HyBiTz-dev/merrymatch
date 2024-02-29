@@ -91,7 +91,7 @@ function UpdateProfilePage() {
       racial: Yup.string().nullable(false).required("Required"),
       meeting: Yup.string().nullable(false).required("Required"),
       hobbiesInterests: Yup.array()
-        .min(1, "Must be at least 1 hobbies Interests or less")
+        .min(1, "Must be at least 1 hobbies Interests")
         .max(10, "Must be 10 hobbies Interests or less")
         .required("Required"),
       profilePictures: Yup.array()
@@ -105,6 +105,7 @@ function UpdateProfilePage() {
           }
         )
         .required("Required"),
+      description: Yup.string().max(150, "Must be 150 characters or less"),
     }),
     onSubmit: async (values) => {
       const formData = new FormData();

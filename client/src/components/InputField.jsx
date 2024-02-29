@@ -1,4 +1,11 @@
-export const InputField = ({ formik, fieldName, label, type, placeholder }) => {
+export const InputField = ({
+  formik,
+  fieldName,
+  label,
+  type,
+  placeholder,
+  disabled,
+}) => {
   const value = formik.values[fieldName] || "";
   return (
     <div id={`input-container-${fieldName}`} className="flex justify-between">
@@ -12,14 +19,15 @@ export const InputField = ({ formik, fieldName, label, type, placeholder }) => {
           } rounded-lg`}
         >
           <input
-            className={`border bg-white rounded-lg p-3 w-[27.9rem] text-black focus:border-purple-500 outline-none ${
+            className={`border bg-white rounded-lg p-3 w-[28.313rem] text-black focus:border-purple-500 outline-none ${
               formik.touched[fieldName] && formik.errors[fieldName]
                 ? "border-red-500"
                 : ""
-            }`}
+            } disabled:bg-gray-200 disabled:text-gray-600 disabled:border-gray-400`}
             id={fieldName}
             name={fieldName}
             type={type}
+            disabled={disabled}
             placeholder={placeholder}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -60,7 +68,7 @@ export const SelectInputField = ({
         } rounded-lg`}
       >
         <select
-          className={`border bg-white rounded-lg p-3 w-[27.9rem] text-black focus:border-purple-500 outline-none ${
+          className={`border bg-white rounded-lg p-3 w-[28.313rem] text-black focus:border-purple-500 outline-none ${
             formik.touched[fieldName] && formik.errors[fieldName]
               ? "border-red-500"
               : ""

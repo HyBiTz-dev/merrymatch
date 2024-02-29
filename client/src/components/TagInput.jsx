@@ -11,7 +11,7 @@ function TagsInput({ tags, setTags, error, formik }) {
   }
   return (
     <div
-      className={`flex relative items-center flex-wrap gap-2 border bg-white rounded-lg p-3 w-[66rem] ${
+      className={`flex relative items-center flex-wrap gap-2 border bg-white rounded-lg p-3 w-[58.125rem] ${
         error ? "border-red-500" : "border-gray-300"
       }`}
     >

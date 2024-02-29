@@ -43,15 +43,14 @@ export const BasicInformation = ({ formik, country, city }) => {
               onBlur={formik.handleBlur}
               value={formik.values.dateOfBirth}
             />
+            <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
+              <img src="/images/dateIcon.svg" />
+            </div>
             {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? (
-              <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
+              <div className="absolute inset-y-0 right-10 flex items-center pr-3 pointer-events-none">
                 <img src="/images/alert_error_icon.svg" />
               </div>
-            ) : (
-              <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-                <img src="/images/dateIcon.svg" />
-              </div>
-            )}
+            ) : null}
           </div>
           {formik.touched.dateOfBirth && formik.errors.dateOfBirth && (
             <p className=" text-red-500">{formik.errors.dateOfBirth}</p>
@@ -88,6 +87,7 @@ export const BasicInformation = ({ formik, country, city }) => {
         <InputField
           formik={formik}
           fieldName="email"
+          disabled={true}
           label="Email"
           type="email"
           placeholder="name@website.com"
@@ -165,8 +165,12 @@ export const IdentitiesInterests = ({
         <div className="text-base text-black">
           About me (Maximum 150 characters)
         </div>
-        <input
-          className="border bg-white rounded-lg p-3 pr-4 w-full h-32 text-black focus:border-purple-500 outline-none"
+        <textarea
+          className={`border bg-white rounded-lg p-3 pr-4 w-full h-32 text-black focus:border-purple-500 outline-none  ${
+            formik.touched.description && formik.errors.description
+              ? "border-red-500"
+              : ""
+          } `}
           id="description"
           name="description"
           placeholder="Enter your description"
@@ -174,6 +178,14 @@ export const IdentitiesInterests = ({
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
+        {formik.touched.description && formik.errors.description ? (
+          <div className="flex items-center pr-3 pointer-events-none">
+            <img src="/images/alert_error_icon.svg" />
+            <p className="text-red-500 absolute pl-8">
+              {formik.errors.description}
+            </p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
