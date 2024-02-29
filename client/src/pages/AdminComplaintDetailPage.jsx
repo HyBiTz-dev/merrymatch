@@ -85,11 +85,11 @@ function AdminComplaintDetailPage() {
   }
 
   return (
-    <div className="flex bg-white w-[90rem] h-[78.5rem]">
+    <div className="flex bg-white w-full h-[78.5rem]">
       <SideBarAdmin />
-      <div className="w-[75rem]">
+      <div className="w-full">
         <div className="h-20 flex items-center border-b border-b-gray-400">
-          <div className="flex items-center pl-14 pr-14 w-[90rem]">
+          <div className="flex items-center pl-14 pr-14 w-full">
             <img
               className="w-[1.5rem] mr-6"
               src="/images/arrow_back.svg"
@@ -131,7 +131,7 @@ function AdminComplaintDetailPage() {
             )}
           </div>
         </div>
-        <div className="bg-gray-100 flex h-[73.5rem]">
+        <div className="bg-gray-100 flex justify-center h-[73.5rem]">
           <div className="pl-14 pr-14 pt-12 w-[75rem]">
             <div className="overflow-auto text-black font-medium rounded-2xl h-[58.813rem]">
               <div className="flex flex-col items-center bg-white gap-10 h-auto pt-10 pb-20 rounded-b-2xl border-2 border-gray-200">
