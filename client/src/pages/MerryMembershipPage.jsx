@@ -11,6 +11,8 @@ export default function MerryMembershipPage() {
   const { state } = useAuth();
   const [packageDetails, setPackageDetails] = useState({});
   const [paymentMethod, setPaymentMethod] = useState({});
+  const [billing, setBilling] = useState([]);
+  const [nextBilling, setNextBilling] = useState([]);
   const userProfileId = state.id;
 
   const getPackageData = async () => {
@@ -20,7 +22,7 @@ export default function MerryMembershipPage() {
 
     const packageData = result.data.package;
     const paymentData = result.data.payment;
-    console.log(paymentData);
+
     setPackageDetails((packageDetails) => ({
       ...packageDetails,
       id: packageData.id,
@@ -38,10 +40,19 @@ export default function MerryMembershipPage() {
   };
 
   const getBillHistory = async () => {
-    const result = axios.get(
-      `http:/localhost:3000/transaction/${userProfileId}`
-    );
-    console.log(result);
+    if (billing.length <= 0) {
+      try {
+        const result = await axios.get(
+          `http://localhost:3000/transaction/${userProfileId}`
+        );
+        result.data.map((items, index) => {
+          if (index == 0) {
+            nextBilling.push(items);
+          }
+          billing.push(items);
+        });
+      } catch (error) {}
+    }
   };
   const handleCanclePackage = () => {
     return (
@@ -186,21 +197,28 @@ export default function MerryMembershipPage() {
                   <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
                     Billing History
                   </p>
-                  <div className="transaction-card bg-white w-[58.125rem] h-[29.375rem] rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
+                  <div className="transaction-card bg-white w-[58.125rem] h-auto rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
                     <div className="transaction-head w-[54.125rem] h-[2.875rem] border-b-[0.063rem] border-b-gray-300 py-[0.5rem] flex gap-[1rem]">
                       <p className="transaction-next-bill w-[54.125rem] h-[1.875rem] text-body1 text-gray-700 ">
-                        Next billing : 01/09/2022{" "}
+                        Next billing : {nextBilling[0].nextbill}
                       </p>
                     </div>
-                    <div className="transaction-detail w-[54.125rem] h-[19rem] border-b-[0.063rem] border-b-gray-300 pb-[1.5rem]">
-                      <div className="transaction-row w-[54.125rem] h-[3.5rem] p-[1rem] flex gap-[1rem]">
-                        <p className="w-[45.563rem] h-[1.5rem] text-body2 text-gray-700">
-                          01/08/2022
-                        </p>
-                        <p className="w-[5.563rem] h-[1.5rem] text-body2 text-gray-800">
-                          THB 149.00
-                        </p>
-                      </div>
+                    <div className="transaction-detail w-[54.125rem] h-auto border-b-[0.063rem] border-b-gray-300 pb-[1.5rem]">
+                      {billing.map((items, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="transaction-row w-[54.125rem] h-[3.5rem] p-[1rem] flex gap-[1rem]"
+                          >
+                            <p className="w-[45.563rem] h-[1.5rem] text-body2 text-gray-700">
+                              {items.created_at}
+                            </p>
+                            <p className="w-[5.563rem] h-[1.5rem] text-body2 text-gray-800">
+                              {items.package_price}
+                            </p>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </section>
