@@ -74,6 +74,7 @@ function AdminPackageEdit() {
       );
       console.log(data);
       if (error) throw error;
+      navigate("/admin/package");
     } catch (error) {
       alert("Error edit package: " + error.message);
     }
@@ -119,43 +120,43 @@ function AdminPackageEdit() {
       onSubmit={handleEditPackage}
     >
       {({ values, setFieldValue }) => (
-        <Form>
-          <div className="flex">
-            <SideBarAdmin />
-            <div className="w-full bg-white">
-              <div className="h-20 flex items-center  pl-14 pr-14">
-                <button onClick={() => navigate("/admin/package")}>
-                  <img
-                    className="pr-4"
-                    src="/images/arrow_back.svg"
-                    alt="arrow icon"
-                  />
-                </button>
-                <span className="font-bold text-2xl text-gray-900 w-full">
-                  Edit ‘Premium’
-                </span>
-                <div className="flex ">
-                  <Button
-                    type="button"
-                    secondary
-                    onClick={() => navigate("/admin/package")}
-                    className=" text-red-600 rounded-[6rem] w-[6rem]"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    primary
-                    type="submit"
-                    className=" text-white rounded-[6rem] w-[6rem]"
-                  >
-                    Edit
-                  </Button>
-                </div>
+        <div className="flex">
+          <SideBarAdmin />
+          <div className="w-full bg-white">
+            <div className="h-20 flex items-center  pl-14 pr-14">
+              <button onClick={() => navigate("/admin/package")}>
+                <img
+                  className="pr-4"
+                  src="/images/arrow_back.svg"
+                  alt="arrow icon"
+                />
+              </button>
+              <span className="font-bold text-2xl text-gray-900 w-full">
+                Edit ‘Premium’
+              </span>
+              <div className="flex ">
+                <Button
+                  type="button"
+                  secondary
+                  onClick={() => navigate("/admin/package")}
+                  className=" text-red-600 rounded-[6rem] w-[6rem]"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  primary
+                  type="submit"
+                  className=" text-white rounded-[6rem] w-[6rem]"
+                >
+                  Edit
+                </Button>
               </div>
+            </div>
 
-              <div className="bg-gray-100 flex justify-center items-start pt-10 pb-[3.75rem] h-[calc(100vh_-_80px)] overflow-auto">
-                <div className=" w-full max-w-[67.5rem] mx-[3.75rem]">
-                  <div className="bg-white rounded-2xl pt-[2.5rem] pb-[3.75rem] px-[6.25rem] w-full mx-[3.75rem] max-w-[67.5rem]">
+            <div className="bg-gray-100 flex justify-center items-start pt-10 pb-[3.75rem] h-[calc(100vh_-_80px)] overflow-auto">
+              <div className=" w-full max-w-[67.5rem] mx-[3.75rem]">
+                <div className="bg-white rounded-2xl pt-[2.5rem] pb-[3.75rem] px-[6.25rem] w-full mx-[3.75rem] max-w-[67.5rem]">
+                  <Form>
                     <div className="grid grid-cols-2 mb-10">
                       <label className="form-control mr-10">
                         <div className="">
@@ -292,48 +293,49 @@ function AdminPackageEdit() {
                         </>
                       )}
                     />
-                  </div>
-                  <div className="mt-5 text-right">
-                    <button onClick={openModal(packages.id)}>
-                      Delete Package
-                    </button>
-                    {showModal && (
-                      <dialog
-                        id="my_modal_5"
-                        className="modal modal-bottom sm:modal-middle bg-black/20"
-                        open
-                      >
-                        <div className="modal-box p-0 shadow-2xl">
-                          <div className="px-6 py-2 border-b border-b-gray-200 flex">
-                            <h3 className="font-bold text-lg ">
-                              Delete Confirmation
-                            </h3>
-                            <button onClick={closeModal} className="ml-auto">
-                              <img src="/images/close.svg" alt="close icon" />
-                            </button>
-                          </div>
-                          <p className="p-6 text-gray-700 flex">
-                            Do you sure to delete this Package?
-                          </p>
-                          <div className="modal-action justify-start px-6 pb-6">
-                            <form method="dialog" className="flex gap-4">
-                              <Button secondary onClick={handleDelete}>
-                                Yes, I want to delete
-                              </Button>
-                              <Button primary onClick={closeModal}>
-                                No, I don’t want
-                              </Button>
-                            </form>
-                          </div>
+                  </Form>
+                </div>
+
+                <div className="mt-5 text-right">
+                  <button onClick={openModal(packages.id)}>
+                    Delete Package
+                  </button>
+                  {showModal && (
+                    <dialog
+                      id="my_modal_5"
+                      className="modal modal-bottom sm:modal-middle bg-black/20"
+                      open
+                    >
+                      <div className="modal-box p-0 shadow-2xl ">
+                        <div className="px-6 py-2 border-b border-b-gray-200 flex">
+                          <h3 className="font-bold text-lg ">
+                            Delete Confirmation
+                          </h3>
+                          <button onClick={closeModal} className="ml-auto">
+                            <img src="/images/close.svg" alt="close icon" />
+                          </button>
                         </div>
-                      </dialog>
-                    )}
-                  </div>
+                        <p className="p-6 text-gray-700 flex">
+                          Do you sure to delete this Package?
+                        </p>
+                        <div className="modal-action justify-start px-6 pb-6">
+                          <form method="dialog" className="flex gap-4">
+                            <Button secondary onClick={handleDelete}>
+                              Yes, I want to delete
+                            </Button>
+                            <Button primary onClick={closeModal}>
+                              No, I don’t want
+                            </Button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-        </Form>
+        </div>
       )}
     </Formik>
   );
