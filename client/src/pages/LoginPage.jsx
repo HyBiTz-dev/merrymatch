@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import BeigeVector from "../components/BeigeVector";
 import LoginForm from "../features/auth/LoginForm";
 import Toast from "../components/Toast";
@@ -8,8 +8,19 @@ import { useState, useEffect } from "react";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { loginError } = useAuth();
   const [showToast, setShowToast] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.fromRegistration) {
+      setShowSuccessToast(true);
+      navigate(location.pathname, { replace: true, state: {} });
+      const timer = setTimeout(() => setShowSuccessToast(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [location, navigate]);
 
   if (loginError) {
     setTimeout(() => {
@@ -44,6 +55,12 @@ function LoginPage() {
             </div>
           </div>
         </div>
+        {showSuccessToast && (
+          <Toast
+            success
+            text="Registration complete! Welcome aboard the love train."
+          />
+        )}
         {showToast && (
           <Toast error text="The email address or password is incorrect." />
         )}

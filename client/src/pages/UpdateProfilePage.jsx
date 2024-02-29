@@ -141,7 +141,7 @@ function UpdateProfilePage() {
         setShowToast(true);
         setTimeout(() => {
           setShowToast(false);
-        }, 1000);
+        }, 2000);
       } catch (error) {
         console.error("Error:", error.response.data);
       }
@@ -223,7 +223,7 @@ function UpdateProfilePage() {
       setShowToastError(true);
       const timer = setTimeout(() => {
         setShowToastError(false);
-      }, 1000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [formik.errors]);
