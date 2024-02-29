@@ -28,7 +28,7 @@ function AdminPackageEdit() {
     const fetchPackageData = async () => {
       try {
         const resp = await axios.get(
-          `http://localhost:3000/packages/${packageId}`
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages/${packageId}`
         );
         const packageData = resp.data;
         if (packageData.length > 0) {
@@ -63,7 +63,7 @@ function AdminPackageEdit() {
     const packageId = params.id;
     try {
       const { data, error } = await axios.put(
-        `http://localhost:3000/packages/${packageId}`,
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages/${packageId}`,
         {
           packageName,
           price,
@@ -85,7 +85,9 @@ function AdminPackageEdit() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/packages/${deletePackageId}`);
+      await axios.delete(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages/${deletePackageId}`
+      );
       const updatePackages = allPackages.filter(
         (packageItem) => packageItem.id !== deletePackageId
       );

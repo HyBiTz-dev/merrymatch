@@ -15,7 +15,7 @@ function AdminPackageList() {
     const fetchPackageData = async () => {
       try {
         const { data, error } = await axios.get(
-          "http://localhost:3000/packages"
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages`
         );
         if (error) throw error;
         setAllPackages(data);
@@ -28,7 +28,9 @@ function AdminPackageList() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/packages/${deletePackageId}`);
+      await axios.delete(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages/${deletePackageId}`
+      );
       setAllPackages(
         allPackages.filter((packageItem) => packageItem.id !== deletePackageId)
       );

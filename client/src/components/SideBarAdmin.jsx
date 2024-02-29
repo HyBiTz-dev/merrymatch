@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authentication";
 
 function SideBarAdmin() {
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeItem, setActiveItem] = useState("");
@@ -47,15 +49,17 @@ function SideBarAdmin() {
           >
             <div className="flex mx-6 py-6 ">
               <img src="/images/complaint.svg" alt="" className="pr-4" />
-              <span>Complaint</span>
+              <span onClick={() => navigate("/admin/complaint-list")}>
+                Complaint
+              </span>
             </div>
           </div>
         </div>
         <div className="border-t border-t-gray-300 text-base font-extrabold text-gray-800">
           <div className=" hover:bg-gray-100 active:bg-gray-200">
-            <div className="flex mx-6 py-6 ">
+            <div className="flex mx-6 py-6 cursor-pointer">
               <img src="/images/logout-admin.svg" alt="" className="pr-4" />
-              <span>Log out</span>
+              <span onClick={logout}>Log out</span>
             </div>
           </div>
         </div>

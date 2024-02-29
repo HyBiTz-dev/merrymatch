@@ -28,7 +28,7 @@ export default function ChatPage() {
     const getUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/user?userId=${macthId}`
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/user?userId=${macthId}`
         );
         setUser(res.data[0]);
       } catch (error) {
@@ -52,11 +52,14 @@ export default function ChatPage() {
       e.currentTarget.reset();
 
       try {
-        const res = await axios.post(`http://localhost:3000/messages`, {
-          conversation_id: currentChat.id,
-          sender_id: state?.id,
-          message_text: message,
-        });
+        const res = await axios.post(
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/messages`,
+          {
+            conversation_id: currentChat.id,
+            sender_id: state?.id,
+            message_text: message,
+          }
+        );
         setMessages([...messages, res.data[0]]);
         const receiverId =
           currentChat?.sender_id === state?.id
@@ -80,7 +83,7 @@ export default function ChatPage() {
         form.append("messages", images);
 
         const res = await axios.post(
-          `http://localhost:3000/messages/images`,
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/messages/images`,
           form,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -120,7 +123,7 @@ export default function ChatPage() {
         <div className="bg-bg flex flex-col  gap-16 w-[70.25rem]">
           <div className="flex flex-col flex-1 mt-24 gap-12 overflow-y-scroll scrollbar-hide">
             {currentChat ? (
-              <div className="flex flex-col h-screen justify-end items-center gap-12 relative">
+              <div className="flex flex-col flex-1 justify-end items-center gap-12 relative">
                 {messages.length === 0 ? (
                   <div className="relative -top-[77%] w-[46.875.rem] p-6 flex justify-center items-center gap-6 rounded-2xl bg-purple-100 border border-purple-300">
                     <svg
