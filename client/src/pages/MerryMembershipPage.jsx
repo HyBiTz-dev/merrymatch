@@ -11,6 +11,10 @@ export default function MerryMembershipPage() {
   const { state } = useAuth();
   const [packageDetails, setPackageDetails] = useState({});
   const [paymentMethod, setPaymentMethod] = useState({});
+  const [billing, setBilling] = useState([]);
+  const [nextbill, setNextBill] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [closeAlert, setCloseAlert] = useState(false);
   const userProfileId = state.id;
 
   const getPackageData = async () => {
@@ -20,7 +24,7 @@ export default function MerryMembershipPage() {
 
     const packageData = result.data.package;
     const paymentData = result.data.payment;
-    console.log(paymentData);
+
     setPackageDetails((packageDetails) => ({
       ...packageDetails,
       id: packageData.id,
@@ -38,32 +42,39 @@ export default function MerryMembershipPage() {
   };
 
   const getBillHistory = async () => {
-    const result = axios.get(
-      `http:/localhost:3000/transaction/${userProfileId}`
-    );
-    console.log(result);
+    if (billing.length <= 0) {
+      try {
+        const result = await axios.get(
+          `http://localhost:3000/transaction/${userProfileId}`
+        );
+        result.data.map((items, index) => {
+          billing.push(items);
+          if (index == 0) {
+            setNextBill(items.nextBill);
+          }
+        });
+      } catch (error) {}
+    }
   };
   const handleCanclePackage = () => {
-    return (
-      <>
-        <AlertModal
-          CancleModal
-          isOpen
-          isConfirm={handleConfirmCancle}
-          onClose={closeModal}
-        />
-      </>
-    );
+    return <></>;
   };
 
   const handleConfirmCancle = () => {};
 
-  const closeModal = () => {};
+  const closeModal = () => {
+    setShowAlert(false);
+  };
+  const openModal = () => {
+    setShowAlert(true);
+  };
 
   useEffect(() => {
     getPackageData();
     getBillHistory();
   }, []);
+
+  useEffect(() => {}, [showAlert]);
 
   return (
     <>
@@ -88,6 +99,17 @@ export default function MerryMembershipPage() {
                   <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
                     Merry Membership Package
                   </p>
+                  {showAlert ? (
+                    <AlertModal
+                      CancleModal
+                      isOpen={showAlert}
+                      onClose={closeModal}
+                      isConfirm={handleConfirmCancle}
+                    ></AlertModal>
+                  ) : (
+                    <></>
+                  )}
+
                   <section className="package-card flex flex-col w-[58.125rem] h-[13.875rem] pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem]  items-start gap-[1rem] rounded-[2rem] border-[1px] border-solid border-gray-400 bg-gradient-to-r from-[#742138] to-[#A878BF]">
                     <div className="border-b-[1px] border-solid border-gray-300 flex flex-row w-[54.125rem] h-[7.375rem] justify-between">
                       <div className="w-[43.75rem] h-[4.875rem] flex justify-between gap-[1.5rem]">
@@ -143,7 +165,7 @@ export default function MerryMembershipPage() {
                       <Button
                         ghost
                         className="text-white text-[700]"
-                        onClick={handleCanclePackage}
+                        onClick={openModal}
                       >
                         Cancel Package
                       </Button>
@@ -186,21 +208,28 @@ export default function MerryMembershipPage() {
                   <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
                     Billing History
                   </p>
-                  <div className="transaction-card bg-white w-[58.125rem] h-[29.375rem] rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
+                  <div className="transaction-card bg-white w-[58.125rem] h-auto rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
                     <div className="transaction-head w-[54.125rem] h-[2.875rem] border-b-[0.063rem] border-b-gray-300 py-[0.5rem] flex gap-[1rem]">
                       <p className="transaction-next-bill w-[54.125rem] h-[1.875rem] text-body1 text-gray-700 ">
-                        Next billing : 01/09/2022{" "}
+                        Next billing : {nextbill}
                       </p>
                     </div>
-                    <div className="transaction-detail w-[54.125rem] h-[19rem] border-b-[0.063rem] border-b-gray-300 pb-[1.5rem]">
-                      <div className="transaction-row w-[54.125rem] h-[3.5rem] p-[1rem] flex gap-[1rem]">
-                        <p className="w-[45.563rem] h-[1.5rem] text-body2 text-gray-700">
-                          01/08/2022
-                        </p>
-                        <p className="w-[5.563rem] h-[1.5rem] text-body2 text-gray-800">
-                          THB 149.00
-                        </p>
-                      </div>
+                    <div className="transaction-detail w-[54.125rem] h-auto border-b-[0.063rem] border-b-gray-300 pb-[1.5rem]">
+                      {billing.map((items, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="transaction-row w-[54.125rem] h-[3.5rem] p-[1rem] flex gap-[1rem]"
+                          >
+                            <p className="w-[45.563rem] h-[1.5rem] text-body2 text-gray-700">
+                              {items.created_at}
+                            </p>
+                            <p className="w-[5.563rem] h-[1.5rem] text-body2 text-gray-800">
+                              {items.package_price}
+                            </p>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </section>

@@ -17,11 +17,9 @@ function Navbar() {
       if (result.data.package.id) {
         checkMembership = true;
         setHaveMember(checkMembership);
-        return checkMembership;
       }
     }
     setHaveMember(checkMembership);
-    return checkMembership;
   };
   useEffect(() => {
     haveMembership();

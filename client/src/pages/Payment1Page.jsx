@@ -59,7 +59,7 @@ export default function Payment1Page() {
         `http://localhost:3000/payment1/create-payment1`,
         data
       );
-      console.log(result);
+      console.log(result.data.status);
       if (result.request.statusText === "OK") {
         navigate("/payment2", {
           state: {
