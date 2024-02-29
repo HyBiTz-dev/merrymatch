@@ -1,4 +1,4 @@
-import SideBarAdmin from "../components/SidebarAdmin";
+import SideBarAdmin from "../components/SideBarAdmin";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import classNames from "classnames";
