@@ -10,15 +10,17 @@ import AlertModal from "../components/Modal/AlertModal";
 export default function MerryMembershipPage() {
   const { state } = useAuth();
   const [packageDetails, setPackageDetails] = useState({});
+  const [paymentMethod, setPaymentMethod] = useState({});
   const userProfileId = state.id;
-  console.log(state);
+
   const getPackageData = async () => {
     const result = await axios.get(
       `http://localhost:3000/membership/${userProfileId}`
     );
-    console.log(result.data.package.id);
 
     const packageData = result.data.package;
+    const paymentData = result.data.payment;
+    console.log(paymentData);
     setPackageDetails((packageDetails) => ({
       ...packageDetails,
       id: packageData.id,
@@ -29,6 +31,17 @@ export default function MerryMembershipPage() {
       icon: packageData.package_icon,
       perdate: "Month",
     }));
+    setPaymentMethod((paymentMethod) => ({
+      ...paymentMethod,
+      method: paymentData.payment_method,
+    }));
+  };
+
+  const getBillHistory = async () => {
+    const result = axios.get(
+      `http:/localhost:3000/transaction/${userProfileId}`
+    );
+    console.log(result);
   };
   const handleCanclePackage = () => {
     return (
@@ -49,6 +62,7 @@ export default function MerryMembershipPage() {
 
   useEffect(() => {
     getPackageData();
+    getBillHistory();
   }, []);
 
   return (
@@ -151,7 +165,7 @@ export default function MerryMembershipPage() {
                         </div>
                         <div className="details-card w-full h-[3.875rem] flex flex-col gap-[0.5rem]">
                           <p className="w-[49rem] h-[1.875rem] text-headline4 text-purple-600">
-                            Visa ending *9899
+                            {paymentMethod.method}
                           </p>
                           <div className="w-full h-[1.5rem] flex gap-[0.375rem]">
                             <p className="w-[7rem] h-[1.5rem] text-body2 text-gray-700">
