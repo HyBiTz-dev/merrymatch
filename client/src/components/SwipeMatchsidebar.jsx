@@ -15,17 +15,20 @@ export default function SwipeMatchsidebar() {
 
   const handleClickChat = async (userId) => {
     const result = await axios.get(
-      `http://localhost:3000/conversation/${userId}`
+      `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/${userId}`
     );
     const hasCoversation = result.data.conversation.filter(
       (item) => item.receiver_id === state?.id || item.sender_id === state?.id
     );
 
     if (hasCoversation.length === 0) {
-      const data = await axios.post(`http://localhost:3000/conversation/`, {
-        sender_id: state?.id,
-        receiver_id: userId,
-      });
+      const data = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/`,
+        {
+          sender_id: state?.id,
+          receiver_id: userId,
+        }
+      );
       setCurrentChat(data.data.data[0]);
       navigate(`/messages/${data.data.data[0].id}`);
     } else {
@@ -37,7 +40,7 @@ export default function SwipeMatchsidebar() {
   useEffect(() => {
     const getData = async () => {
       const result = await axios.get(
-        `http://localhost:3000/merrylist/${state?.id}`
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/merrylist/${state?.id}`
       );
       const Matchlist = result.data.receivedUserProfile.data.filter((item) =>
         result.data.matchedUser_ids.includes(item.user_id)

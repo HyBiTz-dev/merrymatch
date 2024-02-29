@@ -17,7 +17,7 @@ function SocketProvider(props) {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:3000");
+    socket.current = io(`${import.meta.env.VITE_APP_BASE_ENDPOINT}`);
     socket.current.on("getMessage", (data) => {
       setNewMessages({
         sender_id: data.senderId,
@@ -37,7 +37,7 @@ function SocketProvider(props) {
   const getConversation = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/conversation/${state?.id}`
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/${state?.id}`
       );
       setConversation(res.data.conversation);
     } catch (error) {
@@ -50,7 +50,9 @@ function SocketProvider(props) {
       try {
         if (currentChat) {
           const res = await axios.get(
-            `http://localhost:3000/messages/${currentChat?.id}`
+            `${import.meta.env.VITE_APP_BASE_ENDPOINT}/messages/${
+              currentChat?.id
+            }`
           );
           setMessages(res.data.messages);
           setArrCurrentChat(Object.values(currentChat));

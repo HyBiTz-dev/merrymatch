@@ -17,7 +17,7 @@ function FilingComplaintPage() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/filing-complaint/submit",
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/filing-complaint/submit`,
         complaintData
       );
 

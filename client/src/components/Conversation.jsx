@@ -9,7 +9,9 @@ function Conversation({ conversation, currentUser, Chat, newMessages }) {
     const getMessage = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:3000/messages/${conversation?.id}`
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/messages/${
+            conversation?.id
+          }`
         );
         setMessages(data.messages[data.messages.length - 1]);
       } catch (error) {
@@ -29,7 +31,7 @@ function Conversation({ conversation, currentUser, Chat, newMessages }) {
     const getUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/user?userId=${macthId}`
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/user?userId=${macthId}`
         );
         setUser(res.data[0]);
       } catch (error) {

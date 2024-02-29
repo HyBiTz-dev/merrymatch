@@ -114,7 +114,7 @@ function RegisterMainPage() {
       });
       try {
         const response = await axios.post(
-          "http://localhost:3000/register/",
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/register/`,
           formData,
           {
             headers: {
