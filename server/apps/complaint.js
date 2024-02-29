@@ -37,7 +37,50 @@ complaintRouter.get("/admin/complaint-list", async (req, res) => {
       throw error;
     }
 
-    res.json(data);
+    const sortedData = data.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+
+    res.status(200).json(sortedData);
+  } catch (error) {
+    console.error("Error fetching data from Supabase:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+complaintRouter.get("/admin/complaint-list/:id", async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const { data, error } = await supabase
+      .from("user_complaint")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("Error fetching data from Supabase:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+complaintRouter.post("/admin/complaint-list/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const { data, error } = await supabase
+      .from("user_complaint")
+      .update(req.body)
+      .eq("id", userId);
+
+    if (error) {
+      throw error;
+    }
+    res.status(200).json(data);
   } catch (error) {
     console.error("Error fetching data from Supabase:", error.message);
     res.status(500).json({ error: "Internal Server Error" });

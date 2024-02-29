@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import ComplaintStatus from "../components/ComplaintStatus";
 import Button from "../components/Button";
 import AlertModal from "../components/Modal/AlertModal";
+import axios from "axios";
 
 function AdminComplaintDetailPage() {
   const { id } = useParams();
@@ -19,19 +20,24 @@ function AdminComplaintDetailPage() {
   useEffect(() => {
     const fetchComplaint = async () => {
       try {
-        const { data, error } = await supabase
-          .from("user_complaint")
-          .select("*")
-          .eq("id", id)
-          .single();
+        const data = await axios.get(
+          `http://localhost:3000/filing-complaint/admin/complaint-list/${id}`
+        );
+        setComplaint(data.data);
 
-        if (error) {
-          throw error;
-        }
+        // const { data, error } = await supabase
+        //   .from("user_complaint")
+        //   .select("*")
+        //   .eq("id", id)
+        //   .single();
 
-        if (data) {
-          setComplaint(data);
-        }
+        // if (error) {
+        //   throw error;
+        // }
+
+        // if (data) {
+        //   setComplaint(data);
+        // }
       } catch (error) {
         console.error("Error fetching complaint:", error.message);
       } finally {
@@ -44,17 +50,21 @@ function AdminComplaintDetailPage() {
 
   const handleUpdate = async (status) => {
     try {
-      const { error } = await supabase
-        .from("user_complaint")
-        .update({
-          complaint_status: status,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", id);
+      await axios.post(
+        `http://localhost:3000/filing-complaint/admin/complaint-list/${id}`,
+        { complaint_status: status, updated_at: new Date().toISOString() }
+      );
+      // const { error } = await supabase
+      //   .from("user_complaint")
+      //   .update({
+      //     complaint_status: status,
+      //     updated_at: new Date().toISOString(),
+      //   })
+      //   .eq("id", id);
 
-      if (error) {
-        throw error;
-      }
+      // if (error) {
+      //   throw error;
+      // }
       window.location.reload();
       setIsCancelModalOpen(false);
       setIsResolveModalOpen(false);
@@ -85,13 +95,13 @@ function AdminComplaintDetailPage() {
   }
 
   return (
-    <div className="flex bg-white w-full h-[78.5rem]">
+    <div className="flex h-screen bg-white w-full overflow-hidden">
       <SideBarAdmin />
       <div className="w-full">
         <div className="h-20 flex items-center border-b border-b-gray-400">
           <div className="flex items-center pl-14 pr-14 w-full">
             <img
-              className="w-[1.5rem] mr-6"
+              className="w-[1.5rem] mr-6 cursor-pointer"
               src="/images/arrow_back.svg"
               onClick={returnToComplaintList}
             />
@@ -131,7 +141,7 @@ function AdminComplaintDetailPage() {
             )}
           </div>
         </div>
-        <div className="bg-gray-100 flex justify-center h-[73.5rem]">
+        <div className="bg-gray-100 flex justify-center">
           <div className="pl-14 pr-14 pt-12 w-[75rem]">
             <div className="overflow-auto text-black font-medium rounded-2xl h-[58.813rem]">
               <div className="flex flex-col items-center bg-white gap-10 h-auto pt-10 pb-20 rounded-b-2xl border-2 border-gray-200">

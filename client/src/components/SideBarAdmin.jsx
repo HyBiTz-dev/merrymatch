@@ -12,7 +12,7 @@ function SideBarAdmin() {
   };
 
   return (
-    <div className="flex h-screen w-[15rem] bg-white border-r border-r-gray-400 flex-col">
+    <div className="flex w-[15rem] bg-white border-r border-r-gray-400 flex-col overflow-hidden">
       <div>
         <div className="mx-6 my-6 flex flex-col items-center">
           <img
@@ -31,7 +31,7 @@ function SideBarAdmin() {
             }`}
             onClick={() => handleItemClick("package")}
           >
-            <div className="flex mx-6 py-6">
+            <div className="flex mx-6 py-6 cursor-pointer">
               <img src="/images/package.svg" alt="" className="pr-4" />
               <span>Merry Package</span>
             </div>
@@ -45,7 +45,7 @@ function SideBarAdmin() {
             }`}
             onClick={() => handleItemClick("complaint-list")}
           >
-            <div className="flex mx-6 py-6 ">
+            <div className="flex mx-6 py-6 cursor-pointer">
               <img src="/images/complaint.svg" alt="" className="pr-4" />
               <span>Complaint</span>
             </div>
