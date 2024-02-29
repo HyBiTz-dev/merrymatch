@@ -126,7 +126,6 @@ function RegisterMainPage() {
         setTimeout(() => {
           setShowToast(false);
         }, 1000);
-        console.log(response.data);
       } catch (error) {
         console.error("Error:", error.response.data);
       }
@@ -297,7 +296,12 @@ function RegisterMainPage() {
       {showToastError && (
         <Toast error text="Please fill in the complete information." />
       )}
-      {showToast && <Toast success text="Update complete!!!" />}
+      {showToast && (
+        <Toast
+          success
+          text="Registration complete! Welcome aboard the love train."
+        />
+      )}
     </>
   );
 }
