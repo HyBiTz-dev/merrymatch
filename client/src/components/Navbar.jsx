@@ -145,7 +145,7 @@ function Navbar() {
                   </li>
                   {haveMembership() ? (
                     <li>
-                      <a href="" className="text-gray-700">
+                      <a href="merry-membership" className="text-gray-700">
                         <img src="/images/membership.svg" alt="" />
                         Merry Membership
                       </a>
