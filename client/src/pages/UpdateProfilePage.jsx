@@ -130,7 +130,7 @@ function UpdateProfilePage() {
       formData.append("reorderedPictures", JSON.stringify(pictures));
       try {
         const response = await axios.put(
-          `http://localhost:3000/user/${param.id}`,
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/user/${param.id}`,
           formData,
           {
             headers: {
@@ -230,7 +230,9 @@ function UpdateProfilePage() {
 
   const getUserData = async () => {
     try {
-      const result = await axios.get(`http://localhost:3000/user/${param.id}`);
+      const result = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/user/${param.id}`
+      );
       setUserData(result.data.userData[0]);
       setUploadedPictures(result.data.userData[0].image_url);
     } catch (error) {
@@ -241,7 +243,9 @@ function UpdateProfilePage() {
   const getData = async (dataType) => {
     try {
       const result = await axios.get(
-        `http://localhost:3000/user/data?dataType=${dataType}`
+        `${
+          import.meta.env.VITE_APP_BASE_ENDPOINT
+        }/user/data?dataType=${dataType}`
       );
       switch (dataType) {
         case "country":
@@ -273,7 +277,9 @@ function UpdateProfilePage() {
     }
     try {
       const result = await axios.get(
-        `http://localhost:3000/user/data?dataType=city&country_id=${formik.values.country}`
+        `${
+          import.meta.env.VITE_APP_BASE_ENDPOINT
+        }/user/data?dataType=city&country_id=${formik.values.country}`
       );
       const dataCity = result.data.city[0].city_id.map((id, index) => ({
         value: id,
@@ -298,7 +304,7 @@ function UpdateProfilePage() {
   const handleOnDelete = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/user/${param.id}`,
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/user/${param.id}`,
         {
           data: {
             userId: userData.id,
