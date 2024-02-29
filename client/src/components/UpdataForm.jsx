@@ -1,10 +1,7 @@
 import React from "react";
 import { InputField, SelectInputField } from "./InputField";
 import TagsInput from "./TagInput";
-import {
-  DndContext,
-  closestCenter,
-} from "@dnd-kit/core";
+import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   SortableContext,
   horizontalListSortingStrategy,
@@ -48,11 +45,11 @@ export const BasicInformation = ({ formik, country, city }) => {
             />
             {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? (
               <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-                <img src="/public/images/alert_error_icon.svg" />
+                <img src="/images/alert_error_icon.svg" />
               </div>
             ) : (
               <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-                <img src="/public/images/dateIcon.svg" />
+                <img src="/images/dateIcon.svg" />
               </div>
             )}
           </div>

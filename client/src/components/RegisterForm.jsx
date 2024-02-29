@@ -90,11 +90,11 @@ export const Step1 = ({ formik }) => {
             />
             {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? (
               <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-                <img src="public/images/alert_error_icon.svg" />
+                <img src="/images/alert_error_icon.svg" />
               </div>
             ) : (
               <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-                <img src="public/images/dateIcon.svg" />
+                <img src="/images/dateIcon.svg" />
               </div>
             )}
           </div>
