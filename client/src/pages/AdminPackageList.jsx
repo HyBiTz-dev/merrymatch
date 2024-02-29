@@ -1,4 +1,4 @@
-import SideBarAdmin from "../components/SidebarAdmin";
+import SideBarAdmin from "../components/SideBarAdmin";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
