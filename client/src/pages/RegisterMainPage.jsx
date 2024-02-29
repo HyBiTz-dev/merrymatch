@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Step1, Step2, Step3 } from "../components/RegisterForm";
 import Button from "../components/Button";
 import * as Yup from "yup";
@@ -122,11 +122,7 @@ function RegisterMainPage() {
             },
           }
         );
-        setShowToast(true);
-        setTimeout(() => {
-          setShowToast(false);
-        }, 1000);
-        console.log(response.data);
+        navigate("/login", { state: { fromRegistration: true } });
       } catch (error) {
         console.error("Error:", error.response.data);
       }
@@ -283,7 +279,7 @@ function RegisterMainPage() {
                       navigate("/login");
                     } else {
                       setShowToastError(true);
-                      setTimeout(() => setShowToastError(false), 1000);
+                      setTimeout(() => setShowToastError(false), 2000);
                     }
                   });
                 }}
@@ -297,7 +293,12 @@ function RegisterMainPage() {
       {showToastError && (
         <Toast error text="Please fill in the complete information." />
       )}
-      {showToast && <Toast success text="Update complete!!!" />}
+      {showToast && (
+        <Toast
+          success
+          text="Registration complete! Welcome aboard the love train."
+        />
+      )}
     </>
   );
 }
