@@ -70,7 +70,7 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
 
     try {
       const paymentIntent = await stripe.paymentIntents.create({
-        payment_method: `${card[2]}`,
+        payment_method: `${card[1]}`,
         confirm: true,
         amount: `${productPrice}`,
         currency: "thb",

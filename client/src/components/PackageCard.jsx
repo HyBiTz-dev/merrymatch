@@ -69,7 +69,6 @@ function PackageCard() {
                 secondary
                 className="w-full"
                 onClick={() => {
-                  console.log(packageId[index]);
                   navigate("/payment1", {
                     state: {
                       package_id: packageId[index],

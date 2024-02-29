@@ -8,19 +8,22 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authentication";
-
+import Toast from "../components/Toast";
 export default function Payment1Page() {
   const { state } = useAuth();
-  console.log(state);
+
   const userId = state.id;
+  const userName = state.name;
   const userEmail = state.email;
   const navigate = useNavigate();
   const [packageDetails, setPackageDetails] = useState("");
+  const [showToast, setShowToast] = useState("close");
+  const [cardNumber, setCardNumber] = useState([]);
 
   const location = useLocation();
 
   const statePackage = location.state;
-  console.log(statePackage);
+
   const package_id = statePackage.package_id;
   const package_name = statePackage.package_name;
   const package_price_show = statePackage.package_price;
@@ -36,11 +39,10 @@ export default function Payment1Page() {
     navigate(-1);
   };
   const evenetHandleConfirm = async () => {
-    console.log("try to send payment to server");
     let data = {
       user: {
         id: userId,
-        name: "Latte",
+        name: userName,
         email: userEmail,
       },
       product: {
@@ -53,14 +55,14 @@ export default function Payment1Page() {
         priceShow: package_price_show,
       },
     };
-    let result = "no payment";
+    let result;
     try {
       result = await axios.post(
         `http://localhost:3000/payment1/create-payment1`,
         data
       );
-      console.log(result.data.status);
-      if (result.request.statusText === "OK") {
+      console.log(result);
+      if (result.data.status === "succeeded") {
         navigate("/payment2", {
           state: {
             data,
@@ -69,12 +71,24 @@ export default function Payment1Page() {
         });
       }
     } catch (error) {
-      console.log(result);
-      console.log(error);
-      alert(`can't buy the package : ${package_name}`);
+      //alert(`can't buy the package : ${package_name}`);
+
+      showToast == "close" ? setShowToast("open") : setShowToast("close");
     }
   };
-  useEffect(() => {}, []);
+
+  const handleCardNumber = (event) => {
+    console.log(event.target.value);
+    let input = Number(event.target.value);
+    if (Number.isInteger(input)) {
+      input = input.toString();
+      if (cardNumber.length % 4 == 0 && cardNumber.length != 0) {
+      } else {
+      }
+    } else {
+    }
+  };
+  useEffect(() => {}, [showToast]);
 
   return (
     <>
@@ -133,6 +147,8 @@ export default function Payment1Page() {
                     <input
                       className="w-full h-[3rem] rounded-[0.5rem] py-[0.75rem] px-[1rem]  gap-[0.5rem] bg-white  border-gray-400 border-[0.063rem] text-body2"
                       placeholder="Number of Card"
+                      value={cardNumber}
+                      onChange={handleCardNumber}
                     ></input>
                   </section>
                   <section className="bg-white w-full h-[4.75rem] flex flex-col gap-[0.25rem]">
@@ -174,7 +190,11 @@ export default function Payment1Page() {
                 >
                   Cancel
                 </Button>
-                {}
+                <Toast
+                  info={showToast}
+                  text={`can't buy the package : ${package_name}`}
+                  className="flex "
+                ></Toast>
                 <Button
                   primary
                   className="w-[11.063rem] h-[3rem]"
