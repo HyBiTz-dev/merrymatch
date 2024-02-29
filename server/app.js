@@ -29,7 +29,7 @@ async function init() {
 
   const io = new Server(server, {
     cors: {
-      origin: process.env.BASE_URL_CLIENT,
+      origins: process.env.BASE_URL_CLIENT,
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     },
