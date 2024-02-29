@@ -36,15 +36,10 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
         .select("*")
         .eq("user_profile_id", userProfileId)
         .limit(1);
-      console.log(data);
-      console.log(Array.isArray(data));
-      console.log(data.length);
+
       alreadyProfileId = data.length == 0 ? false : true;
 
       if (alreadyProfileId) {
-        console.log(
-          `user_profile_id : ${userProfileId}  has been already in custom table`
-        );
         const { data, error } = await supabase
           .from("customer")
           .select("customer_id")
@@ -60,7 +55,6 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
         }
         newCustomer = queryData;
       } else {
-        console.log("not found user_profile_id customer table");
         const { data, error } = await supabase
           .from("customer")
           .insert({ user_profile_id: userProfileId })
@@ -72,9 +66,7 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
         newCustomer = customer.id;
         addCustomerId(newCustomer);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
 
     try {
       const paymentIntent = await stripe.paymentIntents.create({
@@ -94,7 +86,7 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
     } catch (error) {
       return res.status(400).json(error);
     }
-    console.log(paymentData);
+
     if (paymentData.status === "succeeded") {
       try {
         const { data, error } = await supabase
@@ -102,23 +94,20 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
           .update({ package_id: productId })
           .eq("user_id", userProfileId)
           .select();
-        console.log(data[0]);
-        console.log(newCustomer);
+
         const resultRecord = await addTransaction(
           data[0],
           newCustomer,
           product
         );
-        console.log(resultRecord);
+
+        const merryLimitRecord = await updateMerryLimit(data[0], product);
+
         return res.json({
           status: paymentData.status,
           date: resultRecord.created_at,
         });
-
-        return res.json(paymentData.status);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     } else {
       return res.json("");
     }
@@ -130,19 +119,11 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
       .update({ customer_id: newCustomer })
       .eq("user_profile_id", userProfileId)
       .select();
-    console.log(`Add customer :`, data);
   };
 
   const addTransaction = async (userProfileData, newCustomer, product) => {
     const createDate = new Date();
     let resultRecord;
-    // let day = createDate.getDate();
-    // let month = createDate.getMonth() + 1;
-    // let year = createDate.getFullYear();
-    // if (month < 10) {
-    //   month = "0" + month;
-    // }
-    // const stringDate = day + "/" + month + "/" + year;
     try {
       const { data, error } = await supabase
         .from("transaction")
@@ -157,9 +138,26 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
         .select();
       resultRecord = data;
       return resultRecord[0];
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
+  };
+
+  const updateMerryLimit = async (userProfileData, product) => {
+    let user_id = userProfileData.user_id;
+    let package_id = product.id;
+    let merry_limit;
+    try {
+      const { data, error } = await supabase
+        .from("packages")
+        .select("merry_limit")
+        .eq("id", package_id);
+      merry_limit = data[0].merry_limit;
+    } catch (error) {}
+    try {
+      const { error } = await supabase
+        .from("merry_limit")
+        .update({ max_merry_limit: merry_limit })
+        .eq("user_id", user_id);
+    } catch (error) {}
   };
 
   haveUserProfileId();
