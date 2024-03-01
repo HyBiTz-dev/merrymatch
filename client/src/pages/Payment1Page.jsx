@@ -83,10 +83,10 @@ export default function Payment1Page() {
     if (Number.isInteger(input)) {
       setCardNumber(event.target.value);
     }
-    console.log(event.target.value);
+
     console.log(cardNumber);
   };
-  useEffect(() => {}, [showToast]);
+  useEffect(() => {}, [showToast, cardNumber]);
 
   return (
     <>
