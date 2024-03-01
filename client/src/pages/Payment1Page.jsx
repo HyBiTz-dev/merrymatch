@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authentication";
 import Toast from "../components/Toast";
 import { number } from "prop-types";
+
 export default function Payment1Page() {
   const { state } = useAuth();
 
@@ -20,7 +21,7 @@ export default function Payment1Page() {
   const [packageDetails, setPackageDetails] = useState("");
   const [showToast, setShowToast] = useState("close");
   const [cardNumber, setCardNumber] = useState("");
-
+  let testCard = "";
   const location = useLocation();
 
   const statePackage = location.state;
@@ -79,14 +80,28 @@ export default function Payment1Page() {
   };
 
   const handleCardNumber = (event) => {
-    let input = Number(event.target.value);
-    if (Number.isInteger(input)) {
-      setCardNumber(event.target.value);
-    }
+    let Numberinput = Number(event.target.value.replaceAll("-", ""));
+    let stringInput = event.target.value.toString();
+    let length = event.target.value.replaceAll("-", "").length;
 
-    console.log(cardNumber);
+    if (Number.isInteger(Numberinput)) {
+      if (length > 0 && length <= 12) {
+        if (length % 4 == 0) {
+          if (stringInput.includes("-", 9) && stringInput.length <= 10) {
+            stringInput = stringInput.slice(0, -1);
+          } else if (stringInput.includes("-", 4) && stringInput.length <= 5) {
+            stringInput = stringInput.slice(0, -1);
+          } else if (stringInput.length <= 9) {
+            stringInput = stringInput + "-";
+          }
+        }
+        testCard = stringInput;
+        setCardNumber(testCard);
+      }
+    }
   };
-  useEffect(() => {}, [showToast, cardNumber]);
+
+  useEffect(() => {}, [showToast]);
 
   return (
     <>
@@ -145,7 +160,6 @@ export default function Payment1Page() {
                     <input
                       className="w-full h-[3rem] rounded-[0.5rem] py-[0.75rem] px-[1rem]  gap-[0.5rem] bg-white  border-gray-400 border-[0.063rem] text-body2"
                       placeholder="Number of Card"
-                      type="number"
                       onChange={handleCardNumber}
                       value={cardNumber}
                     ></input>
