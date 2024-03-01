@@ -10,11 +10,11 @@ function Navbar() {
   const haveMembership = async () => {
     let checkMembership = false;
     let result = await axios.get(
-      `http://localhost:3000/membership/${state.id}`
+      `http://localhost:3000/membership/${state?.id}`
     );
 
     if (Object.keys(result.data).length > 0) {
-      if (result.data.package.id) {
+      if (result.data.package?.id) {
         checkMembership = true;
         setHaveMember(checkMembership);
       }

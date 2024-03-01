@@ -321,20 +321,22 @@ function UpdateProfilePage() {
 
   const totalPictures = pictures.length;
   const uploadSlots = Math.max(5 - totalPictures, 0);
-
-  const handleRemoveUploadedPicture = (picture, index) => {
+  const handleRemoveUploadedPicture = (picture) => {
     if (picture.type === "uploaded") {
-      const newPictures = uploadedPictures.filter((_, i) => i !== index);
-      const delPic = uploadedPictures.filter((_, i) => i === index);
-      setDeletePictures([...deletePictures, ...delPic]);
-      setUploadedPictures(newPictures);
+      const newUploadedPictures = uploadedPictures.filter(
+        (p) => p !== picture.url
+      );
+      setUploadedPictures(newUploadedPictures);
+      setDeletePictures([...deletePictures, picture.url]);
     } else {
-      const adjustedIndex = index - uploadedPictures.length;
       const newProfilePictures = formik.values.profilePictures.filter(
-        (_, i) => i !== adjustedIndex
+        (file) => file.name !== picture.file.name
       );
       formik.setFieldValue("profilePictures", newProfilePictures);
     }
+
+    const newPictures = pictures.filter((p) => p.id !== picture.id);
+    setPictures(newPictures);
   };
 
   const previewImg = formik.values.profilePictures.map((picture, index) => {
