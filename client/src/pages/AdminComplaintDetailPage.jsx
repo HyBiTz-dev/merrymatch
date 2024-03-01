@@ -21,7 +21,9 @@ function AdminComplaintDetailPage() {
     const fetchComplaint = async () => {
       try {
         const data = await axios.get(
-          `http://localhost:3000/filing-complaint/admin/complaint-list/${id}`
+          `${
+            import.meta.env.VITE_APP_BASE_ENDPOINT
+          }/filing-complaint/admin/complaint-list/${id}`
         );
         setComplaint(data.data);
 
@@ -51,7 +53,9 @@ function AdminComplaintDetailPage() {
   const handleUpdate = async (status) => {
     try {
       await axios.post(
-        `http://localhost:3000/filing-complaint/admin/complaint-list/${id}`,
+        `${
+          import.meta.env.VITE_APP_BASE_ENDPOINT
+        }/filing-complaint/admin/complaint-list/${id}`,
         { complaint_status: status, updated_at: new Date().toISOString() }
       );
       // const { error } = await supabase
