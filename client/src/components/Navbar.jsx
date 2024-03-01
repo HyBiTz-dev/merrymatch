@@ -10,7 +10,7 @@ function Navbar() {
   const haveMembership = async () => {
     let checkMembership = false;
     let result = await axios.get(
-      `http://localhost:3000/membership/${state?.id}`
+      `${import.meta.env.VITE_APP_BASE_ENDPOINT}/membership/${state?.id}`
     );
 
     if (Object.keys(result.data).length > 0) {
