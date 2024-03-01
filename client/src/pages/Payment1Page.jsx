@@ -21,6 +21,7 @@ export default function Payment1Page() {
   const [packageDetails, setPackageDetails] = useState("");
   const [showToast, setShowToast] = useState("close");
   const [cardNumber, setCardNumber] = useState("");
+  let [textAlert, setTextAlert] = useState("");
   let testCard = "";
   const location = useLocation();
 
@@ -61,23 +62,29 @@ export default function Payment1Page() {
       },
     };
     let result;
-    try {
-      result = await axios.post(
-        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/payment1/create-payment1`,
-        data
-      );
+    if (cardNumber.length == 14) {
+      try {
+        result = await axios.post(
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/payment1/create-payment1`,
+          data
+        );
 
-      if (result.data.status === "succeeded") {
-        navigate("/payment2", {
-          state: {
-            data,
-            date: result.data.date,
-          },
-        });
+        if (result.data.status === "succeeded") {
+          navigate("/payment2", {
+            state: {
+              data,
+              date: result.data.date,
+            },
+          });
+        }
+      } catch (error) {
+        //alert(`can't buy the package : ${package_name}`);
+
+        setTextAlert(`can't buy the package : ${package_name}`);
+        showToast == "close" ? setShowToast("open") : setShowToast("close");
       }
-    } catch (error) {
-      //alert(`can't buy the package : ${package_name}`);
-
+    } else {
+      setTextAlert(`Required card Number`);
       showToast == "close" ? setShowToast("open") : setShowToast("close");
     }
   };
@@ -102,6 +109,7 @@ export default function Payment1Page() {
         setCardNumber(testCard);
       }
     }
+    console.log(cardNumber);
   };
 
   useEffect(() => {}, [showToast]);
@@ -165,6 +173,7 @@ export default function Payment1Page() {
                       placeholder="Number of Card"
                       onChange={handleCardNumber}
                       value={cardNumber}
+                      required
                     ></input>
                   </section>
                   <section className="bg-white w-full h-[4.75rem] flex flex-col gap-[0.25rem]">
@@ -208,7 +217,7 @@ export default function Payment1Page() {
                 </Button>
                 <Toast
                   info={showToast}
-                  text={`can't buy the package : ${package_name}`}
+                  text={textAlert}
                   className="flex "
                 ></Toast>
                 <Button

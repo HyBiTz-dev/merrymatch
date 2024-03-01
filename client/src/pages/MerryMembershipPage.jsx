@@ -19,7 +19,7 @@ export default function MerryMembershipPage() {
 
   const getPackageData = async () => {
     const result = await axios.get(
-      `http://localhost:3000/membership/${userProfileId}`
+      `${import.meta.env.VITE_APP_BASE_ENDPOINT}/membership/${userProfileId}`
     );
 
     const packageData = result.data.package;
@@ -45,7 +45,9 @@ export default function MerryMembershipPage() {
     if (billing.length <= 0) {
       try {
         const result = await axios.get(
-          `http://localhost:3000/transaction/${userProfileId}`
+          `${
+            import.meta.env.VITE_APP_BASE_ENDPOINT
+          }/transaction/${userProfileId}`
         );
         result.data.map((items, index) => {
           billing.push(items);
