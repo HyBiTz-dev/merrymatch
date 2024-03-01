@@ -11,7 +11,7 @@ export default function SwipeMatchsidebar() {
   const { state } = useAuth();
   const [merryList, setMerryList] = useState([]);
   const navigate = useNavigate();
-  const { setCurrentChat } = useSocket();
+  const { setCurrentChat, notifications } = useSocket();
 
   const handleClickChat = async (userId) => {
     const result = await axios.get(
@@ -48,7 +48,7 @@ export default function SwipeMatchsidebar() {
       setMerryList(Matchlist);
     };
     getData();
-  }, []);
+  }, [notifications]);
   return (
     <div>
       <Swiper
