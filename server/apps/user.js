@@ -194,9 +194,22 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
       deletePictures,
       userId,
       age,
+      reorderedPictures,
     } = req.body;
     const hobbiesInterestsArray = req.body.hobbiesInterests.split(",");
     let uploadPicArray = JSON.parse(req.body.uploadedPicture);
+    const files = req.files;
+    const reorderedPicturesArray = JSON.parse(req.body.reorderedPictures);
+    reorderedPicturesArray.forEach((picture) => {
+      if (picture.type === "file") {
+        const fileDetails = files.find(
+          (file) => file.originalname === picture.id
+        );
+        if (fileDetails) {
+          picture.file = fileDetails;
+        }
+      }
+    });
     const deletePicArray = JSON.parse(req.body.deletePictures);
     const { data: countryCity, error: countryCityError } = await supabase
       .from("country_city")
@@ -255,45 +268,53 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
     if (hobbieDataError) {
       return res.status(400).json({ message: hobbieDataError.message });
     }
-
+    const newPicArray = [];
     if (deletePicArray.length === 0 && req.files.length !== 0) {
-      for (let i = 0; i < req.files.length; i++) {
-        const file = req.files[i];
-        const fileExtension = file.originalname.split(".").pop();
-        const fileName = `profile-${uuidv4()}.${fileExtension}`;
-        const { data: ImageUpload, error: ImageUploadError } =
-          await supabase.storage
+      reorderedPicturesArray.map((item) => {
+        if (item.type === "uploaded") {
+          newPicArray.push(item.url);
+        } else {
+          const file = item.file;
+          const fileExtension = file.originalname.split(".").pop();
+          const fileName = `profile-${uuidv4()}.${fileExtension}`;
+          const { data: ImageUpload, error: ImageUploadError } =
+            supabase.storage
+              .from("images/profile")
+              .upload(fileName, file.buffer, {
+                contentType: file.mimetype,
+              });
+          if (ImageUploadError) {
+            return res.status(400).json({ message: ImageUploadError.message });
+          }
+          const { data } = supabase.storage
             .from("images/profile")
-            .upload(fileName, file.buffer, {
-              contentType: file.mimetype,
-            });
-        if (ImageUploadError) {
-          return res.status(400).json({ message: ImageUploadError.message });
+            .getPublicUrl(fileName);
+          newPicArray.push(data.publicUrl);
         }
-        const { data } = supabase.storage
-          .from("images/profile")
-          .getPublicUrl(fileName);
-        uploadPicArray.push(data.publicUrl);
-      }
+      });
     } else if (deletePicArray.length !== 0 && req.files.length !== 0) {
-      for (let i = 0; i < req.files.length; i++) {
-        const file = req.files[i];
-        const fileExtension = file.originalname.split(".").pop();
-        const fileName = `profile-${uuidv4()}.${fileExtension}`;
-        const { data: ImageUpload, error: ImageUploadError } =
-          await supabase.storage
+      reorderedPicturesArray.map((item) => {
+        if (item.type === "uploaded") {
+          newPicArray.push(item.url);
+        } else {
+          const file = item.file;
+          const fileExtension = file.originalname.split(".").pop();
+          const fileName = `profile-${uuidv4()}.${fileExtension}`;
+          const { data: ImageUpload, error: ImageUploadError } =
+            supabase.storage
+              .from("images/profile")
+              .upload(fileName, file.buffer, {
+                contentType: file.mimetype,
+              });
+          if (ImageUploadError) {
+            return res.status(400).json({ message: ImageUploadError.message });
+          }
+          const { data } = supabase.storage
             .from("images/profile")
-            .upload(fileName, file.buffer, {
-              contentType: file.mimetype,
-            });
-        if (ImageUploadError) {
-          return res.status(400).json({ message: ImageUploadError.message });
+            .getPublicUrl(fileName);
+          newPicArray.push(data.publicUrl);
         }
-        const { data } = supabase.storage
-          .from("images/profile")
-          .getPublicUrl(fileName);
-        uploadPicArray.push(data.publicUrl);
-      }
+      });
       for (let i = 0; i < deletePicArray.length; i++) {
         const imagePath = deletePicArray[i];
         const path = imagePath.replace(
@@ -309,6 +330,7 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
         }
       }
     } else if (deletePicArray.length !== 0 && req.files.length === 0) {
+      reorderedPicturesArray.map((item) => newPicArray.push(item.url));
       for (let i = 0; i < deletePicArray.length; i++) {
         const imagePath = deletePicArray[i];
         const path = imagePath.replace(
@@ -323,10 +345,12 @@ userRouter.put("/:id", upload.array("profilePictures", 5), async (req, res) => {
             .json({ messagedeleteimg: deleteImgDataError.message });
         }
       }
+    } else if (deletePicArray.length === 0 && req.files.length === 0) {
+      reorderedPicturesArray.map((item) => newPicArray.push(item.url));
     }
     const { data: userImage, error: userImageError } = await supabase
       .from("user_image")
-      .update([{ image_url: uploadPicArray }])
+      .update([{ image_url: newPicArray }])
       .eq("user_profile_id", userUUId)
       .select();
     if (userImageError) {

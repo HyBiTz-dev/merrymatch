@@ -91,7 +91,7 @@ function UpdateProfilePage() {
       racial: Yup.string().nullable(false).required("Required"),
       meeting: Yup.string().nullable(false).required("Required"),
       hobbiesInterests: Yup.array()
-        .min(1, "Must be at least 1 hobbies Interests or less")
+        .min(1, "Must be at least 1 hobbies Interests")
         .max(10, "Must be 10 hobbies Interests or less")
         .required("Required"),
       profilePictures: Yup.array()
@@ -105,6 +105,7 @@ function UpdateProfilePage() {
           }
         )
         .required("Required"),
+      description: Yup.string().max(150, "Must be 150 characters or less"),
     }),
     onSubmit: async (values) => {
       const formData = new FormData();
@@ -320,20 +321,22 @@ function UpdateProfilePage() {
 
   const totalPictures = pictures.length;
   const uploadSlots = Math.max(5 - totalPictures, 0);
-
-  const handleRemoveUploadedPicture = (picture, index) => {
+  const handleRemoveUploadedPicture = (picture) => {
     if (picture.type === "uploaded") {
-      const newPictures = uploadedPictures.filter((_, i) => i !== index);
-      const delPic = uploadedPictures.filter((_, i) => i === index);
-      setDeletePictures([...deletePictures, ...delPic]);
-      setUploadedPictures(newPictures);
+      const newUploadedPictures = uploadedPictures.filter(
+        (p) => p !== picture.url
+      );
+      setUploadedPictures(newUploadedPictures);
+      setDeletePictures([...deletePictures, picture.url]);
     } else {
-      const adjustedIndex = index - uploadedPictures.length;
       const newProfilePictures = formik.values.profilePictures.filter(
-        (_, i) => i !== adjustedIndex
+        (file) => file.name !== picture.file.name
       );
       formik.setFieldValue("profilePictures", newProfilePictures);
     }
+
+    const newPictures = pictures.filter((p) => p.id !== picture.id);
+    setPictures(newPictures);
   };
 
   const previewImg = formik.values.profilePictures.map((picture, index) => {

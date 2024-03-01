@@ -12,7 +12,7 @@ const ComplaintTable = ({ selectedStatus, searchText }) => {
     const fetchData = async () => {
       try {
         const data = await axios.get(
-          "http://localhost:3000/filing-complaint/admin/complaint-list"
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/filing-complaint/admin/complaint-list`
         );
 
         setComplaints(data.data);
@@ -47,7 +47,7 @@ const ComplaintTable = ({ selectedStatus, searchText }) => {
     if (complaintStatus === "New") {
       try {
         await axios.post(
-          `http://localhost:3000/filing-complaint/admin/complaint-list/${complaintId}`,
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/filing-complaint/admin/complaint-list/${complaintId}`,
           { complaint_status: "Pending" }
         );
 

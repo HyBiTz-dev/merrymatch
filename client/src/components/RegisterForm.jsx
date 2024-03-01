@@ -80,7 +80,7 @@ export const Step1 = ({ formik }) => {
             } rounded-lg`}
           >
             <input
-              className={`border bg-white rounded-lg p-3 w-[27.9rem] text-black focus:border-purple-500 outline-none ${
+              className={`border bg-white rounded-lg p-3 w-[28.313rem] text-black focus:border-purple-500 outline-none ${
                 formik.touched.dateOfBirth && formik.errors.dateOfBirth
                   ? "border-red-500"
                   : ""
@@ -92,15 +92,14 @@ export const Step1 = ({ formik }) => {
               onBlur={formik.handleBlur}
               value={formik.values.dateOfBirth}
             />
+            <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
+              <img src="/images/dateIcon.svg" />
+            </div>
             {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? (
-              <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
+              <div className="absolute inset-y-0 right-10 flex items-center pr-3 pointer-events-none">
                 <img src="/images/alert_error_icon.svg" />
               </div>
-            ) : (
-              <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
-                <img src="/images/dateIcon.svg" />
-              </div>
-            )}
+            ) : null}
           </div>
           {formik.touched.dateOfBirth && formik.errors.dateOfBirth && (
             <p className=" text-red-500">{formik.errors.dateOfBirth}</p>
@@ -300,7 +299,7 @@ export const Step3 = ({ formik }) => {
         <button
           type="button"
           className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 z-50"
-          onClick={() => {
+          onMouseDown={() => {
             const newPictures = [...formik.values.profilePictures];
             newPictures.splice(index, 1);
             formik.setFieldValue("profilePictures", newPictures);
@@ -331,7 +330,7 @@ export const Step3 = ({ formik }) => {
   };
   return (
     <form
-      className="flex flex-wrap justify-between gap-6 pb-10"
+      className="flex flex-wrap justify-between pb-10"
       onSubmit={formik.handleSubmit}
     >
       <div className="w-full text-2xl text-purple-500 pb-6">
@@ -389,7 +388,7 @@ export const Step3 = ({ formik }) => {
         </div>
       ))}
       {formik.errors && formik.errors.profilePictures && (
-        <p className=" text-red-500">{formik.errors.profilePictures}</p>
+        <p className="text-red-500 pt-4">{formik.errors.profilePictures}</p>
       )}
     </form>
   );

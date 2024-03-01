@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Toast from "../components/Toast";
+import BeigeVector from "../components/BeigeVector";
 
 function RegisterMainPage() {
   const navigate = useNavigate("");
@@ -170,11 +171,12 @@ function RegisterMainPage() {
     setCurrentStep((prevStep) => (prevStep > 1 ? prevStep - 1 : prevStep));
   };
   return (
-    <>
+    <div className="bg-main w-full h-screen">
       <Navbar unauth />
-      <div className="flex flex-col items-center bg-main w-full h-[55.9375rem] font-nunito">
-        <div className=" w-[66rem] h-full">
-          <header className="flex h-36 pb-20 mt-20 items-end justify-around">
+      <BeigeVector />
+      <div className="flex pt-20 flex-col items-center bg-main w-full h-[55.938rem]">
+        <div className="pt-20 w-[58.125rem] h-full">
+          <header className="flex h-36 pb-20 items-end justify-around">
             <div id="register-header">
               <div className="text-sm text-beige-700 font-semibold">
                 Register
@@ -245,7 +247,7 @@ function RegisterMainPage() {
           </header>
           <StepComponent formik={formik} />
         </div>
-        <div className="flex justify-around items-center w-full h-fit bg-white pt-9 pb-8">
+        <div className="flex justify-around items-center w-full h-[7rem] bg-white pt-9 pb-8">
           <div id="pagination-number">{currentStep}/3</div>
           <div className="flex gap-6" id="button-container">
             {currentStep === 1 ? (
@@ -293,13 +295,7 @@ function RegisterMainPage() {
       {showToastError && (
         <Toast error text="Please fill in the complete information." />
       )}
-      {showToast && (
-        <Toast
-          success
-          text="Registration complete! Welcome aboard the love train."
-        />
-      )}
-    </>
+    </div>
   );
 }
 
