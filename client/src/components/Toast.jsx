@@ -4,7 +4,7 @@ function Toast(prop) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    setVisible(true); // เปิด Toast ขึ้นมาทุกครั้งที่ prop เปลี่ยน
+    setVisible(true);
     const timer = setTimeout(() => {
       setVisible(false);
     }, 2000);
@@ -12,7 +12,7 @@ function Toast(prop) {
     return () => {
       clearTimeout(timer);
     };
-  }, [prop]); // ให้ useEffect ทำงานเมื่อ prop เปลี่ยนแปลง
+  }, [prop]);
 
   if (!visible) {
     return null;
