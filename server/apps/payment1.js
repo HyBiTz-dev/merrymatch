@@ -11,13 +11,15 @@ payment1Router.get("/", (req, res) => {
 });
 
 payment1Router.post("/create-payment1", express.json(), async (req, res) => {
-  const { user, product } = req.body;
+  const { user, product, cardDetail } = req.body;
   const userProfileId = user.id;
   const userProfileName = user.name;
   const userProfileEmail = user.email;
   const productName = product.name;
   const productPrice = product.price;
   const productId = product.id;
+  const cardNumber = cardDetail.cardNumber;
+
   let newCustomer;
   let paymentData;
   const card = [

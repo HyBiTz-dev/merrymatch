@@ -11,7 +11,9 @@ export default function PackagePage() {
   const [allPackages, setAllPackages] = useState({});
   const getDataPackages = async () => {
     try {
-      let response = await axios.get("http://localhost:3000/packages");
+      let response = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages`
+      );
       let result = response.data;
       let newArrray = [...result];
       let newObject = {

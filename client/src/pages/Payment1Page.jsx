@@ -56,6 +56,9 @@ export default function Payment1Page() {
         perdate: package_perdate,
         priceShow: package_price_show,
       },
+      cardDetail: {
+        cardNumber: cardNumber,
+      },
     };
     let result;
     try {
