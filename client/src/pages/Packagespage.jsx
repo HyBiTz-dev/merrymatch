@@ -12,12 +12,9 @@ export default function PackagePage() {
   const [allPackages, setAllPackages] = useState({});
   const getDataPackages = async () => {
     try {
-      let { data, error } = await supabase
-        .from("packages")
-        .select("*")
-        .limit(3);
-
-      let newArrray = [...data];
+      let response = await axios.get("http://localhost:3000/packages");
+      let result = response.data;
+      let newArrray = [...result];
       let newObject = {
         package_num: [],
         package_id: [],
@@ -41,18 +38,6 @@ export default function PackagePage() {
       console.log(error);
     }
   };
-
-  // const getPackage = async () => {
-  //   try {
-  //     let response = await axios.get("http://localhost:3000/packages");
-  //     let result = response.data;
-  //     console.log(result);
-  //     setPackage(result);
-  //     return result;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   useEffect(() => {
     getDataPackages();
