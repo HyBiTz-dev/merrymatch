@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import ComplaintStatus from "./ComplaintStatus";
+import axios from "axios";
 
 const ComplaintTable = ({ selectedStatus, searchText }) => {
   const [complaints, setComplaints] = useState([]);
@@ -10,24 +11,30 @@ const ComplaintTable = ({ selectedStatus, searchText }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data, error } = await supabase
-          .from("user_complaint")
-          .select("*");
-
-        if (error) {
-          throw error;
-        }
-
-        const sortedData = data.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        const data = await axios.get(
+          "http://localhost:3000/filing-complaint/admin/complaint-list"
         );
 
-        const formattedData = sortedData.map((complaint) => ({
-          ...complaint,
-          created_at: new Date(complaint.created_at).toLocaleDateString(),
-        }));
+        setComplaints(data.data);
 
-        setComplaints(formattedData);
+        // const { data, error } = await supabase
+        //   .from("user_complaint")
+        //   .select("*");
+
+        // if (error) {
+        //   throw error;
+        // }
+
+        // const sortedData = data.sort(
+        //   (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        // );
+
+        // const formattedData = sortedData.map((complaint) => ({
+        //   ...complaint,
+        //   created_at: new Date(complaint.created_at).toLocaleDateString(),
+        // }));
+
+        // setComplaints(formattedData);
       } catch (error) {
         console.error("Error fetching data from Supabase:", error.message);
       }
@@ -39,10 +46,15 @@ const ComplaintTable = ({ selectedStatus, searchText }) => {
   const handleRowClick = async (complaintId, complaintStatus) => {
     if (complaintStatus === "New") {
       try {
-        await supabase
-          .from("user_complaint")
-          .update({ complaint_status: "Pending" })
-          .eq("id", complaintId);
+        await axios.post(
+          `http://localhost:3000/filing-complaint/admin/complaint-list/${complaintId}`,
+          { complaint_status: "Pending" }
+        );
+
+        // await supabase
+        //   .from("user_complaint")
+        //   .update({ complaint_status: "Pending" })
+        //   .eq("id", complaintId);
       } catch (error) {
         console.error("Error updating status:", error.message);
         return;
@@ -53,9 +65,9 @@ const ComplaintTable = ({ selectedStatus, searchText }) => {
   };
 
   return (
-    <div className="bg-gray-100 flex justify-center  h-[73.5rem]">
+    <div className="bg-gray-100 flex justify-center h-screen">
       <div className="pl-14 pr-14 pt-12 w-[75rem]">
-        <div className="overflow-auto text-black font-medium rounded-2xl h-[58.813rem] scrollbar-hide">
+        <div className="text-black font-medium rounded-2xl h-[47.53rem] overflow-y-scroll scrollbar-hide">
           <table className="table">
             <thead className="bg-gray-400 sticky top-0">
               <tr className="border-gray-200 text-gray-800 font-medium">
@@ -91,7 +103,7 @@ const ComplaintTable = ({ selectedStatus, searchText }) => {
                 .map((complaint) => (
                   <tr
                     key={complaint.id}
-                    className="bg-white h-[5.625rem] rounded-b-2xl border-gray-200"
+                    className="bg-white h-[5.625rem] rounded-b-2xl border-gray-200 cursor-pointer"
                     onClick={() =>
                       handleRowClick(complaint.id, complaint.complaint_status)
                     }
@@ -112,7 +124,9 @@ const ComplaintTable = ({ selectedStatus, searchText }) => {
                           )}...`
                         : complaint.complaint_description}
                     </td>
-                    <td>{complaint.created_at}</td>
+                    <td>
+                      {new Date(complaint.created_at).toLocaleDateString()}
+                    </td>
                     <td>
                       <ComplaintStatus status={complaint.complaint_status} />
                     </td>

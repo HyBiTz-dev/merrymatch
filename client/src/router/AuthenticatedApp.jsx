@@ -23,45 +23,37 @@ export default function Router() {
   const { state } = useAuth();
   const role = state ? state.role : null;
   return (
-    <div>
-      <Routes>
-        {/* ------Common routes for both User and Admin------ */}
-        <Route path="/" element={<Home />} />
-        <Route path="/packages" element={<PackagePages />} />
-        <Route path="/payment1" element={<Payment1Page />} />
-        <Route path="/payment2" element={<Payment2Page />} />
-        <Route path="/merry-membership" element={<MerryMembershipPage />} />
-        <Route path="/matching" element={<MatchingPage />} />
-        <Route path="/update/:id" element={<UpdateProfilePage />} />
-        <Route path="/messages/:id" element={<Chat />} />
-        <Route path="/filing-complaint" element={<FilingComplaintPage />} />
-        <Route path="/merrylist" element={<MerryListPage />} />
+    <Routes>
+      {/* ------Common routes for both User and Admin------ */}
+      <Route path="/" element={<Home />} />
+      <Route path="/packages" element={<PackagePages />} />
+      <Route path="/payment1" element={<Payment1Page />} />
+      <Route path="/payment2" element={<Payment2Page />} />
+      <Route path="/merry-membership" element={<MerryMembershipPage />} />
+      <Route path="/matching" element={<MatchingPage />} />
+      <Route path="/update/:id" element={<UpdateProfilePage />} />
+      <Route path="/messages/:id" element={<Chat />} />
+      <Route path="/filing-complaint" element={<FilingComplaintPage />} />
+      <Route path="/merrylist" element={<MerryListPage />} />
 
-        {/* ------Admin routes------ */}
-        {role === "Admin" && (
-          <>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/admin/package" element={<AdminPackageList />} />
-            <Route
-              path="/admin/createpackage"
-              element={<AdminPackageCreate />}
-            />
-            <Route
-              path="/admin/editpackage/:id"
-              element={<AdminPackageEdit />}
-            />
-            <Route
-              path="/admin/complaint-list"
-              element={<AdminComplaintListPage />}
-            />
-            <Route
-              path="/admin/complaint-details/:id"
-              element={<AdminComplaintDetailPage />}
-            />
-          </>
-        )}
-      </Routes>
-    </div>
+      {/* ------Admin routes------ */}
+      {role === "Admin" && (
+        <>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin/package" element={<AdminPackageList />} />
+          <Route path="/admin/createpackage" element={<AdminPackageCreate />} />
+          <Route path="/admin/editpackage/:id" element={<AdminPackageEdit />} />
+          <Route
+            path="/admin/complaint-list"
+            element={<AdminComplaintListPage />}
+          />
+          <Route
+            path="/admin/complaint-details/:id"
+            element={<AdminComplaintDetailPage />}
+          />
+        </>
+      )}
+    </Routes>
   );
 }

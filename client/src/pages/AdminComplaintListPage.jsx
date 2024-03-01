@@ -19,7 +19,7 @@ function AdminComplaintListPage() {
   };
 
   return (
-    <div className="flex bg-white w-full h-[78.5rem]">
+    <div className="flex bg-white w-full h-screen overflow-hidden">
       <SideBarAdmin />
       <div className="w-full">
         <div className="h-20 flex items-center border-b border-b-gray-400">
