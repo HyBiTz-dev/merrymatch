@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar";
 import PackageCard from "../components/PackageCard";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { supabase } from "../supabaseClient";
 
 export const userPackageData = React.createContext();
 
