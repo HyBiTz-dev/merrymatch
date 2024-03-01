@@ -76,7 +76,7 @@ export default function MerryMembershipPage() {
     getBillHistory();
   }, []);
 
-  useEffect(() => {}, [showAlert]);
+  useEffect(() => {}, [showAlert, packageDetails]);
 
   return (
     <>

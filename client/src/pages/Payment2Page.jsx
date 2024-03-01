@@ -46,7 +46,7 @@ export default function Payment2Page() {
             <div className="icon-success w-[5rem] h-[5rem] flex justify-center items-center">
               <img
                 alt="icon-success"
-                src="../../public/images/checkbox-circle-fill-light.svg"
+                src="/images/checkbox-circle-fill-light.svg"
                 className="w-[5rem] h-[5rem] "
               ></img>
             </div>
