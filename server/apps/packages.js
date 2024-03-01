@@ -66,7 +66,6 @@ packagesRouter.delete("/:id", async (req, res) => {
     if (error) throw error;
     res.json({ message: "Package has deleted" });
   } catch (error) {
-    console.log(error);
     console.error("Error deleting package:", error.message);
     res
       .status(500)
@@ -77,7 +76,7 @@ packagesRouter.delete("/:id", async (req, res) => {
 packagesRouter.get("/", async (req, res) => {
   try {
     const { data, error } = await supabase.from("packages").select("*");
-    console.log(data);
+
     if (error) throw error;
     res.json(data);
   } catch (error) {

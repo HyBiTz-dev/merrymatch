@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authentication";
 import Toast from "../components/Toast";
+import { number } from "prop-types";
 export default function Payment1Page() {
   const { state } = useAuth();
 
@@ -18,7 +19,7 @@ export default function Payment1Page() {
   const navigate = useNavigate();
   const [packageDetails, setPackageDetails] = useState("");
   const [showToast, setShowToast] = useState("close");
-  const [cardNumber, setCardNumber] = useState([]);
+  const [cardNumber, setCardNumber] = useState("");
 
   const location = useLocation();
 
@@ -61,7 +62,7 @@ export default function Payment1Page() {
         `${import.meta.env.VITE_APP_BASE_ENDPOINT}/payment1/create-payment1`,
         data
       );
-      console.log(result);
+
       if (result.data.status === "succeeded") {
         navigate("/payment2", {
           state: {
@@ -78,17 +79,14 @@ export default function Payment1Page() {
   };
 
   const handleCardNumber = (event) => {
-    console.log(event.target.value);
     let input = Number(event.target.value);
     if (Number.isInteger(input)) {
-      input = input.toString();
-      if (cardNumber.length % 4 == 0 && cardNumber.length != 0) {
-      } else {
-      }
-    } else {
+      setCardNumber(event.target.value);
     }
+
+    console.log(cardNumber);
   };
-  useEffect(() => {}, [showToast]);
+  useEffect(() => {}, [showToast, cardNumber]);
 
   return (
     <>
@@ -147,8 +145,9 @@ export default function Payment1Page() {
                     <input
                       className="w-full h-[3rem] rounded-[0.5rem] py-[0.75rem] px-[1rem]  gap-[0.5rem] bg-white  border-gray-400 border-[0.063rem] text-body2"
                       placeholder="Number of Card"
-                      value={cardNumber}
+                      type="number"
                       onChange={handleCardNumber}
+                      value={cardNumber}
                     ></input>
                   </section>
                   <section className="bg-white w-full h-[4.75rem] flex flex-col gap-[0.25rem]">

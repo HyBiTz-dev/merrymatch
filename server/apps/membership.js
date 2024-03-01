@@ -49,9 +49,7 @@ membershipRouter.get("/:id", async (req, res) => {
     let paymentMethod = await getPaymentMethod(userProfileId);
 
     return res.json({ package: packageData, payment: paymentMethod });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 
   return res.json("get transaction");
 });
