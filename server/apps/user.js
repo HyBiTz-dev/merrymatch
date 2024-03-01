@@ -52,49 +52,63 @@ userRouter.get("/matching/:id", async (req, res) => {
 
   const result = user_profile.filter((item) => {
     if (
-      search.default === "true" &&
-      search.gender_interest_1 === "true" &&
-      search.gender_interest_2 === "true"
+      search.default_interest &&
+      search.gender_interest_1 &&
+      search.gender_interest_2
     ) {
       return (
         !matchUser.includes(item.user_id) &&
         Number(search.age_range[0]) <= item.age &&
         item.age <= Number(search.age_range[1])
       );
-    } else if (
-      search.default === "true" &&
-      search.gender_interest_1 === "true"
-    ) {
+    } else if (search.default_interest && search.gender_interest_1) {
+      return (
+        (!matchUser.includes(item.user_id) &&
+          item.gender_name === search.default_interest) ||
+        (item.gender_name === search.gender_interest_1 &&
+          Number(search.age_range[0]) <= item.age &&
+          item.age <= Number(search.age_range[1]))
+      );
+    } else if (search.default_interest && search.gender_interest_2) {
+      return (
+        (!matchUser.includes(item.user_id) &&
+          item.gender_name === search.default_interest) ||
+        (item.gender_name === search.gender_interest_2 &&
+          Number(search.age_range[0]) <= item.age &&
+          item.age <= Number(search.age_range[1]))
+      );
+    } else if (search.gender_interest_1 && search.gender_interest_2) {
+      return (
+        (!matchUser.includes(item.user_id) &&
+          item.gender_name === search.gender_interest_1) ||
+        (item.gender_name === search.gender_interest_2 &&
+          Number(search.age_range[0]) <= item.age &&
+          item.age <= Number(search.age_range[1]))
+      );
+    } else if (search.default_interest) {
       return (
         !matchUser.includes(item.user_id) &&
-        item.gender_name !== "Non-binary" &&
+        item.gender_name === search.default_interest &&
         Number(search.age_range[0]) <= item.age &&
         item.age <= Number(search.age_range[1])
       );
-    } else if (
-      search.default === "true" &&
-      search.gender_interest_2 === "true"
-    ) {
+    } else if (search.gender_interest_1) {
       return (
         !matchUser.includes(item.user_id) &&
-        item.gender_name !== currentUser[0].gender_name &&
+        item.gender_name === search.gender_interest_1 &&
         Number(search.age_range[0]) <= item.age &&
         item.age <= Number(search.age_range[1])
       );
-    } else if (
-      search.gender_interest_1 === "true" &&
-      search.gender_interest_2 === "true"
-    ) {
+    } else if (search.gender_interest_2) {
       return (
         !matchUser.includes(item.user_id) &&
-        item.gender_name !== currentUser[0].gender_interest_name &&
+        item.gender_name === search.gender_interest_2 &&
         Number(search.age_range[0]) <= item.age &&
         item.age <= Number(search.age_range[1])
       );
     } else if (Object.keys(search).length !== 0) {
       return (
         !matchUser.includes(item.user_id) &&
-        item.gender_name === currentUser[0].gender_interest_name &&
         Number(search.age_range[0]) <= item.age &&
         item.age <= Number(search.age_range[1])
       );

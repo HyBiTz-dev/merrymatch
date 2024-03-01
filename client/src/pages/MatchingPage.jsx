@@ -13,8 +13,8 @@ function MatchingPage() {
   const [defaultChecked, setDefaultChecked] = useState(true);
   const [genderInterest1Checked, setGenderInterest1Checked] = useState(false);
   const [genderInterest2Checked, setGenderInterest2Checked] = useState(false);
-  const [searchData, setSearchData] = useState({});
-  const [valueAgeSlider, setValueAgeSlider] = useState();
+  const [searchData, setSearchData] = useState();
+  const [valueAgeSlider, setValueAgeSlider] = useState([]);
   const [reset, setReset] = useState(false);
 
   useEffect(() => {
@@ -41,12 +41,34 @@ function MatchingPage() {
 
   const handleSearchButton = (e) => {
     e.preventDefault();
+
     const data = {
-      default: defaultChecked,
-      gender_interest_1: genderInterest1Checked,
-      gender_interest_2: genderInterest2Checked,
       age_range: valueAgeSlider,
     };
+    if (defaultChecked) {
+      data.default_interest = user.gender_interest_name;
+    }
+    if (genderInterest1Checked) {
+      if (user.gender_interest_name === "Male") {
+        data.gender_interest_1 = "Female";
+      } else if (
+        user.gender_interest_name === "Female" ||
+        user.gender_interest_name === "Non-binary"
+      ) {
+        data.gender_interest_1 = "Male";
+      }
+    }
+    if (genderInterest2Checked) {
+      if (
+        user.gender_interest_name === "Male" ||
+        user.gender_interest_name === "Female"
+      ) {
+        data.gender_interest_2 = "Non-binary";
+      } else if (user.gender_interest_name === "Non-binary") {
+        data.gender_interest_2 = "Female";
+      }
+    }
+
     setSearchData(data);
   };
 
@@ -76,7 +98,7 @@ function MatchingPage() {
           onSubmit={(e) => handleSearchButton(e)}
         >
           <div className="h-[42.125rem] flex flex-col gap-14 px-4 pt-9">
-            <div className="flex flex-col gap-4">
+            {/* <div className="flex flex-col gap-4">
               <p className="text-base font-bold text-purple-800">
                 Search by Keywords
               </p>
@@ -85,7 +107,7 @@ function MatchingPage() {
                 placeholder="Search..."
                 className="input border border-gray-300 w-full focus:outline-none bg-white"
               />
-            </div>
+            </div> */}
             <div className="flex flex-col gap-4">
               <p className="text-base font-bold text-purple-800">
                 Sex you interest
