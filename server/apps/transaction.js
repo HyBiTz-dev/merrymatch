@@ -55,7 +55,6 @@ transactionRouter.get("/:id", async (req, res) => {
     item.created_at = transDate(item.created_at);
     item.package_price = transPrice(item.package_price);
   });
-  console.log(result);
 
   return res.json(result);
 });
