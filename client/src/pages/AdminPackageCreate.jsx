@@ -108,6 +108,7 @@ function AdminPackageCreate() {
                         as="input"
                         type="number"
                         name="price"
+                        min={1}
                         className="input input-bordered input-md bg-white"
                       />
                     </label>
@@ -121,6 +122,7 @@ function AdminPackageCreate() {
                       as="input"
                       type="number"
                       name="merryLimit"
+                      min={1}
                       className="input input-bordered input-md bg-white"
                     />
                   </label>

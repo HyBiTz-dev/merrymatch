@@ -3,6 +3,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import { DndContext, useSensors, useSensor, MouseSensor } from "@dnd-kit/core";
+import { Droppable } from "../components/Dropable";
+import { TableRowDraggable } from "../components/TableRowDraggable";
+
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
 function AdminPackageList() {
   const [allPackages, setAllPackages] = useState([]);
@@ -10,6 +15,15 @@ function AdminPackageList() {
   const [showModal, setShowModal] = useState(false);
   const [deletePackageId, setDeletePackageId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDropped, setDropped] = useState(false);
+
+  const dndSensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
 
   useEffect(() => {
     const fetchPackageData = async () => {
@@ -52,140 +66,154 @@ function AdminPackageList() {
     return packageItem.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+  const handleDragEnd = (event) => {
+    console.debug(event);
+    if (event.over && event.over.id === "dropable") {
+      setDropped(true);
+    }
+  };
+
   return (
-    <div className="flex bg-white ">
-      <SideBarAdmin />
-      <div className="w-full">
-        <div className="h-20 flex items-center bg-white  border-b border-b-gray-400">
-          <span className="font-bold text-2xl text-gray-900 pl-14 pr-14 w-full">
-            Merry Package
-          </span>
-          <div className="flex">
-            <div className="relative pr-4">
-              <input
-                type="text"
-                placeholder="Search..."
-                onChange={(e) => setSearchTerm(e.target.value)}
-                value={searchTerm}
-                className="input input-bordered bg-white focus:border-purple-500 w-80 max-w-xs pl-12"
-              />
-              <img
-                src="/images/search.svg"
-                alt="search icon"
-                className="absolute flex items-center inset-y-3 left-0 pl-4"
-              />
-            </div>
-            <div className="ml-auto mr-14">
-              <Button
-                primary
-                onClick={() => navigate("/admin/createpackage")}
-                className="w-40 h-[3rem]"
-              >
-                + Add Package
-              </Button>
+    <DndContext
+      onDragEnd={handleDragEnd}
+      sensors={dndSensors}
+      modifiers={[restrictToVerticalAxis]}
+    >
+      <div className="flex bg-white ">
+        <SideBarAdmin />
+        <div className="w-full">
+          <div className="h-20 flex items-center bg-white  border-b border-b-gray-400">
+            <span className="font-bold text-2xl text-gray-900 pl-14 pr-14 w-full">
+              Merry Package
+            </span>
+            <div className="flex">
+              <div className="relative pr-4">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchTerm}
+                  className="input input-bordered bg-white focus:border-purple-500 w-80 max-w-xs pl-12"
+                />
+                <img
+                  src="/images/search.svg"
+                  alt="search icon"
+                  className="absolute flex items-center inset-y-3 left-0 pl-4"
+                />
+              </div>
+              <div className="ml-auto mr-14">
+                <Button
+                  primary
+                  onClick={() => navigate("/admin/createpackage")}
+                  className="w-40 h-[3rem]"
+                >
+                  + Add Package
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="bg-gray-100 flex h-[calc(100vh_-_80px)]">
-          <div className="pl-14 pr-14 pt-12 w-full">
-            <div className="overflow-x-auto text-gray-800 font-medium">
-              <table className="table">
-                <thead className="bg-gray-400 border border-gray-100">
-                  <tr>
-                    <th className="rounded-tl-2xl"></th>
-                    <th></th>
-                    <th>Icon</th>
-                    <th>Package name</th>
-                    <th>Price</th>
-                    <th>Merry limit</th>
-                    <th>Created date</th>
-                    <th>Updated date</th>
-                    <th></th>
-                    <th className="rounded-tr-2xl"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Array.isArray(filteredAllPackages) &&
-                    filteredAllPackages.map((packageItem, index) => (
-                      <tr
-                        key={packageItem.id}
-                        className="bg-white  border border-gray-100"
-                      >
-                        <td className="rounded-bl-2xl">
-                          <img src="/images/drag.svg" />
-                        </td>
-                        <td>{index + 1}</td>
-                        <td>
-                          <img
-                            src={packageItem.package_icon}
-                            alt="package icon"
-                          />
-                        </td>
-                        <td>{packageItem.name}</td>
-                        <td>{`${packageItem.price} THB`}</td>
-                        <td>{`${packageItem.merry_limit} Merry`}</td>
-                        <td>{packageItem.created_at}</td>
-                        <td>{packageItem.updated_at}</td>
-                        <td>
-                          <button onClick={openModal(packageItem.id)}>
-                            <img src="/images/delete.svg" alt="delete icon" />
-                          </button>
-                          {showModal && (
-                            <dialog
-                              id="my_modal_5"
-                              className="modal modal-bottom sm:modal-middle bg-black/20"
-                              open
+          <div className="bg-gray-100 flex h-[calc(100vh_-_80px)]">
+            <div className="pl-14 pr-14 pt-12 w-full">
+              <Droppable className="overflow-x-auto font-medium" id="dropable">
+                <table className="table bg-white rounded-b-2xl overflow-hidden">
+                  <thead className="bg-gray-400 text-gray-800">
+                    <tr>
+                      <th className="border-y border-y-gray-100"></th>
+                      <th className="border-y border-y-gray-100"></th>
+                      <th className="border-y border-y-gray-100">Icon</th>
+                      <th className="border-y border-y-gray-100">
+                        Package name
+                      </th>
+                      <th className="border-y border-y-gray-100">Price</th>
+                      <th className="border-y border-y-gray-100">
+                        Merry limit
+                      </th>
+                      <th className="border-y border-y-gray-100">
+                        Created date
+                      </th>
+                      <th className="border-y border-y-rgray-100">
+                        Updated date
+                      </th>
+                      <th className="border-y border-y-gray-100"></th>
+                      <th className="border-y border-y-gray-100"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.isArray(filteredAllPackages) &&
+                      filteredAllPackages.map((packageItem, index) => (
+                        <TableRowDraggable
+                          key={packageItem.id}
+                          id={packageItem.id}
+                        >
+                          <td>
+                            <img src="/images/drag.svg" />
+                          </td>
+                          <td>{index + 1}</td>
+                          <td>
+                            <img
+                              src={packageItem.package_icon}
+                              alt="package icon"
+                            />
+                          </td>
+                          <td>{packageItem.name}</td>
+                          <td>{`${packageItem.price} THB`}</td>
+                          <td>{`${packageItem.merry_limit} Merry`}</td>
+                          <td>{packageItem.created_at}</td>
+                          <td>{packageItem.updated_at}</td>
+                          <td>
+                            <button onClick={openModal(packageItem.id)}>
+                              <img src="/images/delete.svg" alt="delete icon" />
+                            </button>
+                          </td>
+                          <td>
+                            <button
+                              onClick={() =>
+                                navigate(`/admin/editpackage/${packageItem.id}`)
+                              }
                             >
-                              <div className="modal-box p-0 shadow-2xl">
-                                <div className="px-6 py-2 border-b border-b-gray-200 flex">
-                                  <h3 className="font-bold text-lg ">
-                                    Delete Confirmation
-                                  </h3>
-                                  <button
-                                    onClick={closeModal}
-                                    className="ml-auto"
-                                  >
-                                    <img
-                                      src="/images/close.svg"
-                                      alt="close icon"
-                                    />
-                                  </button>
-                                </div>
-                                <p className="p-6 text-gray-700">
-                                  Do you sure to delete this Package?
-                                </p>
-                                <div className="modal-action justify-start px-6 pb-6">
-                                  <form method="dialog" className="flex gap-4">
-                                    <Button secondary onClick={handleDelete}>
-                                      Yes, I want to delete
-                                    </Button>
-                                    <Button primary onClick={closeModal}>
-                                      No, I don’t want
-                                    </Button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          )}
-                        </td>
-                        <td className="rounded-br-2xl">
-                          <button
-                            onClick={() =>
-                              navigate(`/admin/editpackage/${packageItem.id}`)
-                            }
-                          >
-                            <img src="/images/edit.svg" alt="edit icon" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+                              <img src="/images/edit.svg" alt="edit icon" />
+                            </button>
+                          </td>
+                        </TableRowDraggable>
+                      ))}
+                  </tbody>
+                </table>
+              </Droppable>
+
+              {showModal && (
+                <dialog
+                  id="my_modal_5"
+                  className="modal modal-bottom sm:modal-middle bg-black/20"
+                  open
+                >
+                  <div className="modal-box p-0 shadow-2xl bg-white border border-gray-100">
+                    <div className="px-6 py-2 border-b border-b-gray-200 flex">
+                      <h3 className="font-bold text-lg">Delete Confirmation</h3>
+                      <button onClick={closeModal} className="ml-auto">
+                        <img src="/images/close.svg" alt="close icon" />
+                      </button>
+                    </div>
+                    <p className="p-6 text-gray-700">
+                      Do you sure to delete this Package?
+                    </p>
+                    <div className="modal-action justify-start px-6 pb-6">
+                      <form method="dialog" className="flex gap-4">
+                        <Button secondary onClick={handleDelete}>
+                          Yes, I want to delete
+                        </Button>
+                        <Button primary onClick={closeModal}>
+                          No, I don’t want
+                        </Button>
+                      </form>
+                    </div>
+                  </div>
+                </dialog>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </DndContext>
   );
 }
 

@@ -58,6 +58,7 @@ function AdminPackageEdit() {
   };
 
   async function handleEditPackage(values) {
+    console.log(values);
     const { packageName, price, merryLimit, packageIcon, packageDetails } =
       values;
     const packageId = params.id;
@@ -74,6 +75,7 @@ function AdminPackageEdit() {
       );
       console.log(data);
       if (error) throw error;
+      navigate("/admin/package");
     } catch (error) {
       alert("Error edit package: " + error.message);
     }
@@ -169,7 +171,7 @@ function AdminPackageEdit() {
                           className="input input-bordered input-md bg-white"
                         />
                       </label>
-                      <label className="form-control">
+                      <label className="form-control pb-10">
                         <div>
                           <span className="">Price</span>
                           <span className=" text-red-500"> *</span>
@@ -178,6 +180,7 @@ function AdminPackageEdit() {
                           as="input"
                           type="number"
                           name="price"
+                          min={1}
                           className="input input-bordered input-md bg-white"
                         />
                       </label>
@@ -191,6 +194,7 @@ function AdminPackageEdit() {
                         as="input"
                         type="number"
                         name="merryLimit"
+                        min={1}
                         className="input input-bordered input-md bg-white"
                       />
                     </label>
@@ -293,6 +297,7 @@ function AdminPackageEdit() {
                       )}
                     />
                   </div>
+
                   <div className="mt-5 text-right">
                     <button onClick={openModal(packages.id)}>
                       Delete Package
@@ -303,7 +308,7 @@ function AdminPackageEdit() {
                         className="modal modal-bottom sm:modal-middle bg-black/20"
                         open
                       >
-                        <div className="modal-box p-0 shadow-2xl">
+                        <div className="modal-box p-0 shadow-2xl ">
                           <div className="px-6 py-2 border-b border-b-gray-200 flex">
                             <h3 className="font-bold text-lg ">
                               Delete Confirmation
