@@ -39,7 +39,7 @@ export default function SwipeCard({ search }) {
 
   const handleClickChat = async (userId) => {
     const result = await axios.get(
-      `http://localhost:3000/conversation/${userId}`
+      `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/${userId}`
     );
 
     const hasConversation = result.data.conversation.filter(
@@ -47,10 +47,13 @@ export default function SwipeCard({ search }) {
     );
 
     if (hasConversation.length === 0) {
-      const data = await axios.post(`http://localhost:3000/conversation/`, {
-        sender_id: state?.id,
-        receiver_id: userId,
-      });
+      const data = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/conversation/`,
+        {
+          sender_id: state?.id,
+          receiver_id: userId,
+        }
+      );
       setCurrentChat(data.data.data[0]);
       navigate(`/messages/${data.data.data[0].id}`);
     } else {
@@ -61,13 +64,13 @@ export default function SwipeCard({ search }) {
 
   const handleHeartButton = async (receivedIds) => {
     if (dailyLimit < maxMerryLimit) {
-      await axios.post("http://localhost:3000/merrylist", {
+      await axios.post(`${import.meta.env.VITE_APP_BASE_ENDPOINT}/merrylist`, {
         user_id: state?.id,
         receivedIds,
       });
 
       const result = await axios.get(
-        `http://localhost:3000/merrylist/${state?.id}`
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/merrylist/${state?.id}`
       );
 
       const isMatch = result.data.matchedUser_ids.includes(receivedIds);
@@ -94,7 +97,7 @@ export default function SwipeCard({ search }) {
   useEffect(() => {
     const getUsers = async () => {
       const data = await axios.get(
-        `http://localhost:3000/user/matching/${state?.id}`,
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/user/matching/${state?.id}`,
         { params: search }
       );
       setUsers(data.data.result);

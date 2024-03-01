@@ -37,10 +37,13 @@ function AuthProvider(props) {
   const login = async (data) => {
     try {
       if (data.email && data.password) {
-        const result = await axios.post("http://localhost:3000/login", {
-          email: data.email,
-          password: data.password,
-        });
+        const result = await axios.post(
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/login`,
+          {
+            email: data.email,
+            password: data.password,
+          }
+        );
 
         const token = result.data.token;
         localStorage.setItem("token", token);

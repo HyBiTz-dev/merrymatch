@@ -58,7 +58,7 @@ export default function Payment1Page() {
     let result;
     try {
       result = await axios.post(
-        `http://localhost:3000/payment1/create-payment1`,
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/payment1/create-payment1`,
         data
       );
       console.log(result);

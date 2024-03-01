@@ -21,7 +21,7 @@ function MatchingPage() {
     const getUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/user?userId=${state?.id}`
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/user?userId=${state?.id}`
         );
         setUser(res.data[0]);
       } catch (error) {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import SideBarAdmin from "../components/SidebarAdmin";
+import SideBarAdmin from "../components/SideBarAdmin";
 import { useParams } from "react-router-dom";
 import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
