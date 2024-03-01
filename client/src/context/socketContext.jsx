@@ -90,6 +90,7 @@ function SocketProvider(props) {
         setNotifications,
         conversation,
         getConversation,
+        newMessages,
       }}
     >
       {props.children}

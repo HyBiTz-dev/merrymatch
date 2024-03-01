@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useSocket } from "../context/socketContext";
 import Conversation from "../components/Conversation";
 import { useAuth } from "../context/authentication";
@@ -12,6 +12,7 @@ export default function MatchingSidebar({ Chat }) {
     messages,
     onlineUser,
     getConversation,
+    newMessages,
   } = useSocket();
   const { state } = useAuth();
   const navigate = useNavigate();
@@ -21,9 +22,12 @@ export default function MatchingSidebar({ Chat }) {
     navigate(`/messages/${event.id}`);
   };
 
+  // const sortedCoversation = conversation;
+
   useEffect(() => {
     getConversation();
-  }, [Chat]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Chat, messages, newMessages]);
 
   return (
     <div className="border-r border-gray-300">
@@ -54,17 +58,20 @@ export default function MatchingSidebar({ Chat }) {
         </div>
         <div className="flex flex-col h-80 gap-4 overflow-y-scroll">
           {conversation
-            ? conversation.map((item, index) => (
-                <div key={index} onClick={() => handleChat(item)}>
-                  <Conversation
-                    conversation={item}
-                    currentUser={state?.id}
-                    Chat={Chat}
-                    newMessages={messages}
-                    onlineUser={onlineUser}
-                  />
-                </div>
-              ))
+            ? conversation
+                .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+                .map((item, index) => (
+                  <div key={index} onClick={() => handleChat(item)}>
+                    <Conversation
+                      conversation={item}
+                      currentUser={state?.id}
+                      Chat={Chat}
+                      ownMessages={messages}
+                      newMessages={newMessages}
+                      onlineUser={onlineUser}
+                    />
+                  </div>
+                ))
             : ""}
         </div>
       </div>

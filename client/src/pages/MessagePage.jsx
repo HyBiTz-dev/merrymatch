@@ -58,6 +58,7 @@ export default function ChatPage() {
             conversation_id: currentChat.id,
             sender_id: state?.id,
             message_text: message,
+            updated_at: Date.now(),
           }
         );
         setMessages([...messages, res.data[0]]);
@@ -81,6 +82,7 @@ export default function ChatPage() {
         form.append("conversation_id", currentChat.id);
         form.append("sender_id", state?.id);
         form.append("messages", images);
+        form.append("updated_at", Date.now());
 
         const res = await axios.post(
           `${import.meta.env.VITE_APP_BASE_ENDPOINT}/messages/images`,
