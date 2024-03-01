@@ -1,7 +1,13 @@
 import axios from "axios";
-import React, { Children, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-function Conversation({ conversation, currentUser, Chat, newMessages }) {
+function Conversation({
+  conversation,
+  currentUser,
+  Chat,
+  newMessages,
+  ownMessages,
+}) {
   const [user, setUser] = useState(null);
   const [messages, setMessages] = useState([]);
 
@@ -20,7 +26,9 @@ function Conversation({ conversation, currentUser, Chat, newMessages }) {
     };
 
     getMessage();
-  }, [newMessages]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newMessages, ownMessages, conversation]);
 
   useEffect(() => {
     const macthId =

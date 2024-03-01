@@ -101,7 +101,6 @@ async function init() {
   };
 
   io.on("connection", (socket) => {
-    console.log("a user connected");
     socket.on("addUser", (userId) => {
       addUser(userId, socket.id);
       io.emit("getUsers", users);
@@ -126,7 +125,6 @@ async function init() {
     });
 
     socket.on("disconnect", () => {
-      console.log("a user disconnected!");
       removeUser(socket.id);
       io.emit("getUsers", users);
     });

@@ -25,7 +25,6 @@ messagesRouter.get("/:conversationId", async (req, res) => {
 
 messagesRouter.post("/", async (req, res) => {
   const message = req.body;
-
   const { data, error } = await supabase
     .from("messages")
     .insert({
@@ -34,6 +33,11 @@ messagesRouter.post("/", async (req, res) => {
       message_text: message.message_text,
     })
     .select();
+
+  await supabase
+    .from("conversation")
+    .update({ updated_at: new Date(message.updated_at) })
+    .eq("id", message.conversation_id);
   if (error) {
     return res.status(500).json(error);
   }
@@ -68,6 +72,12 @@ messagesRouter.post("/images", upload.array("messages"), async (req, res) => {
       message_text: url.publicUrl,
     })
     .select();
+
+  await supabase
+    .from("conversation")
+    .update({ updated_at: new Date(message.updated_at) })
+    .eq("id", message.conversation_id);
+
   if (error) {
     return res.status(500).json(error);
   }
