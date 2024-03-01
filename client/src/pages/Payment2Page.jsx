@@ -8,7 +8,7 @@ export default function Payment2Page() {
   const location = useLocation();
 
   const statePackage = location.state;
-  console.log(statePackage);
+
   const cardId = statePackage.data.product.id;
   const cardIcon = statePackage.data.product.icon;
   const cardName = statePackage.data.product.name;
