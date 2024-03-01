@@ -12,7 +12,6 @@ function MerryCard() {
   const { state } = useAuth();
   const user_id = state?.id;
   const [matchedUserList, setMatchedUserList] = useState(null);
-  // const [merryUser, setMerryUser] = useState(null);
   const [merryUserList, setMerryUserList] = useState();
   const [showModal, setShowModal] = useState(false);
   const [profileData, setProfileData] = useState({});
@@ -30,7 +29,6 @@ function MerryCard() {
     setShowModal(false);
   };
 
-  // ---------------fetchData---------------
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -39,12 +37,20 @@ function MerryCard() {
       const receivedUserData = response.data.receivedUserProfile.data;
       const matchedUserData = response.data.matchedUser_ids;
       const likeUserData = response.data.received_ids;
-      // console.log(receivedUserData);
-      // console.log(matchedUserData);
-      // console.log(likeUserData);
-      setMerryList(receivedUserData);
+      const matchedIdsWithTime = response.data.data;
+
+      const mergedAndSortedData = receivedUserData
+        .map((item1) => {
+          const matchTimeItem = matchedIdsWithTime.find(
+            (item2) => item2.user_profile_id_received === item1.user_id
+          );
+          item1.matchedTime = matchTimeItem ? matchTimeItem.created_at : null;
+          return item1;
+        })
+        .sort((a, b) => new Date(b.matchedTime) - new Date(a.matchedTime));
+
+      setMerryList(mergedAndSortedData);
       setMatchedUserList(matchedUserData);
-      // setMerryUser(likeUserData);
       setMerryUserList(likeUserData);
     } catch (error) {
       console.log("Error fetching data", error);
@@ -154,8 +160,6 @@ function MerryCard() {
     };
     fetchMerryToday(date);
   }, []);
-
-  //---------------fetchData---------------
 
   const renderList = merryList
     ? merryList.map((user, index) => {
