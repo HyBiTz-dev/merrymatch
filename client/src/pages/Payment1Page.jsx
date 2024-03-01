@@ -145,6 +145,7 @@ export default function Payment1Page() {
                     <input
                       className="w-full h-[3rem] rounded-[0.5rem] py-[0.75rem] px-[1rem]  gap-[0.5rem] bg-white  border-gray-400 border-[0.063rem] text-body2"
                       placeholder="Number of Card"
+                      type="number"
                       onChange={handleCardNumber}
                       value={cardNumber}
                     ></input>
