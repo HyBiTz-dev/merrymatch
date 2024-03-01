@@ -50,7 +50,5 @@ membershipRouter.get("/:id", async (req, res) => {
 
     return res.json({ package: packageData, payment: paymentMethod });
   } catch (error) {}
-
-  return res.json("get transaction");
 });
 export default membershipRouter;
