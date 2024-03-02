@@ -16,6 +16,11 @@ function MatchingPage() {
   const [searchData, setSearchData] = useState();
   const [valueAgeSlider, setValueAgeSlider] = useState([]);
   const [reset, setReset] = useState(false);
+  const [matching, setMatching] = useState([]);
+
+  const getMatching = (e) => {
+    setMatching(e);
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -88,9 +93,9 @@ function MatchingPage() {
     <div className=" bg-main h-screen overflow-hidden">
       <Navbar auth />
       <main className="flex justify-center bg-main h-[91.1%]">
-        <MatchingSidebar />
+        <MatchingSidebar matching={matching} />
         <div className="bg-bg flex flex-col justify-center gap-16 w-[56.563rem] overflow-hidden">
-          <SwipeCard search={searchData} />
+          <SwipeCard search={searchData} getMatching={getMatching} />
         </div>
         <form
           action=""

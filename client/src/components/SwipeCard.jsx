@@ -14,7 +14,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/zoom";
 
-export default function SwipeCard({ search }) {
+export default function SwipeCard({ search, getMatching }) {
   const { dailyLimit, setDailyLimit, maxMerryLimit } = useMerryLimit();
   const swiperRef = useRef();
   const navigate = useNavigate();
@@ -35,6 +35,16 @@ export default function SwipeCard({ search }) {
 
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  const handleCrossButtonModal = () => {
+    setShowModal(false);
+    swiperRef.current.slideNext();
+  };
+
+  const handleHeartButtonModal = (item) => {
+    setShowModal(false);
+    handleHeartButton(item?.user_id);
   };
 
   const handleClickChat = async (userId) => {
@@ -80,6 +90,7 @@ export default function SwipeCard({ search }) {
           (item) => item.user_id === receivedIds
         );
         setMatch(matchData);
+        getMatching(matchData);
         socket.current.emit("merryMatch", {
           matchId: receivedIds,
           senderMatchId: state?.id,
@@ -111,6 +122,8 @@ export default function SwipeCard({ search }) {
         isOpen={showModal}
         onClose={closeModal}
         profileData={profileData}
+        crossbtn={handleCrossButtonModal}
+        heartbtn={() => handleHeartButtonModal(profileData)}
       />
       {match.length === 0 ? (
         <>
@@ -219,7 +232,9 @@ export default function SwipeCard({ search }) {
                       <div>
                         <Button
                           secondary
-                          onClick={() => handleClickChat(item.user_id)}
+                          onClick={() => {
+                            handleClickChat(item.user_id);
+                          }}
                         >
                           Start Conversation
                         </Button>
