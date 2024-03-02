@@ -7,7 +7,7 @@ import "swiper/css";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/socketContext";
 
-export default function SwipeMatchsidebar() {
+export default function SwipeMatchsidebar({ matching }) {
   const { state } = useAuth();
   const [merryList, setMerryList] = useState([]);
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default function SwipeMatchsidebar() {
       setMerryList(Matchlist);
     };
     getData();
-  }, [notifications]);
+  }, [notifications, matching]);
   return (
     <div>
       <Swiper

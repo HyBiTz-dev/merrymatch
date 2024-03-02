@@ -87,7 +87,6 @@ function MerryCard() {
           (item) =>
             item.receiver_id === state?.id || item.sender_id === state?.id
         );
-        console.log(hasConversation);
         if (hasConversation.length !== 0) {
           const chatId = hasConversation[0].id;
           const response = await axios.delete(

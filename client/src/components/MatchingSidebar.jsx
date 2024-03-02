@@ -5,7 +5,7 @@ import { useAuth } from "../context/authentication";
 import { useNavigate } from "react-router-dom";
 import SwipeMatchsidebar from "./SwipeMatchsidebar";
 
-export default function MatchingSidebar({ Chat }) {
+export default function MatchingSidebar({ Chat, matching }) {
   const {
     conversation,
     setCurrentChat,
@@ -50,7 +50,7 @@ export default function MatchingSidebar({ Chat }) {
       </div>
       <div className="flex flex-col justify-center py-6 px-4 gap-4 max-w-[18.75rem]">
         <div className="text-headline4 text-gray-900">Merry Match!</div>
-        <SwipeMatchsidebar />
+        <SwipeMatchsidebar matching={matching} />
       </div>
       <div className="flex flex-col justify-center py-6 px-4 gap-4">
         <div className="text-headline4 text-gray-900">

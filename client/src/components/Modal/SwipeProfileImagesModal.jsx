@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import { Mousewheel, Navigation } from "swiper/modules";
 import { useState } from "react";
 
-export default function SwipeProfileImages({ user }) {
+export default function SwipeProfileImages({ user, crossbtn, heartbtn }) {
   const maxCount = user.length;
   const [count, setCount] = useState(1);
 
@@ -25,12 +25,11 @@ export default function SwipeProfileImages({ user }) {
     <div className="absolute w-[30rem] h-[30rem]">
       <Swiper
         allowTouchMove={false}
-        mousewheel={true}
         navigation={{
           nextEl: "#next",
           prevEl: "#prev",
         }}
-        modules={[Mousewheel, Navigation]}
+        modules={[Navigation]}
         className="mySwiper"
       >
         {user.map((item, index) => (
@@ -81,8 +80,18 @@ export default function SwipeProfileImages({ user }) {
         </svg>
       </div>
       <div className="flex absolute z-10 -bottom-10 right-40">
-        <img src="/images/cross-button.svg" role="button" alt="" />
-        <img src="/images/match-button.svg" role="button" alt="" />
+        <img
+          src="/images/cross-button.svg"
+          role="button"
+          alt=""
+          onClick={crossbtn}
+        />
+        <img
+          src="/images/match-button.svg"
+          role="button"
+          alt=""
+          onClick={heartbtn}
+        />
       </div>
     </div>
   );

@@ -1,6 +1,12 @@
 import SwipeProfileImagesModal from "./SwipeProfileImagesModal";
 
-export default function ProfileModal({ isOpen, onClose, profileData }) {
+export default function ProfileModal({
+  isOpen,
+  onClose,
+  profileData,
+  crossbtn,
+  heartbtn,
+}) {
   if (!isOpen) return null;
 
   return (
@@ -18,7 +24,11 @@ export default function ProfileModal({ isOpen, onClose, profileData }) {
         </div>
         <div className="flex justify-between ml-10 w-[61.25rem]">
           <div className="w-[29.875rem] relative">
-            <SwipeProfileImagesModal user={profileData.image_url} />
+            <SwipeProfileImagesModal
+              user={profileData.image_url}
+              crossbtn={crossbtn}
+              heartbtn={heartbtn}
+            />
           </div>
           <div className="flex flex-col gap-10 pt-6 pl-14 w-[29.875rem]">
             <div className="flex flex-col gap-2">
