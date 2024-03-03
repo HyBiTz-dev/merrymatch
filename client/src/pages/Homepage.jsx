@@ -1,27 +1,14 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/helper/supabaseClient";
+import { useAuth } from "../context/authentication";
 
 export default function Home() {
-  const [user, setUser] = useState(null);
-
-  const checkUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    setUser(user);
-  };
-
-  useEffect(() => {
-    checkUser();
-  }, []);
+  const { state } = useAuth();
 
   return (
     <>
-      {user ? <Navbar username={user.email} auth /> : <Navbar unauth />}
+      {state ? <Navbar auth /> : <Navbar unauth />}
       <section className="bg-bg h-[47.375rem] flex justify-center items-center gap-[3.25rem]">
         <div className="relative top-[9.5rem]">
           <div className="bg-red-700 w-[9.5625rem] h-[2.5625rem] pl-3 rounded-l-3xl rounded-tr-3xl text-body5 font-semibold flex justify-center items-center absolute top-[4.87rem] right-44 text-white">
@@ -50,11 +37,11 @@ export default function Home() {
             area!
             <br /> Dont’t forget to get Merry with us
           </p>
-          {user ? (
+          {state ? (
             <Button
               primary
               className="mt-[3.75rem]"
-              onClick={(event) => (window.location.href = "/matching")}
+              onClick={() => (window.location.href = "/matching")}
             >
               Start matching!
             </Button>
@@ -62,7 +49,7 @@ export default function Home() {
             <Button
               primary
               className="mt-[3.75rem]"
-              onClick={(event) => (window.location.href = "/login")}
+              onClick={() => (window.location.href = "/login")}
             >
               Start matching!
             </Button>
@@ -291,11 +278,11 @@ export default function Home() {
             Let’s start finding <br />
             and matching someone new
           </div>
-          {user ? (
+          {state ? (
             <Button
               secondary
               className="mt-[3.75rem]"
-              onClick={(event) => (window.location.href = "/matching")}
+              onClick={() => (window.location.href = "/matching")}
             >
               Start matching!
             </Button>
@@ -303,7 +290,7 @@ export default function Home() {
             <Button
               secondary
               className="mt-[3.75rem]"
-              onClick={(event) => (window.location.href = "/login")}
+              onClick={() => (window.location.href = "/login")}
             >
               Start matching!
             </Button>

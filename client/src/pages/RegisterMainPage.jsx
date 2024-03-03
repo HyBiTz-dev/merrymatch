@@ -4,17 +4,22 @@ import { useState } from "react";
 import { Step1, Step2, Step3 } from "../components/RegisterForm";
 import Button from "../components/Button";
 import * as Yup from "yup";
-import { supabase } from "../lib/helper/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Toast from "../components/Toast";
+import BeigeVector from "../components/BeigeVector";
 
 function RegisterMainPage() {
   const navigate = useNavigate("");
   const [currentStep, setCurrentStep] = useState(1);
+  const [showToastError, setShowToastError] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       name: "",
       dateOfBirth: "",
-      location: null,
+      country: null,
       city: null,
       username: "",
       email: "",
@@ -22,7 +27,7 @@ function RegisterMainPage() {
       confirmPassword: "",
       gender: null,
       genderInterests: null,
-      recial: null,
+      racial: null,
       meeting: null,
       hobbiesInterests: [],
       profilePictures: [],
@@ -33,17 +38,26 @@ function RegisterMainPage() {
         .required("Required"),
       dateOfBirth: Yup.date()
         .required("Required")
+        .max(new Date(), "Date of birth cannot be in the future")
         .test(
           "is-over-18",
           "You must be at least 18 years old",
           function (value) {
             const currentDate = new Date();
             const userDate = new Date(value);
-            const userAge = currentDate.getFullYear() - userDate.getFullYear();
+            let userAge = currentDate.getFullYear() - userDate.getFullYear();
+
+            if (
+              currentDate.getMonth() < userDate.getMonth() ||
+              (currentDate.getMonth() === userDate.getMonth() &&
+                currentDate.getDate() < userDate.getDate())
+            ) {
+              userAge--;
+            }
             return userAge >= 18;
           }
         ),
-      location: Yup.string().nullable(false).required("Required"),
+      country: Yup.string().nullable(false).required("Required"),
       city: Yup.string().nullable(false).required("Required"),
       username: Yup.string()
         .max(64, "Must be 64 characters or less")
@@ -61,7 +75,7 @@ function RegisterMainPage() {
         .required("Required"),
       gender: Yup.string().nullable(false).required("Required"),
       genderInterests: Yup.string().nullable(false).required("Required"),
-      recial: Yup.string().nullable(false).required("Required"),
+      racial: Yup.string().nullable(false).required("Required"),
       meeting: Yup.string().nullable(false).required("Required"),
       hobbiesInterests: Yup.array()
         .min(1, "Must be at least 1 hobbies Interests or less")
@@ -72,18 +86,46 @@ function RegisterMainPage() {
         .required("Required"),
     }),
     onSubmit: async (values) => {
+      const currentDate = new Date();
+      const userDate = new Date(values.dateOfBirth);
+      let userAge = currentDate.getFullYear() - userDate.getFullYear();
+      if (
+        currentDate.getMonth() < userDate.getMonth() ||
+        (currentDate.getMonth() === userDate.getMonth() &&
+          currentDate.getDate() < userDate.getDate())
+      ) {
+        userAge--;
+      }
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("dateOfBirth", values.dateOfBirth);
+      formData.append("country", values.country);
+      formData.append("city", values.city);
+      formData.append("username", values.username);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+      formData.append("gender", values.gender);
+      formData.append("genderInterests", values.genderInterests);
+      formData.append("racial", values.racial);
+      formData.append("meeting", values.meeting);
+      formData.append("hobbiesInterests", values.hobbiesInterests);
+      formData.append("age", userAge);
+      values.profilePictures.forEach((file) => {
+        formData.append("profilePictures", file, file.name);
+      });
       try {
-        const { user, error } = await supabase.auth.signUp({
-          email: values.email,
-          password: values.password,
-        });
-        if (error) {
-          console.error("ลงทะเบียนไม่สำเร็จ: ", error.message);
-        } else {
-          console.log("ลงทะเบียนสำเร็จ: ", user);
-        }
+        const response = await axios.post(
+          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/register/`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        navigate("/login", { state: { fromRegistration: true } });
       } catch (error) {
-        console.error("ลงทะเบียนไม่สำเร็จ: ", error.message);
+        console.error("Error:", error.response.data);
       }
     },
     validateOnChange: false,
@@ -98,7 +140,7 @@ function RegisterMainPage() {
     [
       "name",
       "dateOfBirth",
-      "location",
+      "country",
       "city",
       "username",
       "email",
@@ -129,11 +171,12 @@ function RegisterMainPage() {
     setCurrentStep((prevStep) => (prevStep > 1 ? prevStep - 1 : prevStep));
   };
   return (
-    <>
+    <div className="bg-main w-full h-screen">
       <Navbar unauth />
-      <div className="flex flex-col items-center bg-main w-full h-[55.9375rem] font-nunito">
-        <div className=" w-[66rem] h-full">
-          <header className="flex h-36 pb-20 mt-20 items-end justify-around">
+      <BeigeVector />
+      <div className="flex pt-20 flex-col items-center bg-main w-full h-[55.938rem]">
+        <div className="pt-20 w-[58.125rem] h-full">
+          <header className="flex h-36 pb-20 items-end justify-around">
             <div id="register-header">
               <div className="text-sm text-beige-700 font-semibold">
                 Register
@@ -204,20 +247,25 @@ function RegisterMainPage() {
           </header>
           <StepComponent formik={formik} />
         </div>
-        <div className="flex justify-around items-center w-full h-fit bg-white pt-9 pb-8">
+        <div className="flex justify-around items-center w-full h-[7rem] bg-white pt-9 pb-8">
           <div id="pagination-number">{currentStep}/3</div>
           <div className="flex gap-6" id="button-container">
             {currentStep === 1 ? (
-              <Button ghostarrow disabled>
+              <Button ghostarrow type="button" disabled>
                 Back
               </Button>
             ) : (
-              <Button ghostarrow onClick={prevStep}>
+              <Button ghostarrow type="button" onClick={prevStep}>
                 Back
               </Button>
             )}
             {currentStep < 3 ? (
-              <Button id="next-step-button" primary onClick={nextStep}>
+              <Button
+                id="next-step-button"
+                type="button"
+                primary
+                onClick={nextStep}
+              >
                 Next Step
               </Button>
             ) : (
@@ -225,9 +273,17 @@ function RegisterMainPage() {
                 id="confirm-button"
                 type="submit"
                 primary
-                onClick={async () => {
-                  await formik.handleSubmit();
-                  navigate("/login");
+                onClick={(e) => {
+                  e.preventDefault();
+                  formik.validateForm().then((errors) => {
+                    if (Object.keys(errors).length === 0) {
+                      formik.handleSubmit();
+                      navigate("/login");
+                    } else {
+                      setShowToastError(true);
+                      setTimeout(() => setShowToastError(false), 2000);
+                    }
+                  });
                 }}
               >
                 Confirm
@@ -236,7 +292,10 @@ function RegisterMainPage() {
           </div>
         </div>
       </div>
-    </>
+      {showToastError && (
+        <Toast error text="Please fill in the complete information." />
+      )}
+    </div>
   );
 }
 

@@ -1,17 +1,30 @@
 import Button from "./Button";
-import { supabase } from "../lib/helper/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authentication";
+import Notification from "./Notification";
+import { useSocket } from "../context/socketContext";
+import axios from "axios";
+import { useEffect, useState } from "react";
+function Navbar() {
+  const { logout, isAuthenticated, state } = useAuth();
+  const [haveMember, setHaveMember] = useState(false);
+  const haveMembership = async () => {
+    let checkMembership = false;
+    let result = await axios.get(
+      `${import.meta.env.VITE_APP_BASE_ENDPOINT}/membership/${state?.id}`
+    );
 
-function Navbar({ username, auth, unauth }) {
-  const navigate = useNavigate();
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-
-    navigate("/");
-    window.location.reload();
+    if (Object.keys(result.data).length > 0) {
+      if (result.data.package?.id) {
+        checkMembership = true;
+        setHaveMember(checkMembership);
+      }
+    }
+    setHaveMember(checkMembership);
   };
-
-  if (unauth) {
+  useEffect(() => {
+    haveMembership();
+  }, []);
+  const unauth = () => {
     return (
       <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[30.5rem] bg-white relative z-50 shadow-nav">
         <div>
@@ -47,10 +60,11 @@ function Navbar({ username, auth, unauth }) {
         </ul>
       </nav>
     );
-  }
-  if (auth) {
+  };
+  const auth = () => {
+    const { notifications } = useSocket();
     return (
-      <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[30.5rem] bg-white relative z-50 shadow-nav">
+      <nav className="flex justify-center items-center w-full h-[5.5rem] px-40 gap-[28rem] bg-white relative z-50 shadow-nav">
         <div>
           <a href="/">
             <img src="/images/logo.svg" width={167} height={56} alt="logo" />
@@ -66,64 +80,98 @@ function Navbar({ username, auth, unauth }) {
             </a>
           </li>
           <li className="px-6">
-            <a
-              href=""
-              className="text-purple-800 text-base font-bold text-nowrap"
-            >
-              Merry Membership
-            </a>
+            {haveMember ? (
+              <a
+                href="/merry-membership"
+                className="text-purple-800 text-base font-bold text-nowrap"
+              >
+                Merry Membership
+              </a>
+            ) : (
+              <a
+                href="/packages"
+                className="text-purple-800 text-base font-bold text-nowrap"
+              >
+                Merry Membership
+              </a>
+            )}
           </li>
-          <li className="flex justify-center items-center gap-3">
+          <div className="dropdown dropdown-end w-12 h-12">
             <img
-              src="images/bell.svg"
+              tabIndex={0}
+              src="/images/bell.svg"
+              role="button"
               width={48}
               height={48}
-              className="bg-gray-100 rounded-3xl p-3"
+              className="bg-gray-100 rounded-3xl p-3 relative"
             />
-            <div className="dropdown dropdown-end">
-              <img tabIndex={0} role="button" src="images/profile.png" />
+            {notifications.length ? (
+              <div className="bg-red-400 w-3 h-3 rounded-full absolute top-2 left-7"></div>
+            ) : null}
+            <Notification />
+          </div>
+          <li className="flex justify-center items-center gap-3 ">
+            <div className="dropdown dropdown-end w-12 h-12">
+              <img
+                tabIndex={0}
+                role="button"
+                className="w-12 h-12 rounded-full object-cover"
+                src={
+                  state?.proflie_images !== null
+                    ? state?.proflie_images
+                    : "/images/blank-profile-picture.png"
+                }
+              />
               <ul
                 tabIndex={0}
                 className="menu dropdown-content bg-white shadow-nav rounded-box w-[12.375rem] mt-4 py-2 px-0 gap-2"
               >
                 <li>
                   <a
-                    href="/package"
+                    href="/packages"
                     className="bg-gradient-to-r from-[#742138] to-[#A878BF] text-body4 text-white rounded-btn px-6 mx-2 "
                   >
-                    <img src="images/more-limit.svg" alt="" />
+                    <img src="/images/more-limit.svg" alt="" />
                     More limit Merry!
                   </a>
                 </li>
                 <div>
                   <li>
-                    <a href="" className="text-gray-700">
-                      <img src="images/profile.svg" alt="" />
+                    <a href={`/update/${state?.id}`} className="text-gray-700">
+                      <img src="/images/profile.svg" alt="" />
                       Profile
                     </a>
                   </li>
                   <li>
-                    <a href="" className="text-gray-700">
-                      <img src="images/member-list.svg" alt="" />
+                    <a href="/merrylist" className="text-gray-700">
+                      <img src="/images/member-list.svg" alt="" />
                       Merry List
                     </a>
                   </li>
+                  {haveMember ? (
+                    <li>
+                      <a href="/merry-membership" className="text-gray-700">
+                        <img src="/images/membership.svg" alt="" />
+                        Merry Membership
+                      </a>
+                    </li>
+                  ) : (
+                    <li hidden></li>
+                  )}
+
                   <li>
-                    <a href="" className="text-gray-700">
-                      <img src="images/membership.svg" alt="" />
-                      Merry Membership
-                    </a>
-                  </li>
-                  <li>
-                    <a href="" className="text-gray-700 w-full">
-                      <img src="images/compliant.svg" alt="" />
+                    <a
+                      href="/filing-complaint"
+                      className="text-gray-700 w-full"
+                    >
+                      <img src="/images/compliant.svg" alt="" />
                       Compliant
                     </a>
                   </li>
                 </div>
                 <li className="border-t">
-                  <a onClick={handleLogout} className="text-gray-700">
-                    <img src="images/logout.svg" alt="" />
+                  <a onClick={logout} className="text-gray-700">
+                    <img src="/images/logout.svg" alt="" />
                     Logout
                   </a>
                 </li>
@@ -133,7 +181,8 @@ function Navbar({ username, auth, unauth }) {
         </ul>
       </nav>
     );
-  }
+  };
+  return isAuthenticated ? auth() : unauth();
 }
 
 export default Navbar;

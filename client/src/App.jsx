@@ -1,12 +1,20 @@
 import "./App.css";
-import { BrowserRouter } from "react-router-dom";
-import Router from "./router";
+import AuthenticatedApp from "./router/AuthenticatedApp";
+import UnauthenticatedApp from "./router/UnauthenticatedApp";
+import { useAuth } from "./context/authentication";
+import { SocketProvider } from "./context/socketContext";
+import { MerryLimitProvider } from "./context/merryLimitContext";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
+  const auth = useAuth();
+  return auth.isAuthenticated ? (
+    <MerryLimitProvider>
+      <SocketProvider>
+        <AuthenticatedApp />
+      </SocketProvider>
+    </MerryLimitProvider>
+  ) : (
+    <UnauthenticatedApp />
   );
 }
 
