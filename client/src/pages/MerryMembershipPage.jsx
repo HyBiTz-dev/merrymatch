@@ -7,8 +7,10 @@ import Button from "../components/Button";
 import card_top from "../../public/images/card_top_saction.svg";
 import card_bot from "../../public/images/card_bot_saction.svg";
 import AlertModal from "../components/Modal/AlertModal";
+import { useNavigate } from "react-router-dom";
 export default function MerryMembershipPage() {
   const { state } = useAuth();
+  const navigate = useNavigate();
   const [packageDetails, setPackageDetails] = useState({});
   const [paymentMethod, setPaymentMethod] = useState({});
   const [billing, setBilling] = useState([]);
@@ -58,11 +60,27 @@ export default function MerryMembershipPage() {
       } catch (error) {}
     }
   };
-  const handleCanclePackage = () => {
-    return <></>;
-  };
 
-  const handleConfirmCancle = () => {};
+  const handleConfirmCancelPackage = async () => {
+    let statusConfirm = "";
+    if (packageDetails != null && packageDetails != undefined) {
+      try {
+        const result = await axios.post(
+          `${
+            import.meta.env.VITE_APP_BASE_ENDPOINT
+          }/membership/${userProfileId}`
+        );
+
+        statusConfirm = result.data.message;
+
+        if (statusConfirm == "update completed") {
+          navigate("/");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   const closeModal = () => {
     setShowAlert(false);
@@ -76,15 +94,15 @@ export default function MerryMembershipPage() {
     getBillHistory();
   }, []);
 
-  useEffect(() => {}, [showAlert, packageDetails]);
+  useEffect(() => {}, [showAlert, packageDetails, billing]);
 
   return (
     <>
-      <div className="flex flex-col gap-[5rem] ">
-        <Navbar auth />
-        <div className="w-full h-full flex flex-col justify-center items-center">
-          <section className="membership-section w-[90rem] h-[99.063rem] t-[5.5rem] bg-[#FCFCFE] self-stretch">
-            <section className="membership-container bg-white w-[58.188rem] h-[87.063rem] mt-[5rem] ml-[15.875rem] flex flex-col gap-[5rem]">
+      <Navbar auth />
+      <div className="w-full h-full inline-block ">
+        <div className="w-full h-full flex flex-col justify-center items-center  ">
+          <section className="membership-section w-[90rem] h-full t-[5.5rem] bg-main ">
+            <section className="membership-container bg-white w-[58.188rem] h-full mt-[5rem] ml-[15.875rem] flex flex-col gap-[5rem]">
               <section className="membership-header w-[58.125rem] h-[9.063rem] flex flex-col gap-[1rem]">
                 <div className="wrapper w-full h-[9.063rem] flex flex-col gap-[0.5rem]">
                   <p className="w-[58.125rem] h-[1.313rem] text-tag text-beige-700">
@@ -96,7 +114,7 @@ export default function MerryMembershipPage() {
                   </p>
                 </div>
               </section>
-              <section className="merry-membership w-[58.188rem] h-[73rem] flex flex-col gap-[3.75rem]">
+              <section className="merry-membership w-[58.188rem] h-full flex flex-col gap-[3.75rem] mb-[5rem]">
                 <section className="membership-package w-[58.188rem] h-[17.25rem] flex flex-col gap-[1.5rem]">
                   <section className="package-details-container bg-white w-[58.188rem] h-[17.25rem] flex flex-col gap-[1.5rem]">
                     <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
@@ -107,7 +125,7 @@ export default function MerryMembershipPage() {
                         CancleModal
                         isOpen={showAlert}
                         onClose={closeModal}
-                        isConfirm={handleConfirmCancle}
+                        isConfirm={handleConfirmCancelPackage}
                       ></AlertModal>
                     ) : (
                       <></>
@@ -175,74 +193,74 @@ export default function MerryMembershipPage() {
                       </div>
                     </section>
                   </section>
-                  <section className="payment-method-container w-[58.188rem] h-[15.5rem] flex flex-col gap-[1.5rem]">
-                    <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
-                      Payment Method
-                    </p>
-                    <div className="payment-details bg-white w-[58.125rem] h-[12.125rem] rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
-                      <div className="w-full h-[5.625rem] border-b-[0.063rem] border-b-gray-300 pb-[1.5rem] flex gap-[1.5rem]">
-                        <div className="w-full h-full flex gap-[1rem]">
-                          <div className="icon-card w-[4.125rem] h-[4.125rem] rounded-[1rem] bg-gray-100">
-                            <div className="w-[2rem] h-[2rem] mt-[1.063rem] ml-[1.063rem] flex flex-col gap-[0.188rem]">
-                              <img src={card_top}></img>
-                              <img src={card_bot}></img>
-                            </div>
+                </section>
+                <section className="payment-method-container w-[58.188rem] h-[15.5rem] flex flex-col gap-[1.5rem]">
+                  <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
+                    Payment Method
+                  </p>
+                  <div className="payment-details bg-white w-[58.125rem] h-[12.125rem] rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
+                    <div className="w-full h-[5.625rem] border-b-[0.063rem] border-b-gray-300 pb-[1.5rem] flex gap-[1.5rem]">
+                      <div className="w-full h-full flex gap-[1rem]">
+                        <div className="icon-card w-[4.125rem] h-[4.125rem] rounded-[1rem] bg-gray-100">
+                          <div className="w-[2rem] h-[2rem] mt-[1.063rem] ml-[1.063rem] flex flex-col gap-[0.188rem]">
+                            <img src={card_top}></img>
+                            <img src={card_bot}></img>
                           </div>
-                          <div className="details-card w-full h-[3.875rem] flex flex-col gap-[0.5rem]">
-                            <p className="w-[49rem] h-[1.875rem] text-headline4 text-purple-600">
-                              {paymentMethod.method}
+                        </div>
+                        <div className="details-card w-full h-[3.875rem] flex flex-col gap-[0.5rem]">
+                          <p className="w-[49rem] h-[1.875rem] text-headline4 text-purple-600">
+                            {paymentMethod.method}
+                          </p>
+                          <div className="w-full h-[1.5rem] flex gap-[0.375rem]">
+                            <p className="w-[7rem] h-[1.5rem] text-body2 text-gray-700">
+                              Expire 04/2025
                             </p>
-                            <div className="w-full h-[1.5rem] flex gap-[0.375rem]">
-                              <p className="w-[7rem] h-[1.5rem] text-body2 text-gray-700">
-                                Expire 04/2025
-                              </p>
-                            </div>
                           </div>
                         </div>
                       </div>
-                      <div className="flex justify-end">
-                        <Button ghost className="text-red-500">
-                          Edit Payment Method
-                        </Button>
-                      </div>
                     </div>
-                  </section>
-                  <section className="billing-history-container w-[58.188rem] h-[32.75rem] flex flex-col gap-[1.5rem]">
-                    <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
-                      Billing History
-                    </p>
-                    <div className="transaction-card bg-white w-[58.125rem] h-auto rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
-                      <div className="transaction-head w-[54.125rem] h-[2.875rem] border-b-[0.063rem] border-b-gray-300 py-[0.5rem] flex gap-[1rem]">
-                        <p className="transaction-next-bill w-[54.125rem] h-[1.875rem] text-body1 text-gray-700 ">
-                          Next billing : {nextbill}
-                        </p>
-                      </div>
-                      <div className="transaction-detail w-[54.125rem] h-auto border-b-[0.063rem] border-b-gray-300 pb-[1.5rem]">
-                        {billing.map((items, index) => {
-                          return (
-                            <div
-                              key={index}
-                              className="transaction-row w-[54.125rem] h-[3.5rem] p-[1rem] flex gap-[1rem]"
-                            >
-                              <p className="w-[45.563rem] h-[1.5rem] text-body2 text-gray-700">
-                                {items.created_at}
-                              </p>
-                              <p className="w-[5.563rem] h-[1.5rem] text-body2 text-gray-800">
-                                {items.package_price}
-                              </p>
-                            </div>
-                          );
-                        })}
-                      </div>
+                    <div className="flex justify-end">
+                      <Button ghost className="text-red-500">
+                        Edit Payment Method
+                      </Button>
                     </div>
-                  </section>
+                  </div>
+                </section>
+                <section className="billing-history-container w-[58.188rem] h-full flex flex-col gap-[1.5rem]">
+                  <p className="w-[58.188rem] h-[1.875rem] text-headline4 text-purple-500">
+                    Billing History
+                  </p>
+                  <div className="transaction-card bg-white w-[58.125rem] h-full rounded-[2rem] border-[0.063rem] border-gray-400 pt-[2rem] pr-[2rem] pl-[2rem] pb-[1.5rem] flex flex-col gap-[1rem]">
+                    <div className="transaction-head w-[54.125rem] h-[2.875rem] border-b-[0.063rem] border-b-gray-300 py-[0.5rem] flex gap-[1rem]">
+                      <p className="transaction-next-bill w-[54.125rem] h-[1.875rem] text-body1 text-gray-700 ">
+                        Next billing : {nextbill}
+                      </p>
+                    </div>
+                    <div className="transaction-detail w-[54.125rem] h-auto border-b-[0.063rem] border-b-gray-300 pb-[1.5rem]">
+                      {billing.map((items, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="transaction-row w-[54.125rem] h-[3.5rem] p-[1rem] flex gap-[1rem]"
+                          >
+                            <p className="w-[45.563rem] h-[1.5rem] text-body2 text-gray-700">
+                              {items.created_at}
+                            </p>
+                            <p className="w-[5.563rem] h-[1.5rem] text-body2 text-gray-800">
+                              {items.package_price}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </section>
               </section>
             </section>
           </section>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 }

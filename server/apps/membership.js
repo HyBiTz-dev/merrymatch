@@ -51,4 +51,56 @@ membershipRouter.get("/:id", async (req, res) => {
     return res.json({ package: packageData, payment: paymentMethod });
   } catch (error) {}
 });
+
+membershipRouter.post("/:id", async (req, res) => {
+  const user_profile_id = req.params.id;
+  let statusUpdate = "failed to update";
+  let checkProfile = false;
+  let checkMerryLimit = false;
+
+  const updatePackageProfileId = async () => {
+    let result;
+    try {
+      const { data, error } = await supabase
+        .from("user_profile")
+        .update({ package_id: null })
+        .eq("user_id", user_profile_id)
+        .select();
+      result = data[0];
+      checkProfile = true;
+      return result;
+    } catch (error) {}
+  };
+
+  const updateMerryLimit = async () => {
+    let result;
+    let nowDate = new Date();
+    try {
+      const { data, error } = await supabase
+        .from("merry_limit")
+        .update({ max_merry_limit: 20, updated_at: nowDate })
+        .eq("user_id", user_profile_id)
+        .select();
+
+      result = data[0];
+      checkMerryLimit = true;
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  try {
+    let updateProfile = await updatePackageProfileId();
+    let updateLimit = await updateMerryLimit();
+    if (checkProfile && checkMerryLimit) {
+      statusUpdate = "update completed";
+      return res.json({ message: statusUpdate });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  return res.json({ message: statusUpdate });
+});
 export default membershipRouter;
