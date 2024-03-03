@@ -23,10 +23,12 @@ export default function Payment1Page() {
   const [cardNumber, setCardNumber] = useState("");
   const [expCard, setExpCard] = useState("");
   const [cvcCard, setCVCCard] = useState("");
+  const [nameCard, setNameCard] = useState("");
   let [textAlert, setTextAlert] = useState("");
   let stringCardNumber = "";
   let stringExpCard = "";
   let stringCVC = "";
+  let stringName = ";";
   const location = useLocation();
 
   const statePackage = location.state;
@@ -65,6 +67,7 @@ export default function Payment1Page() {
         card: cardNumber,
         exp: expCard,
         cvc: cvcCard,
+        name: nameCard,
       },
     };
     let result;
@@ -166,6 +169,18 @@ export default function Payment1Page() {
       }
     }
   };
+
+  const handleNameCard = (event) => {
+    let Numberinput = Number(event.target.value);
+    let stringInput = event.target.value.toString();
+    let currentinput = Number(stringInput[stringInput.length - 1]);
+
+    let length = event.target.value.length;
+    if (!Number.isInteger(currentinput)) {
+      stringName = stringInput;
+      setNameCard(stringName);
+    }
+  };
   useEffect(() => {}, [showToast]);
 
   return (
@@ -237,6 +252,8 @@ export default function Payment1Page() {
                     <input
                       className="w-full h-[3rem] rounded-[0.5rem] py-[0.75rem] px-[1rem]  gap-[0.5rem] bg-white border-gray-400 border-[0.063rem] text-body2"
                       placeholder="Holder of card"
+                      onChange={handleNameCard}
+                      value={nameCard}
                     ></input>
                   </section>
                   <section className="bg-white flex w-full h-[4.75rem] gap-[1.375rem]">

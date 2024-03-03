@@ -21,6 +21,7 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
   const cardNumber = cardDetail.card;
   const cardExp = cardDetail.exp;
   const cardCVC = cardDetail.cvc;
+  const cardName = cardDetail.name;
 
   let newCustomer;
   let paymentData;
