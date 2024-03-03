@@ -100,8 +100,8 @@ export default function MerryMembershipPage() {
     <>
       <Navbar auth />
       <div className="w-full h-full inline-block ">
-        <div className="w-full h-full flex flex-col justify-center items-center  ">
-          <section className="membership-section w-[90rem] h-full t-[5.5rem] bg-main ">
+        <div className="w-full h-full flex flex-col justify-center items-center bg-main ">
+          <section className="membership-section w-[90rem] h-full t-[5.5rem]  ">
             <section className="membership-container bg-white w-[58.188rem] h-full mt-[5rem] ml-[15.875rem] flex flex-col gap-[5rem]">
               <section className="membership-header w-[58.125rem] h-[9.063rem] flex flex-col gap-[1rem]">
                 <div className="wrapper w-full h-[9.063rem] flex flex-col gap-[0.5rem]">

@@ -1,11 +1,17 @@
 import SideBarAdmin from "../components/SideBarAdmin";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import { DndContext, useSensors, useSensor, MouseSensor } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
 import { Droppable } from "../components/Dropable";
 import { TableRowDraggable } from "../components/TableRowDraggable";
+import { SortableItem } from "../components/Sortableitem";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
@@ -15,30 +21,44 @@ function AdminPackageList() {
   const [showModal, setShowModal] = useState(false);
   const [deletePackageId, setDeletePackageId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isDropped, setDropped] = useState(false);
-
-  const dndSensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
-  );
+  const items = useMemo(() => allPackages?.map(({ id }) => id), [allPackages]);
 
   useEffect(() => {
-    const fetchPackageData = async () => {
-      try {
-        const { data, error } = await axios.get(
-          `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages`
-        );
-        if (error) throw error;
-        setAllPackages(data);
-      } catch (error) {
-        console.error("Error fetching package data:", error);
-      }
-    };
     fetchPackageData();
   }, []);
+
+  useEffect(() => {
+    if (searchTerm) {
+      searchFromServer(searchTerm);
+    } else {
+      fetchPackageData();
+    }
+  }, [searchTerm]);
+
+  const fetchPackageData = async () => {
+    try {
+      const { data, error } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages`
+      );
+      if (error) throw error;
+      setAllPackages(data);
+    } catch (error) {
+      console.error("Error fetching package data:", error);
+    }
+  };
+
+  const searchFromServer = async (searchTerm) => {
+    try {
+      const res = await axios.get(
+        `${
+          import.meta.env.VITE_APP_BASE_ENDPOINT
+        }/packages?search=${searchTerm}`
+      );
+      setAllPackages(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -63,24 +83,28 @@ function AdminPackageList() {
     setShowModal(false);
   };
 
-  const filteredAllPackages = allPackages.filter((packageItem) => {
-    // console.log(packageItem.name);
-    return packageItem.name.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  function handleDragEnd(event) {
+    const { active, over } = event;
 
-  const handleDragEnd = (event) => {
-    console.debug(event);
-    if (event.over && event.over.id === "dropable") {
-      setDropped(true);
+    if (active.id !== over.id) {
+      setAllPackages((allPackages) => {
+        const oldIndex = items.indexOf(active.id);
+        const newIndex = items.indexOf(over.id);
+        const newArray = arrayMove(allPackages, oldIndex, newIndex);
+        const setData = async (data) => {
+          await axios.put(
+            `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages`,
+            { data: JSON.stringify(data) }
+          );
+        };
+        setData(newArray);
+        return newArray;
+      });
     }
-  };
+  }
 
   return (
-    <DndContext
-      onDragEnd={handleDragEnd}
-      sensors={dndSensors}
-      modifiers={[restrictToVerticalAxis]}
-    >
+    <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
       <div className="flex bg-white ">
         <SideBarAdmin />
         <div className="w-full">
@@ -94,7 +118,6 @@ function AdminPackageList() {
                   type="text"
                   placeholder="Search..."
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  value={searchTerm}
                   className="input input-bordered bg-white focus:border-purple-500 w-80 max-w-xs pl-12"
                 />
                 <img
@@ -114,73 +137,120 @@ function AdminPackageList() {
               </div>
             </div>
           </div>
-          <div className="bg-gray-100 flex h-[calc(100vh_-_80px)]">
-            <div className="pl-14 pr-14 pt-12 w-full">
-              <Droppable className="overflow-x-auto font-medium" id="dropable">
-                <table className="table bg-white rounded-b-2xl overflow-hidden">
-                  <thead className="bg-gray-400 text-gray-800">
-                    <tr>
-                      <th className="border-y border-y-gray-100"></th>
-                      <th className="border-y border-y-gray-100"></th>
-                      <th className="border-y border-y-gray-100">Icon</th>
-                      <th className="border-y border-y-gray-100">
-                        Package name
-                      </th>
-                      <th className="border-y border-y-gray-100">Price</th>
-                      <th className="border-y border-y-gray-100">
-                        Merry limit
-                      </th>
-                      <th className="border-y border-y-gray-100">
-                        Created date
-                      </th>
-                      <th className="border-y border-y-rgray-100">
-                        Updated date
-                      </th>
-                      <th className="border-y border-y-gray-100"></th>
-                      <th className="border-y border-y-gray-100"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.isArray(filteredAllPackages) &&
-                      filteredAllPackages.map((packageItem, index) => (
-                        <TableRowDraggable
-                          key={packageItem.id}
-                          id={packageItem.id}
-                        >
-                          <td>
-                            <img src="/images/drag.svg" />
-                          </td>
-                          <td>{index + 1}</td>
-                          <td>
+          <div className="bg-gray-100 flex justify-center h-[calc(100vh_-_80px)]">
+            <div className="pl-14 pr-14 pt-12">
+              {/* <Droppable className="overflow-x-auto font-medium" id="dropable"> */}
+              <table className="table w-[67.5rem] bg-white rounded-b-2xl overflow-hidden">
+                <thead className="bg-gray-400 text-gray-800 text-body4">
+                  <tr className=" border-gray-400">
+                    <th></th>
+                    <th className=""></th>
+                    <th className="">Icon</th>
+                    <th className="">Package name</th>
+                    <th className="">Price</th>
+                    <th className="">Merry limit</th>
+                    <th className="">Created date</th>
+                    <th className="">Updated date</th>
+                    <th className=""></th>
+                    <th className=""></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <SortableContext
+                    items={allPackages.map((item) => item.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {allPackages.map((packageItem, index) => (
+                      <SortableItem key={index} id={packageItem.id}>
+                        <td>{index + 1}</td>
+                        <td>
+                          <img
+                            src={packageItem.package_icon}
+                            alt="package icon"
+                            width={32}
+                            height={32}
+                          />
+                        </td>
+                        <td>{packageItem.name}</td>
+                        <td>{`${packageItem.price} THB`}</td>
+                        <td>{`${packageItem.merry_limit} Merry`}</td>
+                        <td>
+                          {new Date(packageItem.created_at).toLocaleString()}
+                        </td>
+                        <td>
+                          {new Date(packageItem.updated_at).toLocaleString()}
+                        </td>
+                        <td>
+                          <button onClick={openModal(packageItem.id)}>
                             <img
-                              src={packageItem.package_icon}
-                              alt="package icon"
+                              src="/images/delete.svg"
+                              alt="delete icon"
+                              width={24}
+                              height={24}
                             />
-                          </td>
-                          <td>{packageItem.name}</td>
-                          <td>{`${packageItem.price} THB`}</td>
-                          <td>{`${packageItem.merry_limit} Merry`}</td>
-                          <td>{packageItem.created_at}</td>
-                          <td>{packageItem.updated_at}</td>
-                          <td>
-                            <button onClick={openModal(packageItem.id)}>
-                              <img src="/images/delete.svg" alt="delete icon" />
-                            </button>
-                          </td>
-                          <td>
-                            <button
-                              onClick={() =>
-                                navigate(`/admin/editpackage/${packageItem.id}`)
-                              }
-                            >
-                              <img src="/images/edit.svg" alt="edit icon" />
-                            </button>
-                          </td>
-                        </TableRowDraggable>
-                      ))}
-                  </tbody>
-                </table>
-              </Droppable>
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            onClick={() =>
+                              navigate(`/admin/editpackage/${packageItem.id}`)
+                            }
+                          >
+                            <img
+                              src="/images/edit.svg"
+                              alt="edit icon"
+                              width={24}
+                              height={24}
+                            />
+                          </button>
+                        </td>
+                      </SortableItem>
+                    ))}
+                  </SortableContext>
+                  {/* {Array.isArray(filteredAllPackages) &&
+                    filteredAllPackages.map((packageItem, index) => (
+                      <TableRowDraggable
+                        key={packageItem.id}
+                        id={packageItem.id}
+                      >
+                        <td>
+                          <img src="/images/drag.svg" />
+                        </td>
+                        <td>{index + 1}</td>
+                        <td>
+                          <img
+                            src={packageItem.package_icon}
+                            alt="package icon"
+                          />
+                        </td>
+                        <td>{packageItem.name}</td>
+                        <td>{`${packageItem.price} THB`}</td>
+                        <td>{`${packageItem.merry_limit} Merry`}</td>
+                        <td>
+                          {new Date(packageItem.created_at).toLocaleString()}
+                        </td>
+                        <td>
+                          {new Date(packageItem.updated_at).toLocaleString()}
+                        </td>
+                        <td>
+                          <button onClick={openModal(packageItem.id)}>
+                            <img src="/images/delete.svg" alt="delete icon" />
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            onClick={() =>
+                              navigate(`/admin/editpackage/${packageItem.id}`)
+                            }
+                          >
+                            <img src="/images/edit.svg" alt="edit icon" />
+                          </button>
+                        </td>
+                      </TableRowDraggable>
+                    ))} */}
+                </tbody>
+              </table>
+              {/* </Droppable> */}
 
               {showModal && (
                 <dialog
