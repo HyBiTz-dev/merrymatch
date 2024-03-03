@@ -65,7 +65,7 @@ function AdminPackageCreate() {
                 <span className="font-bold text-2xl text-gray-900 w-full">
                   Add Package
                 </span>
-                <div className="flex ">
+                <div className="flex gap-4">
                   <Button
                     type="button"
                     secondary
@@ -89,19 +89,19 @@ function AdminPackageCreate() {
                   <div className="grid grid-cols-2 mb-10">
                     <label className="form-control mr-10">
                       <div className="">
-                        <span className="">Package name</span>
+                        <span className="text-[#07090D]">Package name</span>
                         <span className=" text-red-500"> *</span>
                       </div>
                       <Field
                         type="text"
                         as="input"
                         name="packageName"
-                        className="input input-bordered input-md bg-white"
+                        className="input input-bordered input-md bg-white text-black focus:outline-none"
                       />
                     </label>
                     <label className="form-control">
                       <div className="">
-                        <span className="">Price</span>
+                        <span className="text-[#07090D]">Price</span>
                         <span className=" text-red-500"> *</span>
                       </div>
                       <Field
@@ -109,13 +109,13 @@ function AdminPackageCreate() {
                         type="number"
                         name="price"
                         min={1}
-                        className="input input-bordered input-md bg-white"
+                        className="input input-bordered input-md bg-white text-black focus:outline-none"
                       />
                     </label>
                   </div>
                   <label className="form-control pb-10">
                     <div>
-                      <span className="">Merry limit</span>
+                      <span className="text-[#07090D]">Merry limit</span>
                       <span className=" text-red-500"> *</span>
                     </div>
                     <Field
@@ -123,32 +123,48 @@ function AdminPackageCreate() {
                       type="number"
                       name="merryLimit"
                       min={1}
-                      className="input input-bordered input-md bg-white"
+                      className="input input-bordered input-md bg-white text-black focus:outline-none"
                     />
                   </label>
 
-                  <div className="pb-10">
-                    <span>Icon</span>
-                    <span className="text-red-500"> *</span>
-                    <div className="">
-                      <button
-                        type="button"
-                        onClick={() => inputRef.current.click()}
-                        className=" bg-gray-100 text-white rounded-2xl w-[6.25rem] h-[6.25rem] pt-2"
-                      >
-                        {values.packageIcon ? (
+                  <div className="pb-10 flex flex-col gap-2">
+                    <span className="text-[#07090D]">
+                      Icon <span className="text-red-500"> *</span>
+                    </span>
+                    <div className=" bg-gray-100 text-white rounded-2xl w-[6.25rem] h-[6.25rem] flex justify-center items-center relative ">
+                      {values.packageIcon ? (
+                        <div>
                           <img
                             src={values.packageIcon}
                             alt="file"
-                            className="w-full h-full object-cover rounded-2xl"
+                            width={32}
+                            height={32}
                           />
-                        ) : (
-                          <div className="text-purple-600 flex flex-col font-medium">
-                            <span>+</span>
-                            <span>Upload icon</span>
-                          </div>
-                        )}
-                      </button>
+                          <img
+                            src="/images/cross-btn.svg"
+                            width={24}
+                            height={24}
+                            alt="close"
+                            role="button"
+                            className="rounded-full absolute -top-1 -right-1 bg-[#AF2758] p-1.5"
+                            onClick={() => setFieldValue("packageIcon", "")}
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => inputRef.current.click()}
+                          className="text-purple-600 text-body4 flex flex-col justify-center items-center gap-2 cursor-pointer"
+                        >
+                          <img
+                            src="/images/plus.svg"
+                            alt=""
+                            width={15}
+                            height={15}
+                          />
+                          <span>Upload icon</span>
+                        </div>
+                      )}
+
                       <Field
                         as="input"
                         innerRef={inputRef}
@@ -162,8 +178,9 @@ function AdminPackageCreate() {
                   </div>
                   <div className="border-b border-b-gray-500 mb-10 relative"></div>
                   <div className="pb-10">
-                    <span>Package Detail</span>
+                    <span className="text-gray-700">Package Detail</span>
                   </div>
+
                   <FieldArray
                     name="packageDetails"
                     render={(arrayHelper) => (
@@ -171,23 +188,21 @@ function AdminPackageCreate() {
                         {values.packageDetails.map((detail, index) => {
                           const deletable = values.packageDetails.length > 1;
                           return (
-                            <div key={index} className="flex pb-10">
-                              <img
-                                className="pr-6"
-                                src="/images/drag.svg"
-                                alt="icon"
-                              />
+                            <div className="flex gap-6 mb-4" key={index}>
+                              <img src="/images/drag.svg" />
                               <div className="flex-1">
                                 <label className="form-control w-full mr-10">
                                   <div>
-                                    <span>Detail</span>
+                                    <span className="text-[#07090D]">
+                                      Detail
+                                    </span>
                                     <span className="text-red-500"> *</span>
                                   </div>
                                   <Field
                                     name={`packageDetails.${index}`}
                                     as="input"
                                     type="text"
-                                    className="input input-bordered input-md bg-white"
+                                    className="input input-bordered input-md bg-white text-black focus:outline-none"
                                   />
                                 </label>
                               </div>
@@ -199,17 +214,20 @@ function AdminPackageCreate() {
                                     ? arrayHelper.remove(index)
                                     : null
                                 }
-                                className={classNames(
-                                  "pl-6 bg-white text-gray-500 hover:text-red-400 active:text-red-600 font-bold",
-                                  { "cursor-not-allowed grayscale": !deletable }
-                                )}
+                                className={classNames({
+                                  "text-red-500  hover:text-red-400 active:text-red-600 text-base font-bold":
+                                    deletable,
+                                  "cursor-not-allowed text-gray-500 text-base font-bold":
+                                    !deletable,
+                                })}
                               >
                                 Delete
                               </button>
                             </div>
                           );
                         })}
-                        <div className="pl-[3.12rem]">
+
+                        <div className="pl-[3.12rem] mt-10">
                           <Button
                             secondary
                             type="button"

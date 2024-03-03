@@ -74,11 +74,25 @@ packagesRouter.delete("/:id", async (req, res) => {
 });
 
 packagesRouter.get("/", async (req, res) => {
+  const query = req.query.search;
   try {
-    const { data, error } = await supabase.from("packages").select("*");
+    if (query) {
+      const { data, error } = await supabase.from("packages").select("*");
+      const result = data.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      );
 
-    if (error) throw error;
-    res.json(data);
+      if (error) throw error;
+      res.json(result);
+    } else {
+      const { data, error } = await supabase
+        .from("packages")
+        .select("*")
+        .order("index_number", { ascending: true });
+
+      if (error) throw error;
+      res.json(data);
+    }
   } catch (error) {
     console.error("Error fetching data:", error.message);
     res
@@ -96,6 +110,23 @@ packagesRouter.get("/:id", async (req, res) => {
       .match({ id });
     if (error) throw error;
     res.json(data);
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+    res
+      .status(500)
+      .json({ error: "Internal server error", message: error.message });
+  }
+});
+
+packagesRouter.put("/", async (req, res) => {
+  const result = JSON.parse(req.body.data);
+  try {
+    for (let i = 0; i < result.length; i++) {
+      const { data, error } = await supabase
+        .from("packages")
+        .update({ index_number: i + 1 })
+        .eq("name", result[i].name);
+    }
   } catch (error) {
     console.error("Error fetching data:", error.message);
     res
