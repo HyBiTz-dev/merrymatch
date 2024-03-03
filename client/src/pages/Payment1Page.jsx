@@ -95,13 +95,17 @@ export default function Payment1Page() {
     let length = event.target.value.replaceAll("-", "").length;
 
     if (Number.isInteger(Numberinput)) {
-      if (length > 0 && length <= 12) {
+      if (length > 0 && length <= 16) {
+        //4242-4242-4242-4242
+        //----5----10----15----
         if (length % 4 == 0) {
-          if (stringInput.includes("-", 9) && stringInput.length <= 10) {
+          if (stringInput.includes("-", 14) && stringInput.length <= 15) {
+            stringInput = stringInput.slice(0, -1);
+          } else if (stringInput.includes("-", 9) && stringInput.length <= 10) {
             stringInput = stringInput.slice(0, -1);
           } else if (stringInput.includes("-", 4) && stringInput.length <= 5) {
             stringInput = stringInput.slice(0, -1);
-          } else if (stringInput.length <= 9) {
+          } else if (stringInput.length <= 14) {
             stringInput = stringInput + "-";
           }
         }
