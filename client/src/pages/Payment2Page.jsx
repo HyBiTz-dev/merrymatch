@@ -1,7 +1,6 @@
 import Navbar from "../components/Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import axios from "axios";
 
 export default function Payment2Page() {
   const navigate = useNavigate();

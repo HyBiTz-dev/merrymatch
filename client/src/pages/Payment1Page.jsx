@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authentication";
 import Toast from "../components/Toast";
-import { number } from "prop-types";
 
 export default function Payment1Page() {
   const { state } = useAuth();

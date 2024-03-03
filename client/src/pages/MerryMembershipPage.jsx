@@ -62,7 +62,7 @@ export default function MerryMembershipPage() {
     return <></>;
   };
 
-  const handleConfirmCancle = () => {};
+  const handleConfirm = () => {};
 
   const closeModal = () => {
     setShowAlert(false);
@@ -76,7 +76,7 @@ export default function MerryMembershipPage() {
     getBillHistory();
   }, []);
 
-  useEffect(() => {}, [showAlert, packageDetails]);
+  useEffect(() => {}, [showAlert, packageDetails, billing]);
 
   return (
     <>
@@ -107,7 +107,7 @@ export default function MerryMembershipPage() {
                         CancleModal
                         isOpen={showAlert}
                         onClose={closeModal}
-                        isConfirm={handleConfirmCancle}
+                        isConfirm={handleConfirm}
                       ></AlertModal>
                     ) : (
                       <></>
