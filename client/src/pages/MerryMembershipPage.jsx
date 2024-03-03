@@ -7,8 +7,10 @@ import Button from "../components/Button";
 import card_top from "../../public/images/card_top_saction.svg";
 import card_bot from "../../public/images/card_bot_saction.svg";
 import AlertModal from "../components/Modal/AlertModal";
+import { useNavigate } from "react-router-dom";
 export default function MerryMembershipPage() {
   const { state } = useAuth();
+  const navigate = useNavigate();
   const [packageDetails, setPackageDetails] = useState({});
   const [paymentMethod, setPaymentMethod] = useState({});
   const [billing, setBilling] = useState([]);
@@ -58,11 +60,27 @@ export default function MerryMembershipPage() {
       } catch (error) {}
     }
   };
-  const handleCanclePackage = () => {
-    return <></>;
-  };
 
-  const handleConfirm = () => {};
+  const handleConfirmCancelPackage = async () => {
+    let statusConfirm = "";
+    if (packageDetails != null && packageDetails != undefined) {
+      try {
+        const result = await axios.post(
+          `${
+            import.meta.env.VITE_APP_BASE_ENDPOINT
+          }/membership/${userProfileId}`
+        );
+
+        statusConfirm = result.data.message;
+
+        if (statusConfirm == "update completed") {
+          navigate("/");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   const closeModal = () => {
     setShowAlert(false);
@@ -107,7 +125,7 @@ export default function MerryMembershipPage() {
                         CancleModal
                         isOpen={showAlert}
                         onClose={closeModal}
-                        isConfirm={handleConfirm}
+                        isConfirm={handleConfirmCancelPackage}
                       ></AlertModal>
                     ) : (
                       <></>

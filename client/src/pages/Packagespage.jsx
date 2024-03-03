@@ -9,12 +9,16 @@ export const userPackageData = React.createContext();
 
 export default function PackagePage() {
   const [allPackages, setAllPackages] = useState({});
+  let result = [];
   const getDataPackages = async () => {
     try {
       let response = await axios.get(
         `${import.meta.env.VITE_APP_BASE_ENDPOINT}/packages`
       );
-      let result = response.data;
+      for (let i = 0; i < 3; i++) {
+        result.push(response.data[i]);
+      }
+
       let newArrray = [...result];
       let newObject = {
         package_num: [],
