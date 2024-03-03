@@ -32,7 +32,7 @@ export default function PackagePage() {
         newObject.name.push(items.name);
         newObject.price.push(parseFloat(items.price).toFixed(2));
         newObject.details.push(items.details);
-        newObject.perDate[index] = "Mouth";
+        newObject.perDate[index] = "Month";
       });
       setAllPackages(newObject);
     } catch (error) {
