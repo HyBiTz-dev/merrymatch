@@ -18,7 +18,9 @@ payment1Router.post("/create-payment1", express.json(), async (req, res) => {
   const productName = product.name;
   const productPrice = product.price;
   const productId = product.id;
-  const cardNumber = cardDetail.cardNumber;
+  const cardNumber = cardDetail.card;
+  const cardExp = cardDetail.exp;
+  const cardCVC = cardDetail.cvc;
 
   let newCustomer;
   let paymentData;

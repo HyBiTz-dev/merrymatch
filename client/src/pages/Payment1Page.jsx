@@ -21,8 +21,12 @@ export default function Payment1Page() {
   const [packageDetails, setPackageDetails] = useState("");
   const [showToast, setShowToast] = useState("close");
   const [cardNumber, setCardNumber] = useState("");
+  const [expCard, setExpCard] = useState("");
+  const [cvcCard, setCVCCard] = useState("");
   let [textAlert, setTextAlert] = useState("");
-  let testCard = "";
+  let stringCardNumber = "";
+  let stringExpCard = "";
+  let stringCVC = "";
   const location = useLocation();
 
   const statePackage = location.state;
@@ -58,7 +62,9 @@ export default function Payment1Page() {
         priceShow: package_price_show,
       },
       cardDetail: {
-        cardNumber: cardNumber,
+        card: cardNumber,
+        exp: expCard,
+        cvc: cvcCard,
       },
     };
     let result;
@@ -95,7 +101,7 @@ export default function Payment1Page() {
     let length = event.target.value.replaceAll("-", "").length;
 
     if (Number.isInteger(Numberinput)) {
-      if (length > 0 && length <= 16) {
+      if (length >= 0 && length <= 16) {
         //4242-4242-4242-4242
         //----5----10----15----
         if (length % 4 == 0) {
@@ -105,17 +111,61 @@ export default function Payment1Page() {
             stringInput = stringInput.slice(0, -1);
           } else if (stringInput.includes("-", 4) && stringInput.length <= 5) {
             stringInput = stringInput.slice(0, -1);
-          } else if (stringInput.length <= 14) {
+          } else if (stringInput.length <= 14 && length != 0) {
             stringInput = stringInput + "-";
           }
         }
-        testCard = stringInput;
-        setCardNumber(testCard);
+        stringCardNumber = stringInput;
+        setCardNumber(stringCardNumber);
       }
     }
-    console.log(cardNumber);
   };
 
+  const handleExpCard = (event) => {
+    let Numberinput = Number(event.target.value.replaceAll("/", ""));
+    let stringInput = event.target.value.toString();
+    let length = event.target.value.replaceAll("/", "").length;
+
+    if (Number.isInteger(Numberinput)) {
+      if (length == 2) {
+        let checkMonth = stringExpCard + stringInput;
+        checkMonth = Number(checkMonth);
+        if (checkMonth > 12) {
+          stringInput = "12";
+        }
+      }
+      if (length >= 0 && length <= 4) {
+        //MM/YY
+        //01345
+        if (length % 2 == 0) {
+          if (stringInput.includes("/", 1) && stringInput.length <= 3) {
+            stringInput = stringInput.slice(0, -1);
+          } else if (stringInput.length <= 3 && length != 0) {
+            stringInput = stringInput + "/";
+          }
+        }
+
+        stringExpCard = stringInput;
+        setExpCard(stringExpCard);
+      }
+    }
+  };
+
+  const handleCVCCard = (event) => {
+    let Numberinput = Number(event.target.value);
+    let stringInput = event.target.value.toString();
+    let length = event.target.value.length;
+
+    if (Number.isInteger(Numberinput)) {
+      if (length >= 0 && length <= 3) {
+        //CVC
+        //123
+
+        stringCVC = stringInput;
+        setCVCCard(stringCVC);
+      }
+    }
+  };
   useEffect(() => {}, [showToast]);
 
   return (
@@ -197,6 +247,8 @@ export default function Payment1Page() {
                       <input
                         className="bg-white w-full h-[3rem] rounded-[0.5rem] border-[0.063rem] border-gray-400 py-[0.75rem] px-[1rem] gap-[0.5rem] text-body2 "
                         placeholder="MM/YY"
+                        onChange={handleExpCard}
+                        value={expCard}
                       ></input>
                     </div>
                     <div className="cvc-cvv-box flex flex-col w-[14.938rem] h-[4.75rem] gap-[0.25rem]">
@@ -206,6 +258,8 @@ export default function Payment1Page() {
                       <input
                         className="bg-white w-full h-[3rem] rounded-[0.5rem] border-[0.063rem] border-gray-400 py-[0.75rem] px-[1rem] gap-[0.5rem] text-body2 "
                         placeholder="x x x"
+                        onChange={handleCVCCard}
+                        value={cvcCard}
                       ></input>
                     </div>
                   </section>
