@@ -71,7 +71,12 @@ export default function Payment1Page() {
       },
     };
     let result;
-    if (cardNumber.length == 14) {
+    if (
+      cardNumber.length === 19 &&
+      cvcCard.length === 3 &&
+      expCard.length === 5 &&
+      nameCard != ""
+    ) {
       try {
         result = await axios.post(
           `${import.meta.env.VITE_APP_BASE_ENDPOINT}/payment1/create-payment1`,
@@ -93,7 +98,16 @@ export default function Payment1Page() {
         showToast == "close" ? setShowToast("open") : setShowToast("close");
       }
     } else {
-      setTextAlert(`Required card Number`);
+      if (cardNumber.length < 19) {
+        setTextAlert(`Required card Number`);
+      } else if (expCard.length < 5) {
+        setTextAlert(`Required EXP Card`);
+      } else if (cvcCard.length < 3) {
+        setTextAlert(`Required cvc Card`);
+      } else if (nameCard == "") {
+        setTextAlert(`Required Card Owner`);
+      }
+
       showToast == "close" ? setShowToast("open") : setShowToast("close");
     }
   };
