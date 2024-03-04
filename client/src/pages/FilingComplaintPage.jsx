@@ -21,8 +21,6 @@ function FilingComplaintPage() {
         complaintData
       );
 
-      console.log(response);
-
       if (response.status === 200) {
         console.log("Complaint submitted successfully:", response.data);
         resetForm();

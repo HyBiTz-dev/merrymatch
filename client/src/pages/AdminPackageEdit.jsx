@@ -58,7 +58,6 @@ function AdminPackageEdit() {
   };
 
   async function handleEditPackage(values) {
-    console.log(values);
     const { packageName, price, merryLimit, packageIcon, packageDetails } =
       values;
     const packageId = params.id;
@@ -73,7 +72,6 @@ function AdminPackageEdit() {
           details: packageDetails,
         }
       );
-      console.log(data);
       if (error) throw error;
       navigate("/admin/package");
     } catch (error) {

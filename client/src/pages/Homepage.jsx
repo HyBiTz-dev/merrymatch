@@ -35,7 +35,7 @@ export default function Home() {
           <p className="mt-6 text-body1 text-white text-center">
             If you feel lonely, let’s start meeting <br /> new people in your
             area!
-            <br /> Dont’t forget to get Merry with us
+            <br /> Don’t forget to get Merry with us
           </p>
           {state ? (
             <Button
