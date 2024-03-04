@@ -39,7 +39,7 @@ export default function Payment2Page() {
   return (
     <>
       <Navbar auth />
-      <div className="w-full h-full flex justify-center">
+      <div className="w-full h-full flex justify-center bg-main">
         <section className="payment2-section w-[90rem] h-[58.5rem] t-[5.5rem] bg-[#FCFCFE] flex justify-center">
           <section className="payment2-header-container bg-[#FCFCFE] w-[40.063rem] h-[24.563rem] mt-[7.375rem] ml-[10.188rem] flex flex-col gap-[5rem]">
             <div className="payment2-header-top w-[40.063rem] h-[16.563rem] flex flex-col gap-[2.5rem]">

@@ -26,8 +26,6 @@ function Conversation({
     };
 
     getMessage();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newMessages, ownMessages, conversation]);
 
   useEffect(() => {
