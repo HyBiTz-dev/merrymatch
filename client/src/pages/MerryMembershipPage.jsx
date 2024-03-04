@@ -164,7 +164,7 @@ export default function MerryMembershipPage() {
                                     >
                                       <img
                                         className="package-circle-checkbox w-6 h-6"
-                                        src="../../public/images/checkbox-circle-fill.svg"
+                                        src="/images/checkbox-circle-fill.svg"
                                       ></img>
                                       <p className="details-text text-purple-100 text-body2 font-[400] leading-[1.5rem]">
                                         {items}
