@@ -37,7 +37,6 @@ function AdminPackageCreate() {
           details: packageDetails,
         }
       );
-      console.log(data);
       if (error) throw error;
       navigate("/admin/package");
     } catch (error) {
